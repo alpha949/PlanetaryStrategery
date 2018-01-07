@@ -1,0 +1,150 @@
+package com.ue.ps;
+
+import java.util.ArrayList;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+
+public class WorldGen {
+	private static boolean canPlacePlanets = true;
+	private static boolean canGenerate = true;
+	private static Vector2 pos = new Vector2();	
+	private static int nextDist;
+	private static int angle;
+	private static int numConnects = 2;
+	public static Rectangle planetBorder;
+	private static ArrayList<Planet> allPlanets = new ArrayList<Planet>();
+	private static int failedSteps = 0;
+	private static boolean done = false;
+	
+	
+	public static void setup(Stage m){
+
+		planetBorder = new Rectangle(-64 * 50, -64 * 50,
+				64* 50 + 64* 50, 64* 50 + 64* 50);
+		pos = planetBorder.getCenter(pos);
+		Planet p = new Planet();
+		m.addActor(p);
+		p.setCenter(pos.x, pos.y);
+		p.addAction(Actions.color(Color.PURPLE, 1));
+		p.setZIndex(10000);
+		
+	
+	}
+	
+	public static void generate(Stage m, int sizeX, int sizeY){
+		
+		
+			if (!done){
+				canGenerate = true;
+				
+				nextDist = MathUtils.random(50 * 4, 100 * 4);
+				angle += MathUtils.random(0, 360);
+				pos = Utils.polarToRect(nextDist, angle, pos);
+				
+				for (Planet p : allPlanets){
+					if (p.distanceTo(pos.x, pos.y) < 50 * 4){
+						canGenerate = false;
+					}
+				}
+				
+				if (canGenerate){
+					Planet p = new Planet();
+					allPlanets.add(p);
+					m.addActor(p);
+					p.setCenter(pos.x, pos.y);
+					p.addAction(Actions.color(Color.GREEN, 1));
+					failedSteps = 0;
+					
+				} else{
+					Planet p = new Planet();
+					//allPlanets.add(p);
+					p.setColor(Color.RED);
+					m.addActor(p);
+					p.setCenter(pos.x, pos.y);
+					p.addAction(Actions.fadeOut(1));
+					failedSteps += 1;
+					
+					
+				}
+				
+				
+				if (!planetBorder.contains(pos)){
+				
+					pos = allPlanets.get(0).center;
+				}
+				
+				if (failedSteps > 100){
+					for (Planet p : allPlanets){
+						p.addAction(Actions.color(Color.GOLD, 1));
+					}
+					done = true;
+					
+					genHomePlanets(7);
+				
+					
+					
+					
+					
+				}
+				
+				System.out.println(failedSteps);
+			}
+			else {
+				
+			}
+			
+			
+			
+		
+			
+			
+		
+		
+		
+		
+	}
+	
+	
+	private static Planet getClosestPlanetTo(float x, float y){
+		
+		Planet[] planetMap = new Planet[allPlanets.size()];
+		planetMap = allPlanets.toArray(planetMap); 
+		 for (int i=1; i < planetMap.length; i++)
+		   {
+		      Planet index = planetMap[i]; int j = i;
+		      while (j > 0 && planetMap[j-1].distanceTo(x, y) > index.distanceTo(x, y))
+		      {
+		    	  planetMap[j] = planetMap[j-1];
+		           j--;
+		      }
+		      planetMap[j] = index;
+		   }
+		
+		return planetMap[0];
+	}
+	
+	private static Polygon genHomePlanets(int numHomePlanets){
+		//numHomePlanets *=2;
+		Polygon ring = new Polygon();
+		
+		int dist = (int) (planetBorder.width);
+	
+		for (int i = 0; i < numHomePlanets; i++){
+			Vector2 vert = Utils.polarToRect(dist, (360 / numHomePlanets * i) + 45, planetBorder.getCenter(new Vector2()));
+			System.out.println(vert.x + " " + vert.y);
+			getClosestPlanetTo(vert.x, vert.y).addAction(Actions.color(Color.BLUE, 2));
+		}
+		
+		
+		
+		return ring;
+		
+	}
+	
+}
