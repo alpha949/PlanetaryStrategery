@@ -43,12 +43,12 @@ public class WorldGen {
 			if (!done){
 				canGenerate = true;
 				
-				nextDist = MathUtils.random(50 * 4, 100 * 4);
+				nextDist = MathUtils.random(50 * 8, 100 * 8);
 				angle += MathUtils.random(0, 360);
 				pos = Utils.polarToRect(nextDist, angle, pos);
 				
 				for (Planet p : allPlanets){
-					if (p.distanceTo(pos.x, pos.y) < 50 * 4){
+					if (p.distanceTo(pos.x, pos.y) < 50 * 8){
 						canGenerate = false;
 					}
 				}
@@ -85,7 +85,7 @@ public class WorldGen {
 					}
 					done = true;
 					
-					genHomePlanets(7);
+					genHomePlanets(2, m);
 				
 					
 					
@@ -129,16 +129,22 @@ public class WorldGen {
 		return planetMap[0];
 	}
 	
-	private static Polygon genHomePlanets(int numHomePlanets){
+	private static Polygon genHomePlanets(int numHomePlanets, Stage m){
 		//numHomePlanets *=2;
 		Polygon ring = new Polygon();
 		
-		int dist = (int) (planetBorder.width);
+		int dist = (int) (planetBorder.width*2);
 	
 		for (int i = 0; i < numHomePlanets; i++){
-			Vector2 vert = Utils.polarToRect(dist, (360 / numHomePlanets * i) + 45, planetBorder.getCenter(new Vector2()));
+			Vector2 vert = Utils.polarToRect(dist, (360 / numHomePlanets * i)+ 45, planetBorder.getCenter(new Vector2()));
 			System.out.println(vert.x + " " + vert.y);
 			getClosestPlanetTo(vert.x, vert.y).addAction(Actions.color(Color.BLUE, 2));
+			Planet p = new Planet();
+			//allPlanets.add(p);
+			p.setColor(Color.TEAL);
+			m.addActor(p);
+			p.setCenter(vert.x, vert.y);
+		
 		}
 		
 		
