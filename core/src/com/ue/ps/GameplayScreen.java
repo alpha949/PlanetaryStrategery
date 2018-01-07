@@ -86,8 +86,8 @@ public class GameplayScreen implements Screen{
 		cam.update(); 
 		
 		
-		mousePos.x = Gdx.input.getX();
-		mousePos.y = cam.viewportHeight- Gdx.input.getY();
+		mousePos.x = (Gdx.input.getX() * zoomAmount) - cam.viewportWidth/2 * ;
+		mousePos.y = (cam.viewportHeight- Gdx.input.getY())  * zoomAmount;
 		p.setPosition(mousePos.x, mousePos.y);
 		
 		

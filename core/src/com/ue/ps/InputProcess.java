@@ -51,7 +51,7 @@ public class InputProcess implements InputProcessor{
 	@Override
 	public boolean scrolled(int amount) {
 		
-		GameplayScreen.zoomAmount += ((float)amount)/10;
+		GameplayScreen.zoomAmount += ((float)amount)/5;
 		
 		return false;
 	}

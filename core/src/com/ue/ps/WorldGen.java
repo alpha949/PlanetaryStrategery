@@ -25,8 +25,8 @@ public class WorldGen {
 	
 	public static void setup(Stage m){
 
-		planetBorder = new Rectangle(-64 * 50, -64 * 50,
-				64* 50 + 64* 50, 64* 50 + 64* 50);
+		planetBorder = new Rectangle(-64 * 50 * 3, -64 * 50 * 3,
+				64* 50 * 3 + 64* 50 * 3, 64* 50 * 3 + 64* 50 *3);
 		pos = planetBorder.getCenter(pos);
 		Planet p = new Planet();
 		m.addActor(p);
@@ -43,12 +43,12 @@ public class WorldGen {
 			if (!done){
 				canGenerate = true;
 				
-				nextDist = MathUtils.random(50 * 8, 100 * 8);
+				nextDist = MathUtils.random(50 * 8 * 3, 100 * 8 * 3);
 				angle += MathUtils.random(0, 360);
 				pos = Utils.polarToRect(nextDist, angle, pos);
 				
 				for (Planet p : allPlanets){
-					if (p.distanceTo(pos.x, pos.y) < 50 * 8){
+					if (p.distanceTo(pos.x, pos.y) < 50 * 8 * 3){
 						canGenerate = false;
 					}
 				}
