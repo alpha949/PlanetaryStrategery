@@ -6,7 +6,9 @@ public abstract class Building extends BaseActor{
 		super(path);
 	
 	}
-	
+	public void update(Player p){
+		
+	}
 	
 	
 	
