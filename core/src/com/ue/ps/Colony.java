@@ -6,7 +6,7 @@ public class Colony extends Building{
 	
 	public Colony() {
 		super("assets/colony");
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	

@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class Ship extends BaseActor{
 	
-	public String type;
+
 	
 	public int health;
 	public int maxhp;
@@ -15,8 +15,22 @@ public class Ship extends BaseActor{
 	
 	public Texture texture;
 	
-	public Ship(Faction faction) {
+	public ShipType type;
+	
+	public int buildProgress;
+	
+	public Planet destination;
+	
+	public Ship(Faction faction, ShipType type) {
 		super("");
-		//Grab base stats from the faction it is from, which will contain these
+		
+		
+		
+	}
+	
+	public void update(){
+		if (destination != null){
+			
+		}
 	}
 }

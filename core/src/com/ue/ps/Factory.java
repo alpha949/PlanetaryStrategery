@@ -6,7 +6,7 @@ public class Factory extends Building{
 	private int shipProgressOutput = 10;
 
 
-	
+	public Ship buildingShip;
 	
 	public Factory() {
 		super("assets/factory.png");
@@ -18,7 +18,8 @@ public class Factory extends Building{
 	
 		if (p.resource > resourceInput){
 			p.resource -= resourceInput;
-			//increment ship progress here;
+
+			buildingShip.buildProgress += shipProgressOutput;
 		}
 		
 		
