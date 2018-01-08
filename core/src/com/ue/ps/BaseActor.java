@@ -65,9 +65,6 @@ public class BaseActor extends Group{
 			Texture t = new Texture(Gdx.files.internal("assets/missingTex.png"));
 			setTexture(t);
 		}
-			
-		
-		
 	}
 	
 	//Currently broken

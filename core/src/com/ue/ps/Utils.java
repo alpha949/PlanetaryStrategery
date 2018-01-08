@@ -1,5 +1,7 @@
 package com.ue.ps;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
 public class Utils {
@@ -26,6 +28,20 @@ public class Utils {
 	      ar[j] = index;
 	   }
 	   
+	}
+	
+
+	
+	public static Texture getImg(String path){
+		try{
+			Texture t = new Texture(Gdx.files.internal("assets/" + path));
+			return t;
+			
+		} catch (Exception GdxRuntimeException) {
+			System.out.println("Error: Could not find: " + path + " substituting...");
+			Texture t = new Texture(Gdx.files.internal("assets/missingTex.png"));
+			return t;
+		}
 	}
 	
 }
