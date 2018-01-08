@@ -84,8 +84,7 @@ public class GameplayScreen implements Screen{
 		//zoomAmount = MathUtils.clamp(zoomAmount ,minZoom,maxZoom); 
 		
 		cam.update(); 
-		
-		
+
 
 
 		mousePos.x = (Gdx.input.getX() * zoomAmount) - cam.viewportWidth/2 * zoomAmount;
