@@ -38,7 +38,7 @@ public class GameplayScreen implements Screen{
 	public static Vector2 mousePos = new Vector2();
 	
 	private boolean running = false;
-	private int modulus = Integer.MAX_VALUE;
+
 
 	
 	
@@ -98,20 +98,13 @@ public class GameplayScreen implements Screen{
 		System.out.println(PS.viewWidth - cam.viewportWidth);
 		System.out.println(PS.viewWidth - cam.viewportHeight);
 		System.out.println((Gdx.input.getX() - mousePos.x) + ", " + (Gdx.input.getY() - mousePos.y));
-		
-		if(Gdx.input.isTouched()){
-			running = true;
-		}
-		
-		if (running){
-			modulus = 1;
-		}
-		if (slowdown % modulus == 0){
-			WorldGen.generate(mainStage, 0, 0);
-		}
+	
+	
+		WorldGen.generate(mainStage, 0, 0);
 		
 		
-		slowdown += 1;
+		
+	
 		
 		Gdx.gl.glClearColor(0.0F, 0.0F, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
