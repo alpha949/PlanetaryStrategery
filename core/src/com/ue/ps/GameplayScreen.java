@@ -77,12 +77,12 @@ public class GameplayScreen implements Screen{
 		Vector2 center = new Vector2();
 		
 		center = WorldGen.planetBorder.getCenter(center);
-		cam.position.x = center.x;
-		cam.position.y = center.y;
+		//cam.position.x = center.x;
+		//cam.position.y = center.y;
 		//cam.position.set(p.getX()+p.getOriginX(),p.getY()+p.getOriginY(),0);
 		//	bound	camera	to	layout 
-		cam.position.x=MathUtils.clamp(cam.position.x,PS.viewWidth/2,PS.mapWidth-PS.viewWidth/2); 
-		cam.position.y=MathUtils.clamp(cam.position.y,PS.viewHeight/2,PS.mapHeight-PS.viewHeight/2); 
+		//cam.position.x=MathUtils.clamp(cam.position.x,PS.viewWidth/2,PS.mapWidth-PS.viewWidth/2); 
+		//cam.position.y=MathUtils.clamp(cam.position.y,PS.viewHeight/2,PS.mapHeight-PS.viewHeight/2); 
 		//zoomAmount = MathUtils.clamp(zoomAmount ,minZoom,maxZoom); 
 		
 		cam.update(); 
@@ -92,6 +92,7 @@ public class GameplayScreen implements Screen{
 		
 		mousePos.x = (xRelative * zoomAmount) + PS.viewHeight / 2 + 160;
 		mousePos.y = (yRelative * zoomAmount) + PS.viewWidth / 2 - 160;
+		
 		
 		p.setPosition(mousePos.x, mousePos.y);
 		System.out.println(PS.viewWidth - cam.viewportWidth);
@@ -131,6 +132,16 @@ public class GameplayScreen implements Screen{
 	
 		cam.zoom = zoomAmount;
 		System.out.println("z: " + cam.zoom);
+		
+		if (Gdx.input.isKeyPressed(Keys.UP)){
+			cam.position.y += 10;
+		} else if (Gdx.input.isKeyPressed(Keys.LEFT)){
+			cam.position.x -= 10;
+		} else if (Gdx.input.isKeyPressed(Keys.RIGHT)){
+			cam.position.x += 10;
+		} else if (Gdx.input.isKeyPressed(Keys.DOWN)){
+			cam.position.y -= 10;
+		}
 	
 		
 	}

@@ -92,8 +92,10 @@ public class WorldGen {
 					
 					
 				}
+		
 				
-				System.out.println(failedSteps);
+				
+				
 			}
 			else {
 				
@@ -101,7 +103,6 @@ public class WorldGen {
 			
 			
 			
-		
 			
 			
 		
@@ -146,6 +147,13 @@ public class WorldGen {
 			p.setCenter(vert.x, vert.y);
 		
 		}
+		
+		for (Planet p : allPlanets){
+			for (int i = 0; i < p.capacity; i++){
+				p.addBuilding(new Factory());
+			}
+		}
+		
 		
 		
 		
