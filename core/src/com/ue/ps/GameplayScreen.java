@@ -34,8 +34,11 @@ public class GameplayScreen implements Screen{
 	private float minZoom = 0.1f;
 	public Game game;
 	private ShapeRenderer shapeRender;
-	public static float zoomAmount;
+	public static float zoomAmount = 5;
 	public static Vector2 mousePos = new Vector2();
+	
+	private boolean running = false;
+	private int modulus = Integer.MAX_VALUE;
 
 	
 	
@@ -66,14 +69,13 @@ public class GameplayScreen implements Screen{
 		
 		
 		
-		
 		mainStage.act(dt);
 		uiStage.act();
 		
 		
 		OrthographicCamera cam = (OrthographicCamera) mainStage.getCamera();
 		Vector2 center = new Vector2();
-				
+		
 		center = WorldGen.planetBorder.getCenter(center);
 		cam.position.x = center.x;
 		cam.position.y = center.y;
@@ -86,12 +88,24 @@ public class GameplayScreen implements Screen{
 		cam.update(); 
 		
 		
-		mousePos.x = (Gdx.input.getX() * zoomAmount) - cam.viewportWidth/2 * ;
-		mousePos.y = (cam.viewportHeight- Gdx.input.getY())  * zoomAmount;
+		float xRelative = Gdx.input.getX() - PS.viewWidth / 2, yRelative = (PS.viewHeight / 2 - Gdx.input.getY());
+		
+		mousePos.x = (xRelative * zoomAmount) + PS.viewHeight / 2 + 160;
+		mousePos.y = (yRelative * zoomAmount) + PS.viewWidth / 2 - 160;
+		
 		p.setPosition(mousePos.x, mousePos.y);
+		System.out.println(PS.viewWidth - cam.viewportWidth);
+		System.out.println(PS.viewWidth - cam.viewportHeight);
+		System.out.println((Gdx.input.getX() - mousePos.x) + ", " + (Gdx.input.getY() - mousePos.y));
 		
+		if(Gdx.input.isTouched()){
+			running = true;
+		}
 		
-		if (slowdown % 1 == 0){
+		if (running){
+			modulus = 1;
+		}
+		if (slowdown % modulus == 0){
 			WorldGen.generate(mainStage, 0, 0);
 		}
 		
@@ -104,11 +118,11 @@ public class GameplayScreen implements Screen{
 		
 		
 		//camera
-		shapeRender.begin(ShapeType.Line);
-		shapeRender.setColor(Color.RED);
-		
-		shapeRender.rect(1, 0, PS.viewWidth-1, PS.viewHeight-220);
-		shapeRender.end();
+//		shapeRender.begin(ShapeType.Line);
+//		shapeRender.setColor(Color.RED);
+//		shapeRender.circle(0, 0, 200);
+//		shapeRender.rect(1, 0, PS.viewWidth-1, PS.viewHeight-220);
+//		shapeRender.end();
 		
 		mainStage.draw();
 	
