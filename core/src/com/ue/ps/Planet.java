@@ -3,6 +3,7 @@ package com.ue.ps;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 public class Planet extends BaseActor{
 	public boolean hasBranched;
@@ -14,6 +15,7 @@ public class Planet extends BaseActor{
 		super("");
 		this.genTexture("assets/planet" + size + ".png");
 		
+		//this.setRotation(MathUtils.random(0, 360));
 		
 		// TODO Auto-generated constructor stub
 	}
