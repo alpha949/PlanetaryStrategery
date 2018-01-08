@@ -18,7 +18,7 @@ public class WorldGen {
 	private static int angle;
 	private static int numConnects = 2;
 	public static Rectangle planetBorder;
-	private static ArrayList<Planet> allPlanets = new ArrayList<Planet>();
+	public static ArrayList<Planet> allPlanets = new ArrayList<Planet>();
 	private static int failedSteps = 0;
 	private static boolean done = false;
 	

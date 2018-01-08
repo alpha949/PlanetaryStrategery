@@ -33,4 +33,10 @@ public class Ship extends BaseActor{
 			
 		}
 	}
+	
+	public void setDestination(Planet p, Player pla){
+		if (this.distanceTo(p.centerX, p.centerY) < pla.maxTravelDist){
+			
+		}
+	}
 }

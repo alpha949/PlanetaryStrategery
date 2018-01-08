@@ -104,7 +104,11 @@ public class GameplayScreen implements Screen{
 		
 		
 		
-	
+		for (Planet p : WorldGen.allPlanets){
+			if (p.getBoundingRectangle().contains(mousePos) && Gdx.input.justTouched()){
+				
+			}
+		}
 		
 		Gdx.gl.glClearColor(0.0F, 0.0F, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
