@@ -17,10 +17,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -45,6 +47,7 @@ public class GameplayScreen implements Screen{
 	private Planet selectedPlanet;
 	private boolean running = false;
 	private boolean hasFocusedOnSelectedPlanet;
+	private Player player = new Player(Faction.Xin);
 	
 
 	private Camera camera;
@@ -73,6 +76,8 @@ public class GameplayScreen implements Screen{
 		mouseBlot.setPosition(50, 50);
 		mainStage.addActor(mouseBlot);
 		mainStage.addActor(camPos);
+		player.resourcePanel.setPosition(0, 500);
+		uiStage.addActor(player.resourcePanel);
 		Gdx.input.setInputProcessor(new InputProcess());
 
 	}
@@ -144,9 +149,9 @@ public class GameplayScreen implements Screen{
 //		shapeRender.circle(0, 0, 200);
 //		shapeRender.rect(1, 0, PS.viewWidth-1, PS.viewHeight-220);
 //		shapeRender.end();
-		
+		mainStage.getViewport().apply();
 		mainStage.draw();
-	
+		uiStage.getViewport().apply();
 		uiStage.draw();
 		
 	
@@ -179,6 +184,12 @@ public class GameplayScreen implements Screen{
 			Gdx.input.setCursorCatched(true);
 		} else {
 			Gdx.input.setCursorCatched(false);
+		}
+		
+		
+		//this is just a patch, should find some way to fix
+		for (Actor a : uiStage.getRoot().getChildren()) {
+			a.addAction(Actions.scaleTo(zoomAmount, zoomAmount));
 		}
 	}
 

@@ -35,7 +35,7 @@ public class PS extends Game {
 		//generator.dispose(); // don't forget to dispose to avoid memory leaks!
 	
 	
-		//font = new LabelStyle(theFont, Color.WHITE);
+		font = new LabelStyle(new BitmapFont(), Color.WHITE);
 		
 		GameplayScreen ms = new GameplayScreen(this);
 		
