@@ -26,7 +26,7 @@ public class PS extends Game {
 	
 	@Override
 	public void create() {
-		viewBorder = new Rectangle(1, 0, PS.viewWidth-1, PS.viewHeight-220);
+		//viewBorder = new Rectangle(1, 0, PS.viewWidth-1, PS.viewHeight-220);
 		//FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("assets/AnonymousPro-Regular.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 		parameter.size = 12;

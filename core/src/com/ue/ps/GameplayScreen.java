@@ -21,6 +21,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 
 public class GameplayScreen implements Screen{
@@ -39,9 +42,10 @@ public class GameplayScreen implements Screen{
 	public static Vector2 mousePos = new Vector2();
 	
 	private boolean running = false;
-	private Rectangle viewport;
-
 	
+
+	private Camera camera;
+	private Viewport viewport;
 	
 
 	public GameplayScreen(Game g){
@@ -51,9 +55,10 @@ public class GameplayScreen implements Screen{
 	
 	public void create() {
 		
-		
-		mainStage = new Stage();
-		uiStage = new Stage();
+		camera = new OrthographicCamera();
+		viewport = new ScreenViewport(camera);
+		mainStage = new Stage(new ScreenViewport(camera));
+		uiStage = new Stage(new ScreenViewport(camera));
 
 		
 
@@ -76,8 +81,7 @@ public class GameplayScreen implements Screen{
 		
 		OrthographicCamera cam = (OrthographicCamera) mainStage.getCamera();
 		Vector2 center = new Vector2();
-		Gdx.gl.glViewport((int) viewport.x, (int) viewport.y,
-			        (int) viewport.width, (int) viewport.height);
+
 		
 		center = WorldGen.planetBorder.getCenter(center);
 		//cam.position.x = center.x;
@@ -89,6 +93,7 @@ public class GameplayScreen implements Screen{
 		//zoomAmount = MathUtils.clamp(zoomAmount ,minZoom,maxZoom); 
 		
 		cam.update(); 
+		
 		
 		
 		float xRelative = Gdx.input.getX() - PS.viewWidth / 2, yRelative = (PS.viewHeight / 2 - Gdx.input.getY());
@@ -149,30 +154,16 @@ public class GameplayScreen implements Screen{
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
-		
+		camera = new OrthographicCamera(PS.viewWidth, PS.viewHeight); //Aspect Ratio Maintenance
+
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		float aspectRatio = (float)width/(float)height;
-        float scale = 1f;
-        Vector2 crop = new Vector2(0f, 0f);
-
-        if(aspectRatio > PS.aspectRatio) {
-            scale = (float) height / (float) PS.viewHeight;
-            crop.x = (width - PS.viewWidth * scale) / 2f;
-        } else if(aspectRatio < PS.aspectRatio) {
-            scale = (float) width / (float) PS.viewWidth;
-            crop.y = (height - PS.viewHeight * scale) / 2f;
-        } else {
-            scale = (float) width / (float) PS.viewWidth;
-        }
-
-        float w = (float) PS.viewWidth * scale;
-        float h = (float)  PS.viewHeight * scale;
-        viewport = new Rectangle(crop.x, crop.y, w, h);
-        //Maintenance ends here--
-	    }
+		mainStage.getViewport().update(width, height, false);
+		uiStage.getViewport().update(width, height, false);
+		viewport.update(width, height);
+	}
 		
 	
 
