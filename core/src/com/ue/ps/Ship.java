@@ -39,4 +39,8 @@ public class Ship extends BaseActor{
 			
 		}
 	}
+	
+	public static void spawnShip(Faction f, Planet p, ShipType s){
+		
+	}
 }
