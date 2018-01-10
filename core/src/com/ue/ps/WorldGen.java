@@ -143,6 +143,7 @@ public class WorldGen {
 		for (Planet p : allPlanets){
 			for (int i = 0; i < p.capacity; i++){
 				p.addBuilding(new Factory());
+				Ship.spawnShip(Faction.Xin, p, ShipType.drone);
 			}
 		}
 		

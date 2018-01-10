@@ -1,5 +1,7 @@
 package com.ue.ps;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -10,6 +12,12 @@ public class Planet extends BaseActor{
 	private int size = MathUtils.random(1, 3);
 	public int capacity = size * 4;
 	private Building[] buildings = new Building[capacity];
+	
+	public static final float focusZoomAmount = 0.4f;
+	
+	
+	public ArrayList<Ship> orbitingShips = new ArrayList<Ship>();
+	
 	private int builtBuildings = 0;
 	public Planet() {
 		super("");
@@ -23,7 +31,15 @@ public class Planet extends BaseActor{
 	@Override
 	public void act(float dt){
 		super.act(dt);
-		
+		for (Ship s : orbitingShips) {
+			s.angle -= 0.1f;
+			int orbitDist = 25 + 16;
+			s.setRotation(s.angle);
+			s.setCenter(this.getWidth()/2, this.getHeight()/2);
+			Vector2 pos = Utils.polarToRect((int) (this.getWidth()/2 + s.getWidth()/2) + orbitDist,  s.angle, new Vector2(this.getWidth()/2-16, this.getHeight()/2-16));
+			s.setCenter(pos.x, pos.y);
+			s.setRotation(s.angle - 90);
+		}
 		
 		
 	}

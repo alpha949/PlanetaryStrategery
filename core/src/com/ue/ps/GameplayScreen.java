@@ -174,7 +174,7 @@ public class GameplayScreen implements Screen{
 				PS.paused = true;
 			}
 		}
-	
+		System.out.println("Z:" + zoomAmount);
 		if (!PS.paused) {
 			Gdx.input.setCursorCatched(true);
 		} else {
@@ -224,10 +224,12 @@ public class GameplayScreen implements Screen{
 	
 	
 	public boolean focusCameraOnPlanet(Planet p, OrthographicCamera c){
-		if (Utils.glideCameraTo(selectedPlanet.center.x , selectedPlanet.center.y, c)){
+		if (Utils.glideCameraTo(p.center.x , p.center.y, c)){
 			return true;
 		} else{
-			//zoom in here?
+			//This should glide in more smoothly
+			zoomAmount = Planet.focusZoomAmount;
+			
 			
 			return false;
 		}

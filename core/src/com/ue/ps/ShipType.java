@@ -1,5 +1,5 @@
 package com.ue.ps;
 
 public enum ShipType {
-	scout, transport, dreadnaught, cruiser, fighter;
+	drone, scout, transport, cruiser, dread, flagship;
 }

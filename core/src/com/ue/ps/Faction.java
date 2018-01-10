@@ -9,20 +9,14 @@ public class Faction {
 	public Color color;
 	public String abv;
 	
-	public Texture droneImg;
-	public Texture scoutImg;
-	public Texture transportImg;
-	public Texture cruiserImg;
-	public Texture dreadImg;
-	public Texture flagshipImg;
+	private Texture droneImg;
+	private Texture scoutImg;
+	private Texture transportImg;
+	private Texture cruiserImg;
+	private Texture dreadImg;
+	private Texture flagshipImg;
 	
-	public static Faction Braecious = new Faction("Braecious", "brc", Color.RED);
-	public static Faction Reach = new Faction("The Reach", "trc", Color.BLUE);
-	public static Faction Lelouk = new Faction("Lelouk", "lok", Color.YELLOW);
-	public static Faction Atch = new Faction("Atch", "agh", Color.WHITE);
-	public static Faction Vilioth = new Faction("Vilioth", "vlt", Color.PURPLE);
-	public static Faction Efferent = new Faction("Efferent", "efr", Color.ORANGE);
-	public static Faction Xin = new Faction("Xin", "xin", Color.GREEN);
+
 	
 	public Faction(String name, String abv, Color color) {
 		this.name = name;
@@ -35,4 +29,33 @@ public class Faction {
 		this.dreadImg = Utils.getImg(abv+"dread");
 		this.flagshipImg = Utils.getImg(abv+"flagship");
 	}
+	
+	public Texture getShipTypeTexture(ShipType s) {
+		switch (s) {
+		case drone:
+			return this.droneImg;
+		case scout:
+			return this.scoutImg;
+		case transport:
+			return this.transportImg;
+		case cruiser:
+			return this.cruiserImg;
+		case dread:
+			return this.dreadImg;
+		case flagship:
+			return this.flagshipImg;
+		default:
+			return this.droneImg;
+		}
+	
+	
+	}
+	public static Faction Braecious = new Faction("Braecious", "brc", Color.RED);
+	public static Faction Reach = new Faction("The Reach", "trc", Color.BLUE);
+	public static Faction Lelouk = new Faction("Lelouk", "lok", Color.YELLOW);
+	public static Faction Atch = new Faction("Atch", "agh", Color.WHITE);
+	public static Faction Vilioth = new Faction("Vilioth", "vlt", Color.PURPLE);
+	public static Faction Efferent = new Faction("Efferent", "efr", Color.ORANGE);
+	public static Faction Xin = new Faction("Xin", "xin", Color.GREEN);
+	
 }

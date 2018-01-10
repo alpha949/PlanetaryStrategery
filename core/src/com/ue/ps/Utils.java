@@ -36,7 +36,7 @@ public class Utils {
 	
 	public static Texture getImg(String path){
 		try{
-			Texture t = new Texture(Gdx.files.internal("assets/" + path));
+			Texture t = new Texture(Gdx.files.internal("assets/" + path + ".png"));
 			return t;
 			
 		} catch (Exception GdxRuntimeException) {
