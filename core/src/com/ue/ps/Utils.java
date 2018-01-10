@@ -60,7 +60,7 @@ public class Utils {
 		GameplayScreen.cameraOffsetY += speed* angleMult.y;
 		
 		
-		if (c.position.x == x && c.position.y == y){
+		if (distanceTo(c.position.x, c.position.y,x, y) < 16){
 			return true;
 		} else {
 			return false;
