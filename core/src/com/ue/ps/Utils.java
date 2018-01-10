@@ -1,8 +1,10 @@
 package com.ue.ps;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 public class Utils {
 	
@@ -42,6 +44,55 @@ public class Utils {
 			Texture t = new Texture(Gdx.files.internal("assets/missingTex.png"));
 			return t;
 		}
+	}
+	
+	public static boolean glideCameraTo(float x, float y, Camera c){
+		double angle = pointAt(c.position.x, c.position.y,x, y);
+		
+		
+		Vector2 angleMult = convertVel((float) angle);
+		
+		double speed = distanceTo(c.position.x, c.position.y,x, y)/5;
+		
+		c.position.x += speed* angleMult.x;
+		c.position.y +=	speed * angleMult.y;
+		GameplayScreen.cameraOffsetX += speed* angleMult.x;
+		GameplayScreen.cameraOffsetY += speed* angleMult.y;
+		
+		
+		if (distanceTo(c.position.x, c.position.y,x, y) < 16){
+			return true;
+		} else {
+			return false;
+		}
+		
+		
+	}
+	
+	public static double pointAt(float x, float y, float x2, float y2){
+		
+		double yDiff = y - y2;
+		double xDiff = x - x2;
+		double newAngle = Math.toDegrees(Math.atan2(yDiff, xDiff)) + 180;
+		System.out.println(newAngle);
+		
+	
+		
+		
+		return newAngle;
+		
+		
+	}
+	
+	public static Vector2 convertVel(float angle){
+		double radians = Math.toRadians(angle);
+		
+		return new Vector2((float) Math.cos(radians),(float) Math.sin(radians));
+	}
+	
+	public static double distanceTo(double x, double y, double x2, double y2){
+		
+		return Math.hypot(Math.abs(x2 - x), Math.abs(y2 - y));
 	}
 	
 }

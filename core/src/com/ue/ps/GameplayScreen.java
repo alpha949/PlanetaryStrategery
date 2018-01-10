@@ -15,11 +15,15 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 
 public class GameplayScreen implements Screen{
@@ -27,7 +31,8 @@ public class GameplayScreen implements Screen{
 	public Stage mainStage;
 	public Stage uiStage;
 	private int slowdown;
-	private BaseActor p = new BaseActor("");
+	private BaseActor mouseBlot = new BaseActor("assets/mouseBlot.png");
+	private BaseActor camPos = new BaseActor("");
 			
 			
 	private float maxZoom = 2;
@@ -37,10 +42,15 @@ public class GameplayScreen implements Screen{
 	public static float zoomAmount = 5;
 	public static Vector2 mousePos = new Vector2();
 	
+	private Planet selectedPlanet;
 	private boolean running = false;
-
-
+	private boolean hasFocusedOnSelectedPlanet;
 	
+
+	private Camera camera;
+	private Viewport viewport;
+	public static int cameraOffsetX;
+	public static int cameraOffsetY;
 	
 
 	public GameplayScreen(Game g){
@@ -50,17 +60,19 @@ public class GameplayScreen implements Screen{
 	
 	public void create() {
 		
-		
-		mainStage = new Stage();
-		uiStage = new Stage();
+		camera = new OrthographicCamera();
+		viewport = new ScreenViewport(camera);
+		mainStage = new Stage(new ScreenViewport(camera));
+		uiStage = new Stage(new ScreenViewport(camera));
 
 		
 
 		WorldGen.setup(mainStage);
 		
 		shapeRender = new ShapeRenderer();
-		p.setPosition(50, 50);
-		mainStage.addActor(p);
+		mouseBlot.setPosition(50, 50);
+		mainStage.addActor(mouseBlot);
+		mainStage.addActor(camPos);
 		Gdx.input.setInputProcessor(new InputProcess());
 
 	}
@@ -75,6 +87,7 @@ public class GameplayScreen implements Screen{
 		
 		OrthographicCamera cam = (OrthographicCamera) mainStage.getCamera();
 		Vector2 center = new Vector2();
+		camPos.setCenter(cam.position.x, cam.position.y);
 		
 		center = WorldGen.planetBorder.getCenter(center);
 		//cam.position.x = center.x;
@@ -87,18 +100,17 @@ public class GameplayScreen implements Screen{
 		
 		cam.update(); 
 		
+
 		
 		float xRelative = Gdx.input.getX() - PS.viewWidth / 2, yRelative = (PS.viewHeight / 2 - Gdx.input.getY());
+		mouseBlot.setPosition(mousePos.x, mousePos.y);
+		mousePos.x = (xRelative * zoomAmount) + PS.viewHeight / 2 + 160 + cameraOffsetX;
+		mousePos.y = (yRelative * zoomAmount) + PS.viewWidth / 2 - 140 * zoomAmount + cameraOffsetY;
 		
-		mousePos.x = (xRelative * zoomAmount) + PS.viewHeight / 2 + 160;
-		mousePos.y = (yRelative * zoomAmount) + PS.viewWidth / 2 - 160;
 		
-		
-		p.setPosition(mousePos.x, mousePos.y);
-		System.out.println(PS.viewWidth - cam.viewportWidth);
-		System.out.println(PS.viewWidth - cam.viewportHeight);
-		System.out.println((Gdx.input.getX() - mousePos.x) + ", " + (Gdx.input.getY() - mousePos.y));
 	
+	
+		mouseBlot.addAction(Actions.scaleTo(zoomAmount, zoomAmount));
 	
 		WorldGen.generate(mainStage, 0, 0);
 		
@@ -106,12 +118,23 @@ public class GameplayScreen implements Screen{
 		
 		for (Planet p : WorldGen.allPlanets){
 			if (p.getBoundingRectangle().contains(mousePos) && Gdx.input.justTouched()){
+				p.setColor(Color.GREEN);
+				selectedPlanet = p;
+			}
+		}
+		
+		if (selectedPlanet != null && !this.hasFocusedOnSelectedPlanet){
+		
+			System.out.println(selectedPlanet.center.x + ", " + selectedPlanet.center.y);
+			if (this.focusCameraOnPlanet(selectedPlanet, cam)){
 				
+				selectedPlanet = null;
 			}
 		}
 		
 		Gdx.gl.glClearColor(0.0F, 0.0F, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
 		
 		
 		
@@ -128,16 +151,20 @@ public class GameplayScreen implements Screen{
 		
 	
 		cam.zoom = zoomAmount;
-		System.out.println("z: " + cam.zoom);
+	
 		
 		if (Gdx.input.isKeyPressed(Keys.UP)){
 			cam.position.y += 10;
+			cameraOffsetY += 10;
 		} else if (Gdx.input.isKeyPressed(Keys.LEFT)){
 			cam.position.x -= 10;
+			cameraOffsetX -= 10;
 		} else if (Gdx.input.isKeyPressed(Keys.RIGHT)){
 			cam.position.x += 10;
+			cameraOffsetX += 10;
 		} else if (Gdx.input.isKeyPressed(Keys.DOWN)){
 			cam.position.y -= 10;
+			cameraOffsetY -= 10;
 		}
 	
 		
@@ -146,14 +173,18 @@ public class GameplayScreen implements Screen{
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
-		
+		camera = new OrthographicCamera(PS.viewWidth, PS.viewHeight); //Aspect Ratio Maintenance
+
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		
+		mainStage.getViewport().update(width, height, false);
+		uiStage.getViewport().update(width, height, false);
+		viewport.update(width, height);
 	}
+		
+	
 
 	@Override
 	public void pause() {
@@ -177,6 +208,19 @@ public class GameplayScreen implements Screen{
 	public void dispose() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	
+	public boolean focusCameraOnPlanet(Planet p, OrthographicCamera c){
+		if (Utils.glideCameraTo(selectedPlanet.center.x , selectedPlanet.center.y, c)){
+			return true;
+		} else{
+			//zoom in here?
+			
+			return false;
+		}
+	
+	
 	}
 
 }
