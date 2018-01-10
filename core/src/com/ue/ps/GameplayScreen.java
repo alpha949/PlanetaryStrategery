@@ -83,7 +83,7 @@ public class GameplayScreen implements Screen{
 		
 		mainStage.act(dt);
 		uiStage.act();
-		
+	
 		
 		OrthographicCamera cam = (OrthographicCamera) mainStage.getCamera();
 		Vector2 center = new Vector2();
@@ -166,8 +166,20 @@ public class GameplayScreen implements Screen{
 			cam.position.y -= 10;
 			cameraOffsetY -= 10;
 		}
-	
 		
+		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+			if (PS.paused) {
+				PS.paused = false;
+			} else {
+				PS.paused = true;
+			}
+		}
+	
+		if (!PS.paused) {
+			Gdx.input.setCursorCatched(true);
+		} else {
+			Gdx.input.setCursorCatched(false);
+		}
 	}
 
 	@Override

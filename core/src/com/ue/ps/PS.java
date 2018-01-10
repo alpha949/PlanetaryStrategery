@@ -22,6 +22,7 @@ public class PS extends Game {
 	public static int mapHeight = 1280 * 2;
 	public static Rectangle viewBorder;
 	public static LabelStyle font;
+	public static boolean paused;
 	
 	
 	@Override
