@@ -14,8 +14,10 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 public class PS extends Game {
-	public static int viewWidth = 1280;
-	public static int viewHeight = 960;
+	public static final int viewWidth = 1280;
+	public static final int viewHeight = 960;
+	
+	public static final float aspectRatio = (float) viewWidth / (float) viewHeight;
 	public static int mapWidth =1280 * 2;
 	public static int mapHeight = 1280 * 2;
 	public static Rectangle viewBorder;

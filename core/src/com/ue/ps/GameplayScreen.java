@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -38,7 +39,7 @@ public class GameplayScreen implements Screen{
 	public static Vector2 mousePos = new Vector2();
 	
 	private boolean running = false;
-
+	private Rectangle viewport;
 
 	
 	
@@ -75,6 +76,8 @@ public class GameplayScreen implements Screen{
 		
 		OrthographicCamera cam = (OrthographicCamera) mainStage.getCamera();
 		Vector2 center = new Vector2();
+		Gdx.gl.glViewport((int) viewport.x, (int) viewport.y,
+			        (int) viewport.width, (int) viewport.height);
 		
 		center = WorldGen.planetBorder.getCenter(center);
 		//cam.position.x = center.x;
@@ -151,9 +154,27 @@ public class GameplayScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
+		float aspectRatio = (float)width/(float)height;
+        float scale = 1f;
+        Vector2 crop = new Vector2(0f, 0f);
+
+        if(aspectRatio > PS.aspectRatio) {
+            scale = (float) height / (float) PS.viewHeight;
+            crop.x = (width - PS.viewWidth * scale) / 2f;
+        } else if(aspectRatio < PS.aspectRatio) {
+            scale = (float) width / (float) PS.viewWidth;
+            crop.y = (height - PS.viewHeight * scale) / 2f;
+        } else {
+            scale = (float) width / (float) PS.viewWidth;
+        }
+
+        float w = (float) PS.viewWidth * scale;
+        float h = (float)  PS.viewHeight * scale;
+        viewport = new Rectangle(crop.x, crop.y, w, h);
+        //Maintenance ends here--
+	    }
 		
-	}
+	
 
 	@Override
 	public void pause() {
