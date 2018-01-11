@@ -51,7 +51,9 @@ public class GameplayScreen implements Screen{
 	
 
 	private Camera camera;
+	private Camera uiCamera;
 	private Viewport viewport;
+
 	public static int cameraOffsetX;
 	public static int cameraOffsetY;
 	
@@ -64,9 +66,11 @@ public class GameplayScreen implements Screen{
 	public void create() {
 		
 		camera = new OrthographicCamera();
+		uiCamera = new OrthographicCamera();
 		viewport = new ScreenViewport(camera);
+	
 		mainStage = new Stage(new ScreenViewport(camera));
-		uiStage = new Stage(new ScreenViewport(camera));
+		uiStage = new Stage(new ScreenViewport(uiCamera));
 
 		
 
@@ -76,7 +80,8 @@ public class GameplayScreen implements Screen{
 		mouseBlot.setPosition(50, 50);
 		mainStage.addActor(mouseBlot);
 		mainStage.addActor(camPos);
-		player.resourcePanel.setPosition(0, 500);
+		
+		
 		uiStage.addActor(player.resourcePanel);
 		Gdx.input.setInputProcessor(new InputProcess());
 
@@ -88,7 +93,7 @@ public class GameplayScreen implements Screen{
 		
 		mainStage.act(dt);
 		uiStage.act();
-	
+		player.resourcePanel.setPosition(0,viewport.getScreenHeight()-player.resourcePanel.getHeight());
 		
 		OrthographicCamera cam = (OrthographicCamera) mainStage.getCamera();
 		Vector2 center = new Vector2();
@@ -142,7 +147,7 @@ public class GameplayScreen implements Screen{
 		
 		
 		
-		
+		uiCamera.update();
 		//camera
 //		shapeRender.begin(ShapeType.Line);
 //		shapeRender.setColor(Color.RED);
@@ -179,7 +184,7 @@ public class GameplayScreen implements Screen{
 				PS.paused = true;
 			}
 		}
-		System.out.println("Z:" + zoomAmount);
+		
 		if (!PS.paused) {
 			Gdx.input.setCursorCatched(true);
 		} else {
@@ -188,9 +193,9 @@ public class GameplayScreen implements Screen{
 		
 		
 		//this is just a patch, should find some way to fix
-		for (Actor a : uiStage.getRoot().getChildren()) {
+		/*for (Actor a : uiStage.getRoot().getChildren()) {
 			a.addAction(Actions.scaleTo(zoomAmount, zoomAmount));
-		}
+		}*/
 	}
 
 	@Override
