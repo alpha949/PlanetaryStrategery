@@ -57,6 +57,8 @@ public class GameplayScreen implements Screen{
 	public static int cameraOffsetX;
 	public static int cameraOffsetY;
 	
+	private BaseActor sidePanel = new BaseActor("assets/sidePanel.png");
+	
 
 	public GameplayScreen(Game g){
 		game = g;
@@ -73,7 +75,7 @@ public class GameplayScreen implements Screen{
 		uiStage = new Stage(new ScreenViewport(uiCamera));
 
 		
-
+		
 		WorldGen.setup(mainStage);
 		
 		shapeRender = new ShapeRenderer();
@@ -81,6 +83,8 @@ public class GameplayScreen implements Screen{
 		mainStage.addActor(mouseBlot);
 		mainStage.addActor(camPos);
 		
+		sidePanel.setPosition(0, 0);
+		uiStage.addActor(sidePanel);
 		
 		uiStage.addActor(player.resourcePanel);
 		Gdx.input.setInputProcessor(new InputProcess());
@@ -128,7 +132,7 @@ public class GameplayScreen implements Screen{
 		
 		for (Planet p : WorldGen.allPlanets){
 			if (p.getBoundingRectangle().contains(mousePos) && Gdx.input.justTouched()){
-				p.setColor(Color.GREEN);
+				
 				selectedPlanet = p;
 			}
 		}
@@ -164,17 +168,17 @@ public class GameplayScreen implements Screen{
 	
 		
 		if (Gdx.input.isKeyPressed(Keys.UP)){
-			cam.position.y += 10;
-			cameraOffsetY += 10;
+			cam.position.y += 10 * zoomAmount;
+			cameraOffsetY += 10 * zoomAmount;
 		} else if (Gdx.input.isKeyPressed(Keys.LEFT)){
-			cam.position.x -= 10;
-			cameraOffsetX -= 10;
+			cam.position.x -= 10 * zoomAmount;
+			cameraOffsetX -= 10 * zoomAmount;
 		} else if (Gdx.input.isKeyPressed(Keys.RIGHT)){
-			cam.position.x += 10;
-			cameraOffsetX += 10;
+			cam.position.x += 10 * zoomAmount;
+			cameraOffsetX += 10 * zoomAmount;
 		} else if (Gdx.input.isKeyPressed(Keys.DOWN)){
-			cam.position.y -= 10;
-			cameraOffsetY -= 10;
+			cam.position.y -= 10 * zoomAmount;
+			cameraOffsetY -= 10 * zoomAmount;
 		}
 		
 		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
