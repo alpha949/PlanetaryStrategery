@@ -50,8 +50,13 @@ public class InputProcess implements InputProcessor{
 
 	@Override
 	public boolean scrolled(int amount) {
-		
-		GameplayScreen.zoomAmount += ((float)amount)/5;
+		if(amount > 0){
+			GameplayScreen.zoomAmount *= 1.05;
+			if(GameplayScreen.zoomAmount < 1) { GameplayScreen.zoomAmount +=.05;}
+		} else if (amount < 0){
+			GameplayScreen.zoomAmount *= 1/1.05;
+			if(GameplayScreen.zoomAmount < 1) { GameplayScreen.zoomAmount -=.05;}
+		}
 		
 		return false;
 	}
