@@ -67,7 +67,7 @@ public class GameplayScreen implements Screen{
 		
 		shapeRender = new ShapeRenderer();
 		mouseBlot.setPosition(50, 50);
-		mainStage.addActor(mouseBlot);
+		uiStage.addActor(mouseBlot);
 		mainStage.addActor(camPos);
 		
 		sidePanel.setPosition(0, 0);
@@ -75,12 +75,10 @@ public class GameplayScreen implements Screen{
 		
 		uiStage.addActor(player.resourcePanel);
 		Gdx.input.setInputProcessor(new InputProcess());
-
+		
 	}
 	
 	public void render(float dt){
-		
-		
 		
 		mainStage.act(dt);
 		uiStage.act();
@@ -103,15 +101,12 @@ public class GameplayScreen implements Screen{
 		
 
 		
-		float xRelative = Gdx.input.getX() - PS.viewWidth / 2, yRelative = (PS.viewHeight / 2 - Gdx.input.getY());
-		mouseBlot.setPosition(mousePos.x, mousePos.y);
-		mousePos.x = (xRelative * zoomAmount) + PS.viewHeight / 2 + 160 + cameraOffsetX;
-		mousePos.y = (yRelative * zoomAmount) + PS.viewWidth / 2 - 140 * zoomAmount + cameraOffsetY;
-		
+		mouseBlot.setPosition(Gdx.input.getX(), PS.viewHeight - Gdx.input.getY());
+		mousePos = mainStage.screenToStageCoordinates(uiStage.stageToScreenCoordinates(mouseBlot.center));
 		
 	
 	
-		mouseBlot.addAction(Actions.scaleTo(zoomAmount, zoomAmount));
+//		mouseBlot.addAction(Actions.scaleTo(zoomAmount, zoomAmount));
 	
 		WorldGen.generate(mainStage, 0, 0);
 		
@@ -145,6 +140,7 @@ public class GameplayScreen implements Screen{
 //		shapeRender.circle(0, 0, 200);
 //		shapeRender.rect(1, 0, PS.viewWidth-1, PS.viewHeight-220);
 //		shapeRender.end();
+		mouseBlot.setZIndex(mainStage.getActors().size + uiStage.getActors().size);
 		mainStage.getViewport().apply();
 		mainStage.draw();
 		uiStage.getViewport().apply();
