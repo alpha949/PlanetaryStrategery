@@ -82,7 +82,7 @@ public class GameplayScreen implements Screen{
 		
 		mainStage.act(dt);
 		uiStage.act();
-		player.resourcePanel.setPosition(0,viewport.getScreenHeight()-player.resourcePanel.getHeight());
+		player.resourcePanel.setPosition(viewport.getScreenX(),viewport.getScreenHeight()-player.resourcePanel.getHeight());
 		
 		OrthographicCamera cam = (OrthographicCamera) mainStage.getCamera();
 		Vector2 center = new Vector2();
