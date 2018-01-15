@@ -14,6 +14,12 @@ public class DesktopLauncher {
 		cfg.width =  PS.viewWidth;
 	
 		cfg.addIcon("assets/icon.png", FileType.Internal);
+
+		for (int i = 0; i < arg.length - 1; i++){
+			if (arg[i].equals("recording") || arg[i].equals("r")){
+				PS.recordingGeneration = true;
+			}
+		}
 	
 		LwjglApplication launcher = new LwjglApplication(theGame, cfg);
 	}

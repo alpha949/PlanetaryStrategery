@@ -17,6 +17,7 @@ public class PS extends Game {
 	public static Rectangle viewBorder;
 	public static LabelStyle font;
 	public static boolean paused;
+	public static boolean recordingGeneration;
 	
 	
 	@Override

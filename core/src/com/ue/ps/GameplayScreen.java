@@ -118,8 +118,11 @@ public class GameplayScreen implements Screen{
 	
 	
 //		mouseBlot.addAction(Actions.scaleTo(zoomAmount, zoomAmount));
-	
-		WorldGen.generate(mainStage, 0, 0);
+		if(!PS.recordingGeneration){
+			WorldGen.generate(mainStage, 0, 0);
+		} else if (Gdx.input.isTouched()){
+			PS.recordingGeneration = false;
+		}
 		
 		
 		
