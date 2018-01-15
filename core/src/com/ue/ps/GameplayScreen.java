@@ -1,7 +1,10 @@
 package com.ue.ps;
 
+import java.awt.DisplayMode;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
@@ -11,8 +14,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
 
 
 public class GameplayScreen implements Screen{
@@ -40,6 +46,7 @@ public class GameplayScreen implements Screen{
 	private Camera camera;
 	private Camera uiCamera;
 	private Viewport viewport;
+	private Viewport uiViewport;
 
 	public static int cameraOffsetX;
 	public static int cameraOffsetY;
@@ -53,15 +60,17 @@ public class GameplayScreen implements Screen{
 	}
 	
 	public void create() {
-		
+
 		camera = new OrthographicCamera();
 		uiCamera = new OrthographicCamera();
 		viewport = new ScreenViewport(camera);
+		uiViewport = new ScalingViewport(Scaling.fill,PS.viewWidth,PS.viewHeight,uiCamera);
 	
 		mainStage = new Stage(new ScreenViewport(camera));
-		uiStage = new Stage(new ScreenViewport(uiCamera));
-
+		uiStage = new Stage(uiViewport);
 		
+
+		Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 		
 		WorldGen.setup(mainStage);
 		
@@ -70,7 +79,7 @@ public class GameplayScreen implements Screen{
 		uiStage.addActor(mouseBlot);
 		mainStage.addActor(camPos);
 		
-		sidePanel.setPosition(0, 0);
+		sidePanel.setPosition(0, -24);
 		uiStage.addActor(sidePanel);
 		
 		uiStage.addActor(player.resourcePanel);
@@ -82,7 +91,7 @@ public class GameplayScreen implements Screen{
 		
 		mainStage.act(dt);
 		uiStage.act();
-		player.resourcePanel.setPosition(viewport.getScreenX(),viewport.getScreenHeight()-player.resourcePanel.getHeight());
+		player.resourcePanel.setPosition(viewport.getScreenX(),viewport.getScreenHeight()-player.resourcePanel.getHeight() - 24);
 		
 		OrthographicCamera cam = (OrthographicCamera) mainStage.getCamera();
 		Vector2 center = new Vector2();
@@ -103,6 +112,8 @@ public class GameplayScreen implements Screen{
 		
 		mouseBlot.setPosition(Gdx.input.getX(), PS.viewHeight - Gdx.input.getY());
 		mousePos = mainStage.screenToStageCoordinates(uiStage.stageToScreenCoordinates(mouseBlot.center));
+		System.out.println(mousePos.x + " " + mousePos.y);
+		//mouseBlot.setPosition(mousePos.x, mousePos.y);
 		
 	
 	
@@ -113,7 +124,7 @@ public class GameplayScreen implements Screen{
 		
 		
 		for (Planet p : WorldGen.allPlanets){
-			if (p.getBoundingRectangle().contains(mousePos) && Gdx.input.justTouched()){
+			if (mouseBlot.overlaps(p, false) && Gdx.input.justTouched()){
 				
 				selectedPlanet = p;
 			}
@@ -170,6 +181,7 @@ public class GameplayScreen implements Screen{
 			} else {
 				PS.paused = true;
 			}
+			Gdx.graphics.setWindowedMode(PS.viewWidth, PS.viewHeight);
 		}
 		
 		if (!PS.paused) {

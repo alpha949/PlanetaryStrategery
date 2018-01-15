@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 public class PS extends Game {
 	public static final int viewWidth = 1280;
-	public static final int viewHeight = 960;
+	public static final int viewHeight = 768;
 	
 	public static final float aspectRatio = (float) viewWidth / (float) viewHeight;
 	public static int mapWidth =1280 * 2;
