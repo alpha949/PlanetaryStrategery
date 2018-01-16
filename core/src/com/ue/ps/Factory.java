@@ -5,7 +5,6 @@ public class Factory extends Building{
 	private int resourceInput = 3;
 	private int shipProgressOutput = 10;
 
-
 	public Ship buildingShip;
 	
 	public Factory() {
@@ -14,7 +13,7 @@ public class Factory extends Building{
 	}
 	
 	@Override
-	public void update(Player p){
+	public void update(Planet p){
 	
 		if (p.resource > resourceInput){
 			p.resource -= resourceInput;

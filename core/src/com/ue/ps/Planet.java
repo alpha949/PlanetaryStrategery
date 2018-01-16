@@ -7,23 +7,68 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Planet extends BaseActor{
 	public boolean hasBranched;
-	private int size = MathUtils.random(1, 3);
-	public int capacity = size * 4;
-	private Building[] buildings = new Building[capacity];
+	private int size;
+	public int capacity;
+	private Building[] buildings;
+	private WorldType type;
+	public boolean isHome = false;
 	
+	//Display
 	public static final float focusZoomAmount = 0.4f;
-	
-	
 	public ArrayList<Ship> orbitingShips = new ArrayList<Ship>();
 	
+	//Storage info
+	public int resource;
+	public int people;
+	
+
+	public static enum WorldType {
+		asteroid, gas, rock, early, gold;
+		public int cap;
+		public int colonies;
+		
+		static {
+			asteroid.cap = 1;
+			asteroid.colonies = 1;
+			gas.cap = 4;
+			gas.colonies = 0;
+			rock.cap = 2;
+			rock.colonies = 1;
+			early.cap = 5;
+			early.colonies = 2;
+			gold.cap = 6;
+			gold.cap = 3;
+		}
+	}
+		
 	private int builtBuildings = 0;
-	public Planet() {
+	
+	//planet where you can say what it is
+	public Planet(WorldType T, int size) {
 		super("");
-		this.genTexture("assets/planet" + size + ".png");
+		this.type = T;
+		this.size = size;
+		this.Finish();
+	}
+	
+	//planet without specific given info
+	public Planet(){
+		super("");
+		this.type = WorldType.values()[MathUtils.random(0, 4)];
+		this.size = MathUtils.random(1, 3);
+		this.Finish();
+	}
+	
+	//Does calculations that will be done on every planet, no matter what.
+	public void Finish(){
+		this.capacity = size * 4;
+		this.buildings = new Building[capacity];
+		this.genTexture("assets/planet" + size + ".png"); //TODO add type to path
+		//this.setRotation(MathUtils.random(0, 360)); //just need to take the rotation displacement into account and move the image core
+	}
+	
+	public void update(){
 		
-		//this.setRotation(MathUtils.random(0, 360));
-		
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
@@ -55,12 +100,8 @@ public class Planet extends BaseActor{
 			b.setCenter(pos.x, pos.y);
 			b.setRotation(angle - 90);
 			
-			
 			builtBuildings += 1;
-			
 		}
-		
-		
 	}
 	
 	

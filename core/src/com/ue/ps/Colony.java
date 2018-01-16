@@ -12,8 +12,8 @@ public class Colony extends Building{
 	
 	
 	
-	public void update(Player p){
-		p.people += production;
+	public void update(Player p, Planet P){
+		P.people += production;
 		p.techPoints += 1;
 	}
 
