@@ -2,7 +2,7 @@ package com.ue.ps;
 
 public enum PlanetType {
 
-	asteroid, gas, rock, early, gold;
+	asteroid, gas, rock, early, goldilocks;
 	public int cap;
 	public int colonies;
 	
@@ -15,8 +15,8 @@ public enum PlanetType {
 		rock.colonies = 1;
 		early.cap = 5;
 		early.colonies = 2;
-		gold.cap = 6;
-		gold.cap = 3;
+		goldilocks.cap = 6;
+		goldilocks.cap = 3;
 	}
 }
 

@@ -134,6 +134,7 @@ public class WorldGen {
 			Planet home = getClosestPlanetTo(vert.x, vert.y);
 			home.addAction(Actions.color(Color.BLUE, 2));
 			home.isHomePlanet = true;
+			home.setType(PlanetType.goldilocks);
 			Planet p = new Planet();
 			//allPlanets.add(p);
 			p.setColor(Color.TEAL);

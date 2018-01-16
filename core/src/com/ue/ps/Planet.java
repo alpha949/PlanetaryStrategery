@@ -43,11 +43,16 @@ public class Planet extends BaseActor{
 	}
 	
 	//Does calculations that will be done on every planet, no matter what.
-	public void finish(){
+	private void finish(){
 		this.capacity = size * 4;
 		this.buildings = new Building[capacity];
 		this.genTexture("assets/planet" + size + ".png"); //TODO add type to path
 		//this.setRotation(MathUtils.random(0, 360)); //just need to take the rotation displacement into account and move the image core
+	}
+	
+	public void setType(PlanetType p){
+		this.type = p;
+		
 	}
 	
 	public void update(){
