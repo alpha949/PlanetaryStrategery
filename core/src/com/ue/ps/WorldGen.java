@@ -131,7 +131,9 @@ public class WorldGen {
 		for (int i = 0; i < numHomePlanets; i++){
 			Vector2 vert = Utils.polarToRect(dist, (360 / numHomePlanets * i)+ 45, planetBorder.getCenter(new Vector2()));
 			System.out.println(vert.x + " " + vert.y);
-			getClosestPlanetTo(vert.x, vert.y).addAction(Actions.color(Color.BLUE, 2));
+			Planet home = getClosestPlanetTo(vert.x, vert.y);
+			home.addAction(Actions.color(Color.BLUE, 2));
+			home.isHomePlanet = true;
 			Planet p = new Planet();
 			//allPlanets.add(p);
 			p.setColor(Color.TEAL);

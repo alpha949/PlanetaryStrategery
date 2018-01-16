@@ -10,8 +10,8 @@ public class Planet extends BaseActor{
 	private int size;
 	public int capacity;
 	private Building[] buildings;
-	private WorldType type;
-	public boolean isHome = false;
+	private PlanetType type;
+	public boolean isHomePlanet;
 	
 	//Display
 	public static final float focusZoomAmount = 0.4f;
@@ -22,45 +22,28 @@ public class Planet extends BaseActor{
 	public int people;
 	
 
-	public static enum WorldType {
-		asteroid, gas, rock, early, gold;
-		public int cap;
-		public int colonies;
-		
-		static {
-			asteroid.cap = 1;
-			asteroid.colonies = 1;
-			gas.cap = 4;
-			gas.colonies = 0;
-			rock.cap = 2;
-			rock.colonies = 1;
-			early.cap = 5;
-			early.colonies = 2;
-			gold.cap = 6;
-			gold.cap = 3;
-		}
-	}
+	
 		
 	private int builtBuildings = 0;
 	
 	//planet where you can say what it is
-	public Planet(WorldType T, int size) {
+	public Planet(PlanetType type, int size) {
 		super("");
-		this.type = T;
+		this.type = type;
 		this.size = size;
-		this.Finish();
+		this.finish();
 	}
 	
 	//planet without specific given info
 	public Planet(){
 		super("");
-		this.type = WorldType.values()[MathUtils.random(0, 4)];
+		this.type = PlanetType.values()[MathUtils.random(0, 4)];
 		this.size = MathUtils.random(1, 3);
-		this.Finish();
+		this.finish();
 	}
 	
 	//Does calculations that will be done on every planet, no matter what.
-	public void Finish(){
+	public void finish(){
 		this.capacity = size * 4;
 		this.buildings = new Building[capacity];
 		this.genTexture("assets/planet" + size + ".png"); //TODO add type to path
