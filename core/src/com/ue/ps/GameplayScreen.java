@@ -27,6 +27,7 @@ public class GameplayScreen implements Screen{
 	public Stage uiStage;
 	private int slowdown;
 	private BaseActor mouseBlot = new BaseActor("assets/mouseBlot.png");
+	private BaseActor stageMouseBlot = new BaseActor("assets/stageMouseBlot.png");
 	private BaseActor camPos = new BaseActor("");
 			
 			
@@ -78,6 +79,7 @@ public class GameplayScreen implements Screen{
 		mouseBlot.setPosition(50, 50);
 		uiStage.addActor(mouseBlot);
 		mainStage.addActor(camPos);
+		mainStage.addActor(stageMouseBlot);
 		
 		sidePanel.setPosition(0, -24);
 		uiStage.addActor(sidePanel);
@@ -112,8 +114,10 @@ public class GameplayScreen implements Screen{
 		
 		mouseBlot.setPosition(Gdx.input.getX(), PS.viewHeight - Gdx.input.getY());
 		mousePos = mainStage.screenToStageCoordinates(uiStage.stageToScreenCoordinates(mouseBlot.center));
-		System.out.println(mousePos.x + " " + mousePos.y);
-		//mouseBlot.setPosition(mousePos.x, mousePos.y);
+		//these numbers (8 and 53) seem really arbitrary, there's probably some reason for them... 
+		stageMouseBlot.setPosition(mousePos.x - 8*zoomAmount, mousePos.y + 53*zoomAmount);
+		//stageMouseBlot.setScale(zoomAmount, zoomAmount);
+		stageMouseBlot.setSize(16*zoomAmount, 16*zoomAmount);
 		
 	
 	
@@ -127,9 +131,12 @@ public class GameplayScreen implements Screen{
 		
 		
 		for (Planet p : WorldGen.allPlanets){
-			if (mouseBlot.overlaps(p, false) && Gdx.input.justTouched()){
+			if (p.getBoundingRectangle().overlaps(stageMouseBlot.getBoundingRectangle())){
+				System.out.println("hit");
+				if (Gdx.input.justTouched()) {
+					selectedPlanet = p;
+				}
 				
-				selectedPlanet = p;
 			}
 		}
 		
