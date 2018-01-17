@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 public class Planet extends BaseActor{
 	public boolean hasBranched;
@@ -21,6 +22,7 @@ public class Planet extends BaseActor{
 	public int resource;
 	public int people;
 	
+	public String name;
 
 	
 		
@@ -48,6 +50,7 @@ public class Planet extends BaseActor{
 		this.buildings = new Building[capacity];
 		this.genTexture("assets/planet" + size + ".png"); //TODO add type to path
 		//this.setRotation(MathUtils.random(0, 360)); //just need to take the rotation displacement into account and move the image core
+		this.name = Utils.genName();
 	}
 	
 	public void setType(PlanetType p){
@@ -91,6 +94,23 @@ public class Planet extends BaseActor{
 			builtBuildings += 1;
 		}
 	}
+	
+	public Vector2 getXbyY() {
+		
+		if (size == 1) {
+			return new Vector2(64,64);
+		} else if (size == 2) {
+			return new Vector2(128,128);
+		} else {
+			return new Vector2(256,256);
+		}
+		
+		
+		
+	}
+	
+	
+	
 	
 	
 

@@ -3,6 +3,7 @@ package com.ue.ps;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
@@ -81,7 +82,7 @@ public class WorldGen {
 				
 				if (failedSteps > 100){
 					for (Planet p : allPlanets){
-						p.addAction(Actions.color(Color.GOLD, 1));
+						p.setColor(Colors.getColors().values().toArray().get(MathUtils.random(0,Colors.getColors().values().toArray().size-1)));
 					}
 					done = true;
 					

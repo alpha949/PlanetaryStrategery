@@ -3,7 +3,9 @@ package com.ue.ps;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 public class Utils {
 	
@@ -92,6 +94,29 @@ public class Utils {
 	public static double distanceTo(double x, double y, double x2, double y2){
 		
 		return Math.hypot(Math.abs(x2 - x), Math.abs(y2 - y));
+	}
+	
+	public static String genName() {
+		int length = MathUtils.random(2,4);
+		String name = "";
+		for (int i = 0; i < length; i++) {
+			name += nameBits.get(MathUtils.random(0,nameBits.size-1));
+		}
+		
+		return name;
+	}
+	
+	private static Array<String> nameBits;
+	static {
+		String[] vowels = {"a","e","i","o","u","y"};
+		String[] consonants = {"b","c","d","f","g","h","j","k","l","m","n","p","q","r","s","t","v","w","x","y","z"};
+		nameBits = new Array<String>();
+		for (String v : vowels) {
+			for (String c : consonants) {
+				nameBits.add(c+v);
+			}
+		}
+		
 	}
 	
 }

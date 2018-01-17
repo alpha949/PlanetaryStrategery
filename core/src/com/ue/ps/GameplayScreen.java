@@ -38,7 +38,8 @@ public class GameplayScreen implements Screen{
 	public static float zoomAmount = 5;
 	public static Vector2 mousePos = new Vector2();
 	
-	private Planet selectedPlanet;
+	private Planet targetPlanet;
+	private Planet selectedPlanet = new Planet();
 	private boolean running = false;
 	private boolean hasFocusedOnSelectedPlanet;
 	private Player player = new Player(Faction.Xin);
@@ -52,7 +53,7 @@ public class GameplayScreen implements Screen{
 	public static int cameraOffsetX;
 	public static int cameraOffsetY;
 	
-	private BaseActor sidePanel = new BaseActor("assets/sidePanel.png");
+	private SidePanel sidePanel = new SidePanel();
 	
 
 	public GameplayScreen(Game g){
@@ -93,7 +94,8 @@ public class GameplayScreen implements Screen{
 		
 		mainStage.act(dt);
 		uiStage.act();
-		player.resourcePanel.setPosition(viewport.getScreenX(),viewport.getScreenHeight()-player.resourcePanel.getHeight() - 24);
+		//Again with the weird arbitrary 24...
+		player.resourcePanel.setPosition(0,PS.viewHeight-player.resourcePanel.getHeight()-24);
 		
 		OrthographicCamera cam = (OrthographicCamera) mainStage.getCamera();
 		Vector2 center = new Vector2();
@@ -134,20 +136,26 @@ public class GameplayScreen implements Screen{
 			if (p.getBoundingRectangle().overlaps(stageMouseBlot.getBoundingRectangle())){
 				System.out.println("hit");
 				if (Gdx.input.justTouched()) {
-					selectedPlanet = p;
+					targetPlanet = p;
+				
+					this.sidePanel.setPlanet(p);
+					
 				}
 				
 			}
 		}
 		
-		if (selectedPlanet != null && !this.hasFocusedOnSelectedPlanet){
+		if (targetPlanet != null && !this.hasFocusedOnSelectedPlanet){
 		
-			System.out.println(selectedPlanet.center.x + ", " + selectedPlanet.center.y);
-			if (this.focusCameraOnPlanet(selectedPlanet, cam)){
+			
+			if (this.focusCameraOnPlanet(targetPlanet, cam)){
 				
-				selectedPlanet = null;
+				targetPlanet = null;
 			}
 		}
+		
+		
+		
 		
 		Gdx.gl.glClearColor(0.0F, 0.0F, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -261,5 +269,9 @@ public class GameplayScreen implements Screen{
 	
 	
 	}
+	
+	
+	
+	
 
 }
