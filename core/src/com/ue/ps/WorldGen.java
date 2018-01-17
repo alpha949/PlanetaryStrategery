@@ -140,9 +140,11 @@ public class WorldGen {
 			p.setColor(Color.TEAL);
 			m.addActor(p);
 			p.setCenter(vert.x, vert.y);
+			
+			
 		
 		}
-		
+		Line.genLine(new Line(allPlanets.get(0), allPlanets.get(1), Faction.Xin ), m);
 		for (Planet p : allPlanets){
 			for (int i = 0; i < p.capacity; i++){
 				p.addBuilding(new Factory());

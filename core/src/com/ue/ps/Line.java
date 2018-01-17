@@ -20,27 +20,25 @@ public class Line {
 		for (int i = 0; i < lineSegments.length; i++) {
 			BaseActor b = new BaseActor(lineTexture);
 			b.setColor(f.color);
+			b.setPosition(p1.center.x, p1.center.y);
 			lineSegments[i] = b;
 		}
+		
+		
 		
 		
 	}
 	
 	
-	public void update(Stage m) {
-		for (BaseActor b : lineSegments) {
-			float angle = (float) b.pointAt(planet2.center.x, planet2.center.y, 0, true);
-			Vector2 vel = Utils.convertVel(angle);
-			b.moveBy(vel.x * 16, vel.y * 16);
-			
-			if (planet2.overlaps(b, false)) {
-				b.setPosition(planet1.center.x, planet1.center.y);
-			}
-			
+	
+	
+	public static void genLine(Line l, Stage m) {
+		for (int i = 0; i < l.lineSegments.length; i++) {
+			float angle = (float) l.lineSegments[i].pointAt(l.planet2.center.x, l.planet2.center.y, 0, true);
+			Vector2 pos = Utils.polarToRect((i*20), angle, l.planet1.center);
+			 l.lineSegments[i].setCenter(pos.x, pos.y);
+			m.addActor(l.lineSegments[i]);
 		}
-		
-		
-		
 	}
 	
 	
