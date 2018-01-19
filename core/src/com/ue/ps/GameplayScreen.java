@@ -154,10 +154,13 @@ public class GameplayScreen implements Screen{
 			}
 		}
 		
-		
-		
-		
+		if (WorldGen.allPlanets.size() > 2) {
+			Line.genLine(new Line(WorldGen.allPlanets.get(0), stageMouseBlot, Faction.Braecious), mainStage);
+			
+		}
+	
 		Gdx.gl.glClearColor(0.0F, 0.0F, 0, 1);
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		

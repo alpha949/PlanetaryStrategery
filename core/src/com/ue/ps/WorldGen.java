@@ -146,6 +146,8 @@ public class WorldGen {
 		
 		}
 		Line.genLine(new Line(allPlanets.get(0), allPlanets.get(1), Faction.Xin ), m);
+		allPlanets.get(0).addAction(Actions.rotateBy(1000, 100));
+		allPlanets.get(1).addAction(Actions.rotateBy(1000, 100));
 		for (Planet p : allPlanets){
 			for (int i = 0; i < p.capacity; i++){
 				p.addBuilding(new Factory());

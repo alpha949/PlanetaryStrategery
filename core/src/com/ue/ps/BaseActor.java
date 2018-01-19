@@ -175,8 +175,8 @@ public class BaseActor extends Group{
 	
 	public double pointAt(double x, double y, float speed, boolean rotate){
 		
-		double yDiff = y - centerY;
-		double xDiff = x - centerX;
+		double yDiff = y - this.getOriginY();
+		double xDiff = x - this.getOriginX();
 		double newAngle = Math.toDegrees(Math.atan2(yDiff, xDiff));
 		
 		
@@ -197,7 +197,7 @@ public class BaseActor extends Group{
 	}
 	
 	public void setCenter(float x, float y){
-		this.setPosition(x + this.getWidth()/2, y + this.getHeight()/2);
+		this.setPosition(x - this.getWidth()/2, y - this.getHeight()/2);
 	}
 	
 	

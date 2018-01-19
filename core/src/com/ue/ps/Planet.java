@@ -87,7 +87,7 @@ public class Planet extends BaseActor{
 			int angle = 360/capacity * builtBuildings;
 			b.setRotation(angle);
 			b.setCenter(this.getWidth()/2, this.getHeight()/2);
-			Vector2 pos = Utils.polarToRect((int) (this.getWidth()/2 + b.getWidth()/2),  360/capacity * builtBuildings, new Vector2(this.getWidth()/2-16, this.getHeight()/2-16));
+			Vector2 pos = Utils.polarToRect((int) (this.getWidth()/2 + b.getWidth()/2),  360/capacity * builtBuildings, new Vector2(this.getWidth()/2, this.getHeight()/2));
 			b.setCenter(pos.x, pos.y);
 			b.setRotation(angle - 90);
 			
@@ -105,6 +105,19 @@ public class Planet extends BaseActor{
 			return new Vector2(256,256);
 		}
 		
+		
+		
+	}
+	
+	public Planet copy() {
+		Planet newPlanet = new Planet(this.type, this.size);
+		newPlanet.buildings = this.buildings;
+		newPlanet.builtBuildings = this.builtBuildings;
+		newPlanet.capacity = this.capacity;
+		newPlanet.isHomePlanet = this.isHomePlanet;
+		newPlanet.name = this.name;
+		newPlanet.setColor(this.getColor());
+		return newPlanet;
 		
 		
 	}
