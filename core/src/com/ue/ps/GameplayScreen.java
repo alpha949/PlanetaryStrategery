@@ -53,7 +53,7 @@ public class GameplayScreen implements Screen{
 	public static int cameraOffsetX;
 	public static int cameraOffsetY;
 	
-	private SidePanel sidePanel = new SidePanel();
+//	private SidePanel sidePanel = new SidePanel();
 	
 
 	public GameplayScreen(Game g){
@@ -82,8 +82,8 @@ public class GameplayScreen implements Screen{
 		mainStage.addActor(camPos);
 		mainStage.addActor(stageMouseBlot);
 		
-		sidePanel.setPosition(0, -24);
-		uiStage.addActor(sidePanel);
+		//sidePanel.setPosition(0, -24);
+		//uiStage.addActor(sidePanel);
 		
 		uiStage.addActor(player.resourcePanel);
 		Gdx.input.setInputProcessor(new InputProcess());
@@ -138,7 +138,7 @@ public class GameplayScreen implements Screen{
 				if (Gdx.input.justTouched()) {
 					targetPlanet = p;
 				
-					this.sidePanel.setPlanet(p);
+					//this.sidePanel.setPlanet(p);
 					
 				}
 				
