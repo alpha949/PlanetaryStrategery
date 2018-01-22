@@ -2,12 +2,9 @@ package com.ue.ps;
 
 import com.badlogic.gdx.InputProcessor;
 
-public class InputProcess implements InputProcessor{
+public class InputProcess implements InputProcessor {
 	public char lastCharTyped;
-	
-	
 
-	
 	@Override
 	public boolean keyDown(int keycode) {
 		// TODO Auto-generated method stub
@@ -44,28 +41,25 @@ public class InputProcess implements InputProcessor{
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-	
+
 		return false;
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
-		if(amount > 0){
+		if (amount > 0) {
 			GameplayScreen.zoomAmount *= 1.05;
-			if(GameplayScreen.zoomAmount < 1) { GameplayScreen.zoomAmount +=.05;}
-		} else if (amount < 0){
-			GameplayScreen.zoomAmount *= 1/1.05;
-			if(GameplayScreen.zoomAmount < 1) { GameplayScreen.zoomAmount -=.05;}
+			if (GameplayScreen.zoomAmount < 1) {
+				GameplayScreen.zoomAmount += .05;
+			}
+		} else if (amount < 0) {
+			GameplayScreen.zoomAmount *= 1 / 1.05;
+			if (GameplayScreen.zoomAmount < 1) {
+				GameplayScreen.zoomAmount -= .05;
+			}
 		}
-		
+
 		return false;
 	}
-	
-
-	
-	
-	
-	
 
 }
-

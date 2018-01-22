@@ -5,7 +5,7 @@ public enum PlanetType {
 	asteroid, gas, rock, early, goldilocks;
 	public int cap;
 	public int colonies;
-	
+
 	static {
 		asteroid.cap = 1;
 		asteroid.colonies = 1;
@@ -19,4 +19,3 @@ public enum PlanetType {
 		goldilocks.cap = 3;
 	}
 }
-
