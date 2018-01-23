@@ -25,7 +25,7 @@ public class GameplayScreen implements Screen {
 	public Stage mainStage;
 	public Stage uiStage;
 	private int slowdown;
-	private BaseActor mouseBlot = new BaseActor("assets/mouseBlot.png");
+	public static BaseActor mouseBlot = new BaseActor("assets/mouseBlot.png");
 	private BaseActor stageMouseBlot = new BaseActor("assets/stageMouseBlot.png");
 	private BaseActor camPos = new BaseActor("");
 
@@ -50,7 +50,7 @@ public class GameplayScreen implements Screen {
 	public static int cameraOffsetX;
 	public static int cameraOffsetY;
 
-	// private SidePanel sidePanel = new SidePanel();
+	private SidePanel sidePanel = new SidePanel();
 
 	public GameplayScreen(Game g) {
 		game = g;
@@ -77,8 +77,8 @@ public class GameplayScreen implements Screen {
 		mainStage.addActor(camPos);
 		mainStage.addActor(stageMouseBlot);
 
-		// sidePanel.setPosition(0, -24);
-		// uiStage.addActor(sidePanel);
+		sidePanel.setPosition(0, -24);
+		uiStage.addActor(sidePanel);
 
 		uiStage.addActor(player.resourcePanel);
 		Gdx.input.setInputProcessor(new InputProcess());
@@ -89,6 +89,9 @@ public class GameplayScreen implements Screen {
 
 		mainStage.act(dt);
 		uiStage.act();
+		
+		sidePanel.update(uiStage);
+		
 		// Again with the weird arbitrary 24...
 		player.resourcePanel.setPosition(0, PS.viewHeight - player.resourcePanel.getHeight() - 24);
 
@@ -124,11 +127,11 @@ public class GameplayScreen implements Screen {
 
 		for (Planet p : WorldGen.allPlanets) {
 			if (p.getBoundingRectangle().overlaps(stageMouseBlot.getBoundingRectangle())) {
-				System.out.println("hit");
+	
 				if (Gdx.input.justTouched()) {
 					targetPlanet = p;
 
-					// this.sidePanel.setPlanet(p);
+					this.sidePanel.setPlanet(p);
 
 				}
 
@@ -144,7 +147,7 @@ public class GameplayScreen implements Screen {
 		}
 
 		if (WorldGen.allPlanets.size() > 2) {
-			Line.genLine(new Line(WorldGen.allPlanets.get(0), stageMouseBlot, Faction.Braecious), mainStage);
+			//Line.genLine(new Line(WorldGen.allPlanets.get(0), stageMouseBlot, Faction.Braecious), mainStage);
 
 		}
 

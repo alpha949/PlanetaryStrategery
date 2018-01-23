@@ -10,9 +10,12 @@ public class Planet extends BaseActor{
 	public boolean hasBranched;
 	private int size;
 	public int capacity;
-	private Building[] buildings;
+	public Building[] buildings;
 	private PlanetType type;
 	public boolean isHomePlanet;
+	
+	public int resourceCapacity;
+	public int priority;
 	
 	//Display
 	public static final float focusZoomAmount = 0.4f;
@@ -120,6 +123,10 @@ public class Planet extends BaseActor{
 		return newPlanet;
 		
 		
+	}
+	
+	public PlanetType getPlanetType() {
+		return this.type;
 	}
 	
 	

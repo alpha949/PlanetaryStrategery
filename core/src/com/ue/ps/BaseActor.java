@@ -27,7 +27,8 @@ public class BaseActor extends Group {
 
 	protected float elapsedTime;
 	private String path;
-
+	
+	public Texture texture;
 	public BaseActor(String path) {
 		super();
 		region = new TextureRegion();
@@ -63,6 +64,7 @@ public class BaseActor extends Group {
 		setWidth(w);
 		setHeight(h);
 		region.setRegion(t);
+		this.texture = t;
 
 	}
 

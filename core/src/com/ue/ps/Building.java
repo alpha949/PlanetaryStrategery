@@ -13,5 +13,7 @@ public abstract class Building extends BaseActor {
 
 	public void update(Player P, Planet p) {
 	}
+	
+	
 
 }

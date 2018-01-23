@@ -8,7 +8,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 public class Utils {
-
+	
+	
+	public static Texture emptyTexture = Utils.getImg("empty");
+	
 	public static Vector2 polarToRect(int r, double angle, Vector2 origin) {
 		Vector2 v = new Vector2();
 		v.x = (float) (r * Math.cos(Math.toRadians(angle))) + origin.x;
@@ -90,7 +93,7 @@ public class Utils {
 		for (int i = 0; i < length; i++) {
 			name += nameBits.get(MathUtils.random(0, nameBits.size - 1));
 		}
-
+		
 		return name;
 	}
 

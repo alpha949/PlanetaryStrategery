@@ -3,19 +3,31 @@ package com.ue.ps;
 public enum PlanetType {
 
 	asteroid, gas, rock, early, goldilocks;
-	public int cap;
-	public int colonies;
+	public int landCap;
+	public int spaceCap;
+	public int coloniesCap;
+	public String name;
 
 	static {
-		asteroid.cap = 1;
-		asteroid.colonies = 1;
-		gas.cap = 4;
-		gas.colonies = 0;
-		rock.cap = 2;
-		rock.colonies = 1;
-		early.cap = 5;
-		early.colonies = 2;
-		goldilocks.cap = 6;
-		goldilocks.cap = 3;
+		asteroid.landCap = 1;
+		asteroid.spaceCap = 2;
+		asteroid.coloniesCap = 1;
+		asteroid.name = "Asteroid Field";
+		gas.landCap = 0;
+		gas.spaceCap = 4;
+		gas.coloniesCap = 0;
+		gas.name = "Gas Planet";
+		rock.landCap = 5;
+		rock.spaceCap = 2;
+		rock.coloniesCap = 2;
+		rock.name = "Rocky Planet";
+		early.landCap = 2;
+		early.spaceCap = 2;
+		early.coloniesCap = 1;
+		early.name = "Early Planet";
+		goldilocks.landCap = 6;
+		goldilocks.spaceCap = 2;
+		goldilocks.coloniesCap = 3;
+		goldilocks.name = "Goldilocks Planet";
 	}
 }
