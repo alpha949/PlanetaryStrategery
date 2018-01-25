@@ -38,9 +38,14 @@ public class SidePanel extends BaseActor {
 	private Texture buildingBox = Utils.getImg("buildingContainer");
 	private Texture buildingUiHealthbar = Utils.getImg("buildingUiHealthbar");
 	
+	private Texture shipBox = Utils.getImg("shipContainer");
+	
 	private ArrayList<BaseActor> buildingBoxes = new ArrayList<BaseActor>();
 	private ArrayList<BaseActor> dispedBuildings = new ArrayList<BaseActor>();
 	private ArrayList<BaseActor> buildingHealthbars = new ArrayList<BaseActor>();
+	
+	private ArrayList<BaseActor> shipBoxes = new ArrayList<BaseActor>();
+	private ArrayList<BaseActor> dispedShips = new ArrayList<BaseActor>();
 	
 	
 	private BaseActor[] buildBoxes;
@@ -100,27 +105,40 @@ public class SidePanel extends BaseActor {
 			this.addActor(buildBoxes[i]);
 		}
 	}
+	/**
+	 * Sets the side panel to display a specific planet's stats.
+	 * @param p the planet to be displayed
+	 */
 
 	public void setPlanet(Planet p) {
+		//remove old planet
 		this.planet = p;
 		this.removeActor(this.dispPlanet);
+		//get displayable planet copy
 		this.dispPlanet = p.copy();
 		this.addActor(dispPlanet);
 		dispPlanet.setSize(dispPlanet.getXbyY().x / 5, dispPlanet.getXbyY().y / 5);
 		dispPlanet.setCenter(32, PS.viewHeight - 98);
-
+		
+		//update text fields
 		planetName.setText(this.planet.name);
-		
 		planetType.setText(this.planet.getPlanetType().name);
-		
+		//remove old building boxes
 		for (BaseActor bbox : this.buildingBoxes) {
 			this.removeActor(bbox);
+		}
+		
+		for (BaseActor sbox : this.shipBoxes) {
+			this.removeActor(sbox);
 		}
 		this.buildingBoxes.clear();
 		this.buildingHealthbars.clear();
 		this.dispedBuildings.clear();
 		
+		this.shipBoxes.clear();
+		this.dispedShips.clear();
 		
+		//setup building boxes
 		for (int i = 0; i < this.planet.buildings.length; i++) {
 			BaseActor bbox = new BaseActor(this.buildingBox);
 			bbox.setPosition(10, PS.viewHeight - 150 - i * 20);
@@ -139,17 +157,33 @@ public class SidePanel extends BaseActor {
 			
 				
 			}
+
+		}
+		
+		for (int i = 0; i < this.planet.orbitingShips.size(); i++) {
+			BaseActor sbox = new BaseActor(this.shipBox);
+			sbox.setPosition(100, PS.viewHeight - 150 - i * 20);
 			
-			
-			
+			this.shipBoxes.add(sbox);
+			this.addActor(sbox);
+			if (this.planet.orbitingShips.get(i) != null) {
+				//for some strange reason, getting the ship's texture returns null
+				//BaseActor shipImg = new BaseActor(this.planet.orbitingShips.get(i).texture);
+				//shipImg.setPosition(1, 1);
+				//dispedShips.add(shipImg);
+				//sbox.addActor(shipImg);
+			}
 		}
 
 	}
 
 	
-	
+	/**
+	 * updates the sidepanel
+	 * @param uiStage the uiStage
+	 */
 	public void update(Stage uiStage) {
-		
+		//update local mouse position
 		copiedMousePos.x = GameplayScreen.mouseBlot.getX();
 		copiedMousePos.y =  PS.viewHeight -GameplayScreen.mouseBlot.getY();
 		
@@ -157,6 +191,7 @@ public class SidePanel extends BaseActor {
 		//localMousePos.y = PS.viewHeight - localMousePos.y;
 		//What the actual heck with these numbers?!?!?!??
 		uiMouseBlot.setPosition(localMousePos.x *1.25f, localMousePos.y * 1.25f - 166);
+		//check for clicking on increment/deincrement priority/capacity and increment/deincrement them
 		if (this.incrementCapButton.getBoundingRectangle().overlaps(uiMouseBlot.getBoundingRectangle()) && Gdx.input.justTouched()) {
 			this.planet.resourceCapacity += 1;
 		} else if (this.incrementPriorityButton.getBoundingRectangle().overlaps(uiMouseBlot.getBoundingRectangle()) && Gdx.input.justTouched()) {
@@ -167,10 +202,10 @@ public class SidePanel extends BaseActor {
 			this.planet.priority -= 1;
 		}
 		
-		
+		//check for clicking on a building box
 		for (int i = 0; i < this.buildingBoxes.size(); i++) {
 			if (buildingBoxes.get(i).getBoundingRectangle().contains(uiMouseBlot.center) && Gdx.input.justTouched()) {
-			
+				//show possible actions
 				if (this.dispedBuildings.get(i) == null) {
 					showBuildBoxes();
 					selectedBuildingSlot = i;
@@ -178,6 +213,7 @@ public class SidePanel extends BaseActor {
 					showDestroy();
 					selectedBuildingSlot = i;
 				}
+				//highlight selected building box
 				for (int l = 0; l < this.buildingBoxes.size(); l++) {
 					buildingBoxes.get(l).setColor(Color.WHITE);
 				}
@@ -187,14 +223,15 @@ public class SidePanel extends BaseActor {
 				
 			}
 		}
-		
+		//check for clicking on buildBox
 		if (buildBoxesShowing) {
 			for (int i = 0; i < this.buildBoxes.length; i++) {
 				if (buildBoxes[i].getBoundingRectangle().contains(uiMouseBlot.center) && Gdx.input.justTouched()) {
 					if (selectedBuildingSlot != -1) {
 						try {
+							//add building to planet
 							this.planet.addBuilding(Building.allBuildings.get(i).getClass().newInstance(), selectedBuildingSlot);
-							
+							//update building boxes
 							BaseActor buildingImg = new BaseActor(Building.allBuildings.get(i).texture);
 							buildingImg.setPosition(1, 1);
 							dispedBuildings.set(selectedBuildingSlot, buildingImg);
@@ -212,9 +249,11 @@ public class SidePanel extends BaseActor {
 				}
 			}
 		}
-		
+		//check for destroying building
 		if (this.destroyBuildingBox.getBoundingRectangle().contains(uiMouseBlot.center) && Gdx.input.justTouched()) {
+			//destroy building
 			this.planet.destroyBuilding(selectedBuildingSlot);
+			//update building boxes
 			dispedBuildings.set(selectedBuildingSlot, null);
 			buildingBoxes.get(selectedBuildingSlot).clearChildren();
 			buildingBoxes.get(selectedBuildingSlot).setColor(Color.WHITE);
@@ -222,10 +261,13 @@ public class SidePanel extends BaseActor {
 		}
 		
 		
-		
+		//update text fields
 		this.planetCap.setText(Integer.toString(this.planet.resourceCapacity));
 		this.planetPrioirity.setText(Integer.toString(this.planet.priority));
 	}
+	/**
+	 * shows the buildBoxes
+	 */
 	
 	private void showBuildBoxes() {
 		for (int i = 0; i < buildBoxes.length; i++) {
@@ -234,7 +276,9 @@ public class SidePanel extends BaseActor {
 		}
 		buildBoxesShowing = true;
 	}
-	
+	/**
+	 * hide the buildBoxes
+	 */
 	private void hideBuildBoxes() {
 		for (int i = 0; i < buildBoxes.length; i++) {
 			buildBoxes[i].setPosition(-100, -100);
@@ -242,11 +286,15 @@ public class SidePanel extends BaseActor {
 		}
 		buildBoxesShowing = false;
 	}
-	
+	/**
+	 * show destroy building option
+	 */
 	private void showDestroy() {
 		this.destroyBuildingBox.setPosition(50, PS.viewHeight - 150);
 	}
-	
+	/**
+	 * hide destroy building option
+	 */
 	private void hideDestroy() {
 		this.destroyBuildingBox.setPosition(-100, -100);
 	}

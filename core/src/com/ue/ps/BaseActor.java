@@ -41,7 +41,7 @@ public class BaseActor extends Group {
 		this.setOriginX(this.getWidth() / 2);
 		this.setOriginY(this.getHeight() / 2);
 		this.setRectangleBoundary();
-
+		
 	}
 
 	public BaseActor(Texture t) {
@@ -56,15 +56,17 @@ public class BaseActor extends Group {
 		this.setOriginY(this.getHeight() / 2);
 		this.setRectangleBoundary();
 
+
 	}
 
 	public void setTexture(Texture t) {
+		this.texture = t;
 		int w = t.getWidth();
 		int h = t.getHeight();
 		setWidth(w);
 		setHeight(h);
 		region.setRegion(t);
-		this.texture = t;
+		
 
 	}
 
