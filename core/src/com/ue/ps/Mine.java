@@ -12,4 +12,10 @@ public class Mine extends Building {
 	public void update(Player p) {
 		p.resource += production;
 	}
+
+	@Override
+	public void update(Planet p) {
+		// TODO Auto-generated method stub
+		
+	}
 }
