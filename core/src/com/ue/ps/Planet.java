@@ -10,9 +10,12 @@ public class Planet extends BaseActor{
 	public boolean hasBranched;
 	private int size;
 	public int capacity;
-	private Building[] buildings;
+	public Building[] buildings;
 	private PlanetType type;
 	public boolean isHomePlanet;
+	
+	public int resourceCapacity;
+	public int priority;
 	
 	//Display
 	public static final float focusZoomAmount = 0.4f;
@@ -23,7 +26,8 @@ public class Planet extends BaseActor{
 	public int people;
 	
 	public String name;
-
+	
+	public Player owner;
 	
 		
 	private int builtBuildings = 0;
@@ -83,20 +87,26 @@ public class Planet extends BaseActor{
 	}
 	
 	
-	public void addBuilding(Building b){
-		if (builtBuildings < capacity){
+	public void addBuilding(Building b, int slot){
+		if (builtBuildings < capacity && slot < capacity){
 			this.addActor(b);
-			buildings[builtBuildings] = b;
+			buildings[slot] = b;
 			
-			int angle = 360/capacity * builtBuildings;
+			int angle = 360/capacity * slot;
 			b.setRotation(angle);
 			b.setCenter(this.getWidth()/2, this.getHeight()/2);
-			Vector2 pos = Utils.polarToRect((int) (this.getWidth()/2 + b.getWidth()/2),  360/capacity * builtBuildings, new Vector2(this.getWidth()/2, this.getHeight()/2));
+			Vector2 pos = Utils.polarToRect((int) (this.getWidth()/2 + b.getWidth()/2),  360/capacity * slot, new Vector2(this.getWidth()/2, this.getHeight()/2));
 			b.setCenter(pos.x, pos.y);
 			b.setRotation(angle - 90);
 			
 			builtBuildings += 1;
 		}
+	}
+	
+	public void destroyBuilding(int slot) {
+		this.removeActor(buildings[slot]);
+		buildings[slot] = null;
+		builtBuildings -= 1;
 	}
 	
 	public Vector2 getXbyY() {
@@ -125,6 +135,8 @@ public class Planet extends BaseActor{
 		
 		
 	}
+	
+	
 	
 	
 	
