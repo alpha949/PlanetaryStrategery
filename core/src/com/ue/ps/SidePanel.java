@@ -193,7 +193,8 @@ public class SidePanel extends BaseActor {
 		localMousePos = this.stageToLocalCoordinates(uiStage.screenToStageCoordinates(copiedMousePos));
 		//localMousePos.y = PS.viewHeight - localMousePos.y;
 		//What the actual heck with these numbers?!?!?!??
-		uiMouseBlot.setPosition(localMousePos.x *1.25f, localMousePos.y * 1.25f - 166);
+		//zakiah, figure out what's up with these numeberz
+		uiMouseBlot.setPosition(localMousePos.x * 1.25f , localMousePos.y * 1.25f -166);
 		//check for clicking on increment/deincrement priority/capacity and increment/deincrement them
 		if (this.incrementCapButton.getBoundingRectangle().overlaps(uiMouseBlot.getBoundingRectangle()) && Gdx.input.justTouched()) {
 			this.planet.resourceCapacity += 1;

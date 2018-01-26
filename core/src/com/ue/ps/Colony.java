@@ -5,7 +5,7 @@ public class Colony extends Building {
 	private int production = 1;
 
 	public Colony() {
-		super("assets/colony");
+		super("assets/colony.png");
 		this.health = 100;
 
 	
