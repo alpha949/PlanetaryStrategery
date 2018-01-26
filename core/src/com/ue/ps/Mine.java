@@ -6,6 +6,7 @@ public class Mine extends Building{
 	
 	public Mine() {
 		super("assets/mine.png");
+		this.health = 50;
 		// TODO Auto-generated constructor stub
 	}
 	

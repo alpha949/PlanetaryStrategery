@@ -53,7 +53,7 @@ public class GameplayScreen implements Screen{
 	public static int cameraOffsetX;
 	public static int cameraOffsetY;
 	
-//	private SidePanel sidePanel = new SidePanel();
+    private SidePanel sidePanel = new SidePanel();
 	
 
 	public GameplayScreen(Game g){
@@ -82,8 +82,8 @@ public class GameplayScreen implements Screen{
 		mainStage.addActor(camPos);
 		mainStage.addActor(stageMouseBlot);
 		
-		//sidePanel.setPosition(0, -24);
-		//uiStage.addActor(sidePanel);
+		sidePanel.setPosition(0, -24);
+		uiStage.addActor(sidePanel);
 		
 		uiStage.addActor(player.resourcePanel);
 		Gdx.input.setInputProcessor(new InputProcess());
@@ -138,7 +138,7 @@ public class GameplayScreen implements Screen{
 				if (Gdx.input.justTouched()) {
 					targetPlanet = p;
 				
-					//this.sidePanel.setPlanet(p);
+					this.sidePanel.setPlanet(p);
 					
 				}
 				
@@ -154,10 +154,7 @@ public class GameplayScreen implements Screen{
 			}
 		}
 		
-		if (WorldGen.allPlanets.size() > 2) {
-			Line.genLine(new Line(WorldGen.allPlanets.get(0), stageMouseBlot, Faction.Braecious), mainStage);
-			
-		}
+		
 	
 		Gdx.gl.glClearColor(0.0F, 0.0F, 0, 1);
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -212,10 +209,7 @@ public class GameplayScreen implements Screen{
 		}
 		
 		
-		//this is just a patch, should find some way to fix
-		/*for (Actor a : uiStage.getRoot().getChildren()) {
-			a.addAction(Actions.scaleTo(zoomAmount, zoomAmount));
-		}*/
+	
 	}
 
 	@Override

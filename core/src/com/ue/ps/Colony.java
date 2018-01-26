@@ -6,7 +6,7 @@ public class Colony extends Building{
 	
 	public Colony() {
 		super("assets/colony");
-		
+		this.health = 100;
 	}
 	
 	

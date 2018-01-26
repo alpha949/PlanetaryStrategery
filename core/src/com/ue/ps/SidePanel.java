@@ -5,13 +5,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 public class SidePanel extends BaseActor{
 	
 	private Planet planet = new Planet();
-	private Label planetName = new Label("55", PS.font);
+	private Label planetName = new Label("", PS.font);
+	private Label planetType = new Label("", PS.font);
 
 	public SidePanel() {
 		super("assets/sidePanel.png");
-		planetName.setPosition(98, PS.viewHeight-56);
+		planetName.setPosition(98, PS.viewHeight-45);
 		planetName.setFontScale(2);
 		this.addActor(planetName);
+		
+		planetType.setPosition(98, PS.viewHeight-98);
+		this.addActor(planetType);
 	
 	}
 	
@@ -27,7 +31,7 @@ public class SidePanel extends BaseActor{
 		
 		
 		planetName.setText(this.planet.name);
-		
+		planetType.setText(planet.getPlanetType().name);
 		
 		
 	}
