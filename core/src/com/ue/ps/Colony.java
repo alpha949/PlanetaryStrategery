@@ -6,6 +6,10 @@ public class Colony extends Building {
 
 	public Colony() {
 		super("assets/colony.png");
+		this.health = 100;
+
+	
+
 
 	}
 

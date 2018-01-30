@@ -3,6 +3,7 @@ package com.ue.ps;
 public enum PlanetType {
 
 	asteroid, gas, rock, early, goldilocks;
+
 	public int landCap;
 	public int spaceCap;
 	public int coloniesCap;

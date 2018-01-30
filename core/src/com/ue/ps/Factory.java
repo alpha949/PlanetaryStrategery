@@ -4,11 +4,13 @@ public class Factory extends Building {
 
 	private int resourceInput = 3;
 	private int shipProgressOutput = 10;
+	
 
 	public Ship buildingShip;
 
 	public Factory() {
 		super("assets/factory.png");
+		this.health = 50;
 		// TODO Auto-generated constructor stub
 	}
 

@@ -62,6 +62,10 @@ public class Planet extends BaseActor{
 		
 	}
 	
+	public PlanetType getPlanetType(){
+		return this.type;
+	}
+	
 	public void update(){
 		
 	}
@@ -132,9 +136,7 @@ public class Planet extends BaseActor{
 		
 	}
 	
-	public PlanetType getPlanetType() {
-		return this.type;
-	}
+	
 	
 	
 	

@@ -9,13 +9,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
+
 public class SidePanel extends BaseActor {
 
 	private Planet dispPlanet = new Planet();
 	private Planet planet = new Planet();
 	private Label planetName = new Label("", PS.font);
 	private Label planetType = new Label("", PS.font);
-	
+
 	private Label planetCap = new Label("5", PS.font);
 	private Label planetPrioirity = new Label("9", PS.font);
 	
@@ -122,6 +123,7 @@ public class SidePanel extends BaseActor {
 		
 		//update text fields
 		planetName.setText(this.planet.name);
+
 		planetType.setText(this.planet.getPlanetType().name);
 		//remove old building boxes
 		for (BaseActor bbox : this.buildingBoxes) {
@@ -134,6 +136,7 @@ public class SidePanel extends BaseActor {
 		this.buildingBoxes.clear();
 		this.buildingHealthbars.clear();
 		this.dispedBuildings.clear();
+
 		
 		this.shipBoxes.clear();
 		this.dispedShips.clear();
@@ -190,7 +193,8 @@ public class SidePanel extends BaseActor {
 		localMousePos = this.stageToLocalCoordinates(uiStage.screenToStageCoordinates(copiedMousePos));
 		//localMousePos.y = PS.viewHeight - localMousePos.y;
 		//What the actual heck with these numbers?!?!?!??
-		uiMouseBlot.setPosition(localMousePos.x *1.25f, localMousePos.y * 1.25f - 166);
+		//zakiah, figure out what's up with these numeberz
+		uiMouseBlot.setPosition(localMousePos.x * 1.25f , localMousePos.y * 1.25f -166);
 		//check for clicking on increment/deincrement priority/capacity and increment/deincrement them
 		if (this.incrementCapButton.getBoundingRectangle().overlaps(uiMouseBlot.getBoundingRectangle()) && Gdx.input.justTouched()) {
 			this.planet.resourceCapacity += 1;
