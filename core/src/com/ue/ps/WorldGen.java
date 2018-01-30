@@ -30,7 +30,7 @@ public class WorldGen {
 		Planet p = new Planet();
 		m.addActor(p);
 		p.setCenter(pos.x, pos.y);
-		p.addAction(Actions.color(Color.PURPLE, 1));
+		p.setColor(Color.PURPLE);
 		p.setZIndex(10000);
 
 	}
@@ -55,7 +55,7 @@ public class WorldGen {
 				allPlanets.add(p);
 				m.addActor(p);
 				p.setCenter(pos.x, pos.y);
-				p.addAction(Actions.color(Color.GREEN, 1));
+				p.setColor(Color.GREEN);
 				failedSteps = 0;
 
 			} else {
@@ -117,7 +117,7 @@ public class WorldGen {
 			Vector2 vert = Utils.polarToRect(dist, (360 / numHomePlanets * i) + 45, planetBorder.getCenter(new Vector2()));
 			System.out.println(vert.x + " " + vert.y);
 			Planet home = getClosestPlanetTo(vert.x, vert.y);
-			home.addAction(Actions.color(Color.BLUE, 2));
+			home.setColor(Color.BLUE);
 			home.isHomePlanet = true;
 			home.setType(PlanetType.goldilocks);
 			Planet p = new Planet();
@@ -128,13 +128,13 @@ public class WorldGen {
 
 		}
 		Line.genLine(new Line(allPlanets.get(0), allPlanets.get(1), Faction.Xin), m);
-		allPlanets.get(0).addAction(Actions.rotateBy(1000, 100));
-		allPlanets.get(1).addAction(Actions.rotateBy(1000, 100));
+		allPlanets.get(0).addBuilding(new Factory(), 1);
+		allPlanets.get(1).addBuilding(new Factory(), 1);
 		for (Planet p : allPlanets) {
-		
+			for (int i = 0; i < p.capacity; i++) {
 				
-				Ship.spawnShip(Faction.Xin, p, ShipType.drone);
-			
+				Ship.spawnShip(Faction.Xin, p, ShipType.drone, 10 * i);
+			}
 		}
 
 		return ring;

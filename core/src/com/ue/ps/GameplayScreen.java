@@ -131,11 +131,18 @@ public class GameplayScreen implements Screen {
 		for (Planet p : WorldGen.allPlanets) {
 			if (p.getBoundingRectangle().overlaps(stageMouseBlot.getBoundingRectangle())) {
 	
-				if (Gdx.input.justTouched()) {
-					targetPlanet = p;
+				if (Gdx.input.justTouched() ) {
+					if (SidePanel.selectedShips.isEmpty()) {
+						targetPlanet = p;
 
+						
+						this.sidePanel.setPlanet(p);
+					} else {
+						for (Ship s : SidePanel.selectedShips) {
+							s.setDestination(p, player, mainStage);
+						}
+					}
 				
-					this.sidePanel.setPlanet(p);
 					
 
 				}

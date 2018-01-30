@@ -74,7 +74,7 @@ public class Planet extends BaseActor{
 	public void act(float dt){
 		super.act(dt);
 		for (Ship s : orbitingShips) {
-			s.angle -= 0.1f;
+			s.angle -= 0.5f;
 			int orbitDist = 25 + 16;
 			s.setRotation(s.angle);
 			s.setCenter(this.getWidth()/2, this.getHeight()/2);

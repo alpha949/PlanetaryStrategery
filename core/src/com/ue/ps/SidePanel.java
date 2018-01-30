@@ -49,6 +49,8 @@ public class SidePanel extends BaseActor {
 	private ArrayList<BaseActor> shipBoxes = new ArrayList<BaseActor>();
 	private ArrayList<BaseActor> dispedShips = new ArrayList<BaseActor>();
 	
+	public static ArrayList<Ship> selectedShips = new ArrayList<Ship>();
+	
 	
 	private BaseActor[] buildBoxes;
 	private int selectedBuildingSlot = -1;
@@ -174,7 +176,7 @@ public class SidePanel extends BaseActor {
 		for (int i = 0; i < this.planet.orbitingShips.size(); i++) {
 			BaseActor sbox = new BaseActor(this.shipBox);
 			sbox.setPosition(100, PS.viewHeight - 150 - i * 20);
-			
+	
 			this.shipBoxes.add(sbox);
 			this.addActor(sbox);
 			if (this.planet.orbitingShips.get(i) != null) {
@@ -199,9 +201,7 @@ public class SidePanel extends BaseActor {
 		copiedMousePos.y =  PS.viewHeight -GameplayScreen.mouseBlot.getY();
 		
 		localMousePos = this.stageToLocalCoordinates(uiStage.screenToStageCoordinates(copiedMousePos));
-		//localMousePos.y = PS.viewHeight - localMousePos.y;
-		//What the actual heck with these numbers?!?!?!??
-		//zakiah, figure out what's up with these numeberz
+
 		uiMouseBlot.setPosition(localMousePos.x , localMousePos.y);
 		//check for clicking on increment/deincrement priority/capacity and increment/deincrement them
 		if (this.incrementCapButton.getBoundingRectangle().overlaps(uiMouseBlot.getBoundingRectangle()) && Gdx.input.justTouched()) {
@@ -270,6 +270,18 @@ public class SidePanel extends BaseActor {
 			buildingBoxes.get(selectedBuildingSlot).clearChildren();
 			buildingBoxes.get(selectedBuildingSlot).setColor(Color.WHITE);
 			hideDestroy();
+		}
+		
+		
+		for (int i = 0; i < this.shipBoxes.size(); i++) {
+			if (shipBoxes.get(i).getBoundingRectangle().contains(uiMouseBlot.center) && Gdx.input.justTouched()) {
+				
+				shipBoxes.get(i).setColor(Color.GREEN);
+				selectedShips.add(this.planet.orbitingShips.get(i));
+				
+			
+			}
+				
 		}
 		
 		
