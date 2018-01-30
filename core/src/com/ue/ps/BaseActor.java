@@ -180,14 +180,16 @@ public class BaseActor extends Group {
 
 	public double pointAt(double x, double y, float speed, boolean rotate) {
 
-		double yDiff = y - this.getOriginY();
-		double xDiff = x - this.getOriginX();
+		double yDiff = y - this.center.y;
+		double xDiff = x - this.center.x;
 		double newAngle = Math.toDegrees(Math.atan2(yDiff, xDiff));
 
 		if (rotate) {
 			this.addAction(Actions.rotateTo((float) newAngle, speed));
 		}
 		return newAngle;
+		
+
 
 	}
 

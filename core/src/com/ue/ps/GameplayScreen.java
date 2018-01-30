@@ -134,7 +134,6 @@ public class GameplayScreen implements Screen {
 				if (Gdx.input.justTouched() ) {
 					if (SidePanel.selectedShips.isEmpty()) {
 						targetPlanet = p;
-
 						
 						this.sidePanel.setPlanet(p);
 					} else {
@@ -262,8 +261,10 @@ public class GameplayScreen implements Screen {
 		if (Utils.glideCameraTo(p.center.x, p.center.y, c)) {
 			return true;
 		} else {
-			// This should glide in more smoothly
-			zoomAmount = Planet.focusZoomAmount;
+			if (zoomAmount > Planet.focusZoomAmount) {
+				zoomAmount = Planet.focusZoomAmount/zoomAmount  + Planet.focusZoomAmount;
+			}
+			
 
 			return false;
 		}

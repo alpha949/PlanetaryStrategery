@@ -275,10 +275,15 @@ public class SidePanel extends BaseActor {
 		
 		for (int i = 0; i < this.shipBoxes.size(); i++) {
 			if (shipBoxes.get(i).getBoundingRectangle().contains(uiMouseBlot.center) && Gdx.input.justTouched()) {
-				
-				shipBoxes.get(i).setColor(Color.GREEN);
-				selectedShips.add(this.planet.orbitingShips.get(i));
-				
+				if (selectedShips.contains(this.planet.orbitingShips.get(i))) {
+					shipBoxes.get(i).setColor(Color.WHITE);
+					selectedShips.remove(this.planet.orbitingShips.get(i));
+				} else {
+					shipBoxes.get(i).setColor(Color.GREEN);
+					selectedShips.add(this.planet.orbitingShips.get(i));
+					
+				}
+			
 			
 			}
 				
