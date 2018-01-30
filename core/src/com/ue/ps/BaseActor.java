@@ -29,6 +29,7 @@ public class BaseActor extends Group {
 	private String path;
 	
 	public Texture texture;
+	
 	public BaseActor(String path) {
 		super();
 		region = new TextureRegion();
