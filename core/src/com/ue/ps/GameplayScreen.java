@@ -68,7 +68,7 @@ public class GameplayScreen implements Screen {
 		mainStage = new Stage(new ScreenViewport(camera));
 		uiStage = new Stage(uiViewport);
 
-		Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+		//Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 
 		WorldGen.setup(mainStage);
 
@@ -79,7 +79,7 @@ public class GameplayScreen implements Screen {
 		mainStage.addActor(stageMouseBlot);
 
 		
-		sidePanel.setPosition(0, -24);
+		sidePanel.setPosition(0, 0);
 		uiStage.addActor(sidePanel);
 		
 
@@ -96,7 +96,7 @@ public class GameplayScreen implements Screen {
 		sidePanel.update(uiStage);
 		
 		// Again with the weird arbitrary 24...
-		player.resourcePanel.setPosition(0, PS.viewHeight - player.resourcePanel.getHeight() - 24);
+		player.resourcePanel.setPosition(0, PS.viewHeight - player.resourcePanel.getHeight());
 
 		OrthographicCamera cam = (OrthographicCamera) mainStage.getCamera();
 		Vector2 center = new Vector2();
@@ -117,7 +117,7 @@ public class GameplayScreen implements Screen {
 		mousePos = mainStage.screenToStageCoordinates(uiStage.stageToScreenCoordinates(mouseBlot.center));
 		// these numbers (8 and 53) seem really arbitrary, there's probably some
 		// reason for them...
-		stageMouseBlot.setPosition(mousePos.x - 8 * zoomAmount, mousePos.y + 53 * zoomAmount);
+		stageMouseBlot.setPosition(mousePos.x - 8 * zoomAmount, mousePos.y - 8 * zoomAmount);
 		// stageMouseBlot.setScale(zoomAmount, zoomAmount);
 		stageMouseBlot.setSize(16 * zoomAmount, 16 * zoomAmount);
 
@@ -200,7 +200,7 @@ public class GameplayScreen implements Screen {
 			} else {
 				PS.paused = true;
 			}
-			Gdx.graphics.setWindowedMode(PS.viewWidth, PS.viewHeight);
+			//Gdx.graphics.setWindowedMode(PS.viewWidth, PS.viewHeight);
 		}
 
 		if (!PS.paused) {

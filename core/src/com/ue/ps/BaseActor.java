@@ -28,7 +28,7 @@ public class BaseActor extends Group {
 	protected float elapsedTime;
 	private String path;
 	
-	public Texture texture;
+	private Texture texture;
 	
 	public BaseActor(String path) {
 		super();
@@ -61,7 +61,7 @@ public class BaseActor extends Group {
 	}
 
 	public void setTexture(Texture t) {
-		this.texture = t;
+		texture = t;
 		int w = t.getWidth();
 		int h = t.getHeight();
 		setWidth(w);
@@ -198,6 +198,10 @@ public class BaseActor extends Group {
 
 	public void setCenter(float x, float y) {
 		this.setPosition(x - this.getWidth() / 2, y - this.getHeight() / 2);
+	}
+	
+	public Texture getTexture() {
+		return this.texture;
 	}
 
 }

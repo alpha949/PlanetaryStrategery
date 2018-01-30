@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 public abstract class Building extends BaseActor {
 	public int health;
-	
+
+	public int resourceCost;
 	public static ArrayList<Building> allBuildings = new ArrayList<Building>();
 
 	public Building(String path) {

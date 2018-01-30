@@ -11,7 +11,6 @@ public class Ship extends BaseActor {
 	public int people;
 	public int peoplecap;
 
-	public Texture texture;
 
 	public ShipType type;
 

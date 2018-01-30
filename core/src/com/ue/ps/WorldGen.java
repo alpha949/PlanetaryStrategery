@@ -131,10 +131,10 @@ public class WorldGen {
 		allPlanets.get(0).addAction(Actions.rotateBy(1000, 100));
 		allPlanets.get(1).addAction(Actions.rotateBy(1000, 100));
 		for (Planet p : allPlanets) {
-			for (int i = 0; i < p.capacity; i++) {
+		
 				
 				Ship.spawnShip(Faction.Xin, p, ShipType.drone);
-			}
+			
 		}
 
 		return ring;

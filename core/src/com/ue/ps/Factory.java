@@ -11,6 +11,7 @@ public class Factory extends Building {
 	public Factory() {
 		super("assets/factory.png");
 		this.health = 50;
+		this.resourceCost = 5;
 		// TODO Auto-generated constructor stub
 	}
 

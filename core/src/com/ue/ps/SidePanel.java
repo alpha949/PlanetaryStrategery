@@ -44,6 +44,7 @@ public class SidePanel extends BaseActor {
 	private ArrayList<BaseActor> buildingBoxes = new ArrayList<BaseActor>();
 	private ArrayList<BaseActor> dispedBuildings = new ArrayList<BaseActor>();
 	private ArrayList<BaseActor> buildingHealthbars = new ArrayList<BaseActor>();
+	private ArrayList<Label> buildingCost = new ArrayList<Label>();
 	
 	private ArrayList<BaseActor> shipBoxes = new ArrayList<BaseActor>();
 	private ArrayList<BaseActor> dispedShips = new ArrayList<BaseActor>();
@@ -100,9 +101,13 @@ public class SidePanel extends BaseActor {
 		for (int i = 0; i < buildBoxes.length; i++) {
 			buildBoxes[i] = new BaseActor("assets/buildBox.png");
 			buildBoxes[i].setPosition(-100, -100);
-			BaseActor buildingImg = new BaseActor(Building.allBuildings.get(i).texture);
+			BaseActor buildingImg = new BaseActor(Building.allBuildings.get(i).getTexture());
 			buildingImg.setPosition(1, 1);
 			buildBoxes[i].addActor(buildingImg);
+			
+			Label l = new Label(Integer.toString(Building.allBuildings.get(i).resourceCost), PS.font);
+			l.setPosition(23, 0);
+			buildBoxes[i].addActor(l);
 			this.addActor(buildBoxes[i]);
 		}
 	}
@@ -133,9 +138,12 @@ public class SidePanel extends BaseActor {
 		for (BaseActor sbox : this.shipBoxes) {
 			this.removeActor(sbox);
 		}
+		
+	
 		this.buildingBoxes.clear();
 		this.buildingHealthbars.clear();
 		this.dispedBuildings.clear();
+		this.buildingCost.clear();
 
 		
 		this.shipBoxes.clear();
@@ -150,7 +158,7 @@ public class SidePanel extends BaseActor {
 			this.addActor(bbox);
 			
 			if (this.planet.buildings[i] != null) {
-				BaseActor buildingImg = new BaseActor(this.planet.buildings[i].texture);
+				BaseActor buildingImg = new BaseActor(this.planet.buildings[i].getTexture());
 				buildingImg.setPosition(1, 1);
 				dispedBuildings.add(buildingImg);
 				bbox.addActor(buildingImg);
@@ -171,10 +179,10 @@ public class SidePanel extends BaseActor {
 			this.addActor(sbox);
 			if (this.planet.orbitingShips.get(i) != null) {
 				//for some strange reason, getting the ship's texture returns null
-				//BaseActor shipImg = new BaseActor(this.planet.orbitingShips.get(i).texture);
-				//shipImg.setPosition(1, 1);
-				//dispedShips.add(shipImg);
-				//sbox.addActor(shipImg);
+				BaseActor shipImg = new BaseActor(this.planet.orbitingShips.get(i).getTexture());
+				shipImg.setPosition(1, 1);
+				dispedShips.add(shipImg);
+				sbox.addActor(shipImg);
 			}
 		}
 
@@ -194,7 +202,7 @@ public class SidePanel extends BaseActor {
 		//localMousePos.y = PS.viewHeight - localMousePos.y;
 		//What the actual heck with these numbers?!?!?!??
 		//zakiah, figure out what's up with these numeberz
-		uiMouseBlot.setPosition(localMousePos.x * 1.25f , localMousePos.y * 1.25f -166);
+		uiMouseBlot.setPosition(localMousePos.x , localMousePos.y);
 		//check for clicking on increment/deincrement priority/capacity and increment/deincrement them
 		if (this.incrementCapButton.getBoundingRectangle().overlaps(uiMouseBlot.getBoundingRectangle()) && Gdx.input.justTouched()) {
 			this.planet.resourceCapacity += 1;
@@ -236,7 +244,7 @@ public class SidePanel extends BaseActor {
 							//add building to planet
 							this.planet.addBuilding(Building.allBuildings.get(i).getClass().newInstance(), selectedBuildingSlot);
 							//update building boxes
-							BaseActor buildingImg = new BaseActor(Building.allBuildings.get(i).texture);
+							BaseActor buildingImg = new BaseActor(Building.allBuildings.get(i).getTexture());
 							buildingImg.setPosition(1, 1);
 							dispedBuildings.set(selectedBuildingSlot, buildingImg);
 							buildingBoxes.get(selectedBuildingSlot).addActor(buildingImg);
@@ -276,7 +284,7 @@ public class SidePanel extends BaseActor {
 	private void showBuildBoxes() {
 		for (int i = 0; i < buildBoxes.length; i++) {
 			buildBoxes[i].setPosition(50, PS.viewHeight - 150 - i * 20);
-		
+			
 		}
 		buildBoxesShowing = true;
 	}
