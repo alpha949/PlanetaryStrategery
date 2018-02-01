@@ -50,8 +50,10 @@ public class GameplayScreen implements Screen {
 	public static int cameraOffsetX;
 	public static int cameraOffsetY;
 
-
+	private Planet planetX = new Planet();
 	private SidePanel sidePanel = new SidePanel();
+	
+	private Line planetXLine;
 
 	public GameplayScreen(Game g) {
 		game = g;
@@ -84,6 +86,7 @@ public class GameplayScreen implements Screen {
 		
 
 		uiStage.addActor(player.resourcePanel);
+		mainStage.addActor(planetX);
 		Gdx.input.setInputProcessor(new InputProcess());
 
 	}
@@ -94,6 +97,7 @@ public class GameplayScreen implements Screen {
 		uiStage.act();
 		
 		sidePanel.update(uiStage);
+		
 		
 		// Again with the weird arbitrary 24...
 		player.resourcePanel.setPosition(0, PS.viewHeight - player.resourcePanel.getHeight());
@@ -120,7 +124,19 @@ public class GameplayScreen implements Screen {
 		stageMouseBlot.setPosition(mousePos.x - 8 * zoomAmount, mousePos.y - 8 * zoomAmount);
 		// stageMouseBlot.setScale(zoomAmount, zoomAmount);
 		stageMouseBlot.setSize(16 * zoomAmount, 16 * zoomAmount);
-
+		
+		
+		planetX.setCenter(stageMouseBlot.center.x, stageMouseBlot.center.y);
+		if (planetXLine != null) {
+			Line.deleteLine(planetXLine , mainStage);
+			
+		}
+		if (WorldGen.allPlanets.size() > 2) {
+			planetXLine= new Line(WorldGen.allPlanets.get(1), planetX, Faction.Braecious);
+			
+			Line.genLine(planetXLine , mainStage);
+		
+		}
 		// mouseBlot.addAction(Actions.scaleTo(zoomAmount, zoomAmount));
 		if (!PS.recordingGeneration) {
 			WorldGen.generate(mainStage, 0, 0);

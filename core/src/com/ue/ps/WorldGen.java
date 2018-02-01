@@ -127,15 +127,18 @@ public class WorldGen {
 			p.setCenter(vert.x, vert.y);
 
 		}
-		Line.genLine(new Line(allPlanets.get(0), allPlanets.get(1), Faction.Xin), m);
-		allPlanets.get(0).addBuilding(new Factory(), 1);
+		
 		allPlanets.get(1).addBuilding(new Factory(), 1);
+		allPlanets.get(2).addBuilding(new Factory(), 1);
 		for (Planet p : allPlanets) {
 			for (int i = 0; i < p.capacity; i++) {
 				
 				Ship.spawnShip(Faction.Xin, p, ShipType.drone, 10 * i);
 			}
 		}
+		
+		Line.genLine(new Line(allPlanets.get(1), allPlanets.get(2), Faction.Xin), m);
+		Line.genLine(new Line(allPlanets.get(2), allPlanets.get(1), Faction.Xin), m);
 
 		return ring;
 

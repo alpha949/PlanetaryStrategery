@@ -19,7 +19,7 @@ public class Line {
 		for (int i = 0; i < lineSegments.length; i++) {
 			BaseActor b = new BaseActor(lineTexture);
 			b.setColor(f.color);
-			b.setCenter(p1.center.x, p1.center.y);
+			
 			lineSegments[i] = b;
 		}
 
@@ -31,13 +31,25 @@ public class Line {
 		
 		for (int i = 0; i < l.lineSegments.length; i++) {
 			m.addActor(l.lineSegments[i]);
+			
+			l.lineSegments[i].setCenter(l.planet1.center.x, l.planet1.center.y);
+			Vector2 globalPos = l.planet1.localToStageCoordinates(l.lineSegments[i].center);
+			
 			//confirmed it is a problem with the point at formula,
 			//may be something to do with local/stage/screen coordinate conversion
 			
-			float angle = (float) l.lineSegments[i].pointAt(l.planet2.center.x, l.planet2.center.y, 0, true);
-			
+			double angle = Utils.pointAt(globalPos.x, globalPos.y, l.planet2.center.x, l.planet2.center.y);
+			l.lineSegments[i].setRotation((float) angle);
 			Vector2 pos = Utils.polarToRect((i * 32), angle, l.planet1.center);
 			l.lineSegments[i].setCenter(pos.x, pos.y);
+			
+			
+		}
+	}
+	
+	public static void deleteLine(Line l, Stage m) {
+		for (int i = 0; i < l.lineSegments.length; i++) {
+			m.getRoot().removeActor(l.lineSegments[i]);
 			
 		}
 	}
