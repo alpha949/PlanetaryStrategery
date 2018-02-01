@@ -59,6 +59,18 @@ public class BaseActor extends Group {
 
 
 	}
+	
+	public BaseActor() {
+		super();
+		region = new TextureRegion();
+		boundary = new Rectangle();
+		vel = new Vector2(0, 0);
+		elapsedTime = 0;
+		this.center = new Vector2();
+		this.setOriginX(this.getWidth() / 2);
+		this.setOriginY(this.getHeight() / 2);
+		this.setRectangleBoundary();
+	}
 
 	public void setTexture(Texture t) {
 		texture = t;

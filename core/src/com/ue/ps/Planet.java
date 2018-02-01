@@ -34,7 +34,7 @@ public class Planet extends BaseActor{
 	
 	//planet where you can say what it is
 	public Planet(PlanetType type, int size) {
-		super("");
+		super();
 		this.type = type;
 		this.size = size;
 		this.finish();
@@ -42,7 +42,7 @@ public class Planet extends BaseActor{
 	
 	//planet without specific given info
 	public Planet(){
-		super("");
+		super();
 		this.type = PlanetType.values()[MathUtils.random(0, 4)];
 		this.size = MathUtils.random(1, 3);
 		this.finish();

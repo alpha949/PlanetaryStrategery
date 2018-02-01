@@ -36,18 +36,14 @@ public class SidePanel extends BaseActor {
 	
 	private Vector2 copiedMousePos = new Vector2();
 	
-	private Texture buildingBox = Utils.getImg("buildingContainer");
-	private Texture buildingUiHealthbar = Utils.getImg("buildingUiHealthbar");
 	
-	private Texture shipBox = Utils.getImg("shipContainer");
 	
-	private ArrayList<BaseActor> buildingBoxes = new ArrayList<BaseActor>();
-	private ArrayList<BaseActor> dispedBuildings = new ArrayList<BaseActor>();
-	private ArrayList<BaseActor> buildingHealthbars = new ArrayList<BaseActor>();
+	
+	
+	private ArrayList<BuildingContainer> buildingContainers = new ArrayList<BuildingContainer>();
 	private ArrayList<Label> buildingCost = new ArrayList<Label>();
 	
-	private ArrayList<BaseActor> shipBoxes = new ArrayList<BaseActor>();
-	private ArrayList<BaseActor> dispedShips = new ArrayList<BaseActor>();
+	private ArrayList<ShipContainer> shipContainers = new ArrayList<ShipContainer>();
 	
 	public static ArrayList<Ship> selectedShips = new ArrayList<Ship>();
 	
@@ -133,40 +129,34 @@ public class SidePanel extends BaseActor {
 
 		planetType.setText(this.planet.getPlanetType().name);
 		//remove old building boxes
-		for (BaseActor bbox : this.buildingBoxes) {
+		for (BuildingContainer bbox : this.buildingContainers) {
 			this.removeActor(bbox);
 		}
 		
-		for (BaseActor sbox : this.shipBoxes) {
+		for (BaseActor sbox : this.shipContainers) {
 			this.removeActor(sbox);
 		}
 		
 	
-		this.buildingBoxes.clear();
-		this.buildingHealthbars.clear();
-		this.dispedBuildings.clear();
+		this.buildingContainers.clear();
 		this.buildingCost.clear();
 
 		
-		this.shipBoxes.clear();
-		this.dispedShips.clear();
+		this.shipContainers.clear();
+
 		
 		//setup building boxes
 		for (int i = 0; i < this.planet.buildings.length; i++) {
-			BaseActor bbox = new BaseActor(this.buildingBox);
-			bbox.setPosition(10, PS.viewHeight - 150 - i * 20);
+			BuildingContainer bc = new BuildingContainer();
+			bc.setPosition(10, PS.viewHeight - 150 - i * 20);
 		
-			this.buildingBoxes.add(bbox);
-			this.addActor(bbox);
+			this.buildingContainers.add(bc);
+			this.addActor(bc);
 			
 			if (this.planet.buildings[i] != null) {
-				BaseActor buildingImg = new BaseActor(this.planet.buildings[i].getTexture());
-				buildingImg.setPosition(1, 1);
-				dispedBuildings.add(buildingImg);
-				bbox.addActor(buildingImg);
+				bc.setBuilding(this.planet.buildings[i]);
 			} else {
-				BaseActor buildingImg = null;
-				dispedBuildings.add(buildingImg);
+				bc.setBuilding(null);
 			
 				
 			}
@@ -174,17 +164,14 @@ public class SidePanel extends BaseActor {
 		}
 		
 		for (int i = 0; i < this.planet.orbitingShips.size(); i++) {
-			BaseActor sbox = new BaseActor(this.shipBox);
+			ShipContainer sbox = new ShipContainer();
 			sbox.setPosition(100, PS.viewHeight - 150 - i * 20);
 	
-			this.shipBoxes.add(sbox);
+			this.shipContainers.add(sbox);
 			this.addActor(sbox);
 			if (this.planet.orbitingShips.get(i) != null) {
 				//for some strange reason, getting the ship's texture returns null
-				BaseActor shipImg = new BaseActor(this.planet.orbitingShips.get(i).getTexture());
-				shipImg.setPosition(1, 1);
-				dispedShips.add(shipImg);
-				sbox.addActor(shipImg);
+				sbox.setShip(this.planet.orbitingShips.get(i));
 			}
 		}
 
@@ -203,6 +190,17 @@ public class SidePanel extends BaseActor {
 		localMousePos = this.stageToLocalCoordinates(uiStage.screenToStageCoordinates(copiedMousePos));
 
 		uiMouseBlot.setPosition(localMousePos.x , localMousePos.y);
+		
+		//update containers
+		for (BuildingContainer bc : this.buildingContainers) {
+			bc.update(uiMouseBlot.center);
+		}
+		for (ShipContainer sc : this.shipContainers) {
+			sc.update(uiMouseBlot.center, shipContainers);
+		}
+		
+		
+		
 		//check for clicking on increment/deincrement priority/capacity and increment/deincrement them
 		if (this.incrementCapButton.getBoundingRectangle().overlaps(uiMouseBlot.getBoundingRectangle()) && Gdx.input.justTouched()) {
 			this.planet.resourceCapacity += 1;
@@ -215,22 +213,18 @@ public class SidePanel extends BaseActor {
 		}
 		
 		//check for clicking on a building box
-		for (int i = 0; i < this.buildingBoxes.size(); i++) {
-			if (buildingBoxes.get(i).getBoundingRectangle().contains(uiMouseBlot.center) && Gdx.input.justTouched()) {
+		for (int i = 0; i < this.buildingContainers.size(); i++) {
+			if (buildingContainers.get(i).isSelected()) {
 				//show possible actions
-				if (this.dispedBuildings.get(i) == null) {
+				if (this.buildingContainers.get(i).getBuilding() == null) {
 					showBuildBoxes();
 					selectedBuildingSlot = i;
 				} else {
 					showDestroy();
 					selectedBuildingSlot = i;
 				}
-				//highlight selected building box
-				for (int l = 0; l < this.buildingBoxes.size(); l++) {
-					buildingBoxes.get(l).setColor(Color.WHITE);
-				}
-				buildingBoxes.get(i).setColor(Color.LIGHT_GRAY);
-				break;
+		
+				
 				
 				
 			}
@@ -241,14 +235,11 @@ public class SidePanel extends BaseActor {
 				if (buildBoxes[i].getBoundingRectangle().contains(uiMouseBlot.center) && Gdx.input.justTouched()) {
 					if (selectedBuildingSlot != -1) {
 						try {
+							Building newBuilding = Building.allBuildings.get(i).getClass().newInstance();
 							//add building to planet
-							this.planet.addBuilding(Building.allBuildings.get(i).getClass().newInstance(), selectedBuildingSlot);
+							this.planet.addBuilding(newBuilding, selectedBuildingSlot);
 							//update building boxes
-							BaseActor buildingImg = new BaseActor(Building.allBuildings.get(i).getTexture());
-							buildingImg.setPosition(1, 1);
-							dispedBuildings.set(selectedBuildingSlot, buildingImg);
-							buildingBoxes.get(selectedBuildingSlot).addActor(buildingImg);
-							buildingBoxes.get(selectedBuildingSlot).setColor(Color.WHITE);
+							buildingContainers.get(selectedBuildingSlot).setBuilding(newBuilding);
 							hideBuildBoxes();
 							
 						} catch (InstantiationException e) {
@@ -266,27 +257,17 @@ public class SidePanel extends BaseActor {
 			//destroy building
 			this.planet.destroyBuilding(selectedBuildingSlot);
 			//update building boxes
-			dispedBuildings.set(selectedBuildingSlot, null);
-			buildingBoxes.get(selectedBuildingSlot).clearChildren();
-			buildingBoxes.get(selectedBuildingSlot).setColor(Color.WHITE);
+			buildingContainers.get(selectedBuildingSlot).setBuilding(null);
 			hideDestroy();
 		}
 		
 		
-		for (int i = 0; i < this.shipBoxes.size(); i++) {
-			if (shipBoxes.get(i).getBoundingRectangle().contains(uiMouseBlot.center) && Gdx.input.justTouched()) {
-				if (selectedShips.contains(this.planet.orbitingShips.get(i))) {
-					shipBoxes.get(i).setColor(Color.WHITE);
-					selectedShips.remove(this.planet.orbitingShips.get(i));
-				} else {
-					shipBoxes.get(i).setColor(Color.GREEN);
-					selectedShips.add(this.planet.orbitingShips.get(i));
-					
-				}
-			
-			
+		for (ShipContainer sc : this.shipContainers) {
+			if (sc.isSelected()) {
+				selectedShips.add(sc.getShip());
+			} else {
+				selectedShips.remove(sc.getShip());
 			}
-				
 		}
 		
 		

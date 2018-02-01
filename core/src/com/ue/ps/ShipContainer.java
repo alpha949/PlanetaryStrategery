@@ -1,0 +1,60 @@
+package com.ue.ps;
+
+import java.util.ArrayList;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
+
+public class ShipContainer extends BaseActor{
+	private static Texture texture = Utils.getImg("shipContainer");
+	private Ship ship;
+	private BaseActor shipImg = new BaseActor();
+	private boolean isSelected;
+	
+	public ShipContainer() {
+		super(texture);
+		shipImg.setPosition(1, 1);
+		this.addActor(shipImg);
+	}
+	
+	public void setShip(Ship s) {
+		ship = s;
+		if (s != null) {
+
+			shipImg.setTexture(s.getTexture());
+		} else {
+			shipImg.setTexture(Utils.emptyTexture);
+		}
+		
+		
+	}
+	
+	public Ship getShip() {
+		return ship;
+	}
+	
+	public void update(Vector2 mousePos, ArrayList<ShipContainer> otherShipContainers) {
+		int numNotHovering = 0;
+		for (ShipContainer sc : otherShipContainers) {
+			if (!sc.getBoundingRectangle().contains(mousePos)) {
+				numNotHovering += 1;
+			}
+		}
+		if (numNotHovering == otherShipContainers.size() && Gdx.input.justTouched()) {
+			this.isSelected = false;
+			this.setColor(Color.WHITE);
+		}
+		
+		if (this.getBoundingRectangle().contains(mousePos) && Gdx.input.justTouched()) {
+			this.isSelected = true;
+			this.setColor(Color.LIGHT_GRAY);
+		}
+	}
+	
+	public boolean isSelected() {
+		return isSelected;
+	}
+	
+}
