@@ -261,7 +261,7 @@ public class SidePanel extends BaseActor {
 			hideDestroy();
 		}
 		
-		
+		//update selectedships
 		for (ShipContainer sc : this.shipContainers) {
 			if (sc.isSelected()) {
 				selectedShips.add(sc.getShip());
