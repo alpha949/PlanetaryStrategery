@@ -21,8 +21,6 @@ public class BaseActor extends Group {
 	public Rectangle boundary;
 	public Vector2 vel;
 	protected Polygon boundingPolygon;
-	public float centerX;
-	public float centerY;
 	public Vector2 center;
 
 	protected float elapsedTime;
@@ -214,6 +212,10 @@ public class BaseActor extends Group {
 
 	public void setCenter(float x, float y) {
 		this.setPosition(x - this.getWidth() / 2, y - this.getHeight() / 2);
+		this.setOriginX(this.getWidth() / 2);
+		this.setOriginY(this.getHeight() / 2);
+		this.center.set(x, y);
+	
 	}
 	
 	public Texture getTexture() {

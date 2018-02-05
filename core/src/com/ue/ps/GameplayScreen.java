@@ -54,6 +54,8 @@ public class GameplayScreen implements Screen {
 	private SidePanel sidePanel = new SidePanel();
 	
 	private Line planetXLine;
+	
+	public static TechTreePanel techTreePanel = new TechTreePanel();
 
 	public GameplayScreen(Game g) {
 		game = g;
@@ -86,7 +88,7 @@ public class GameplayScreen implements Screen {
 		
 
 		uiStage.addActor(player.resourcePanel);
-		mainStage.addActor(planetX);
+		uiStage.addActor(techTreePanel);
 		Gdx.input.setInputProcessor(new InputProcess());
 
 	}
@@ -99,9 +101,11 @@ public class GameplayScreen implements Screen {
 		sidePanel.update(uiStage);
 		
 		
+		
 		// Again with the weird arbitrary 24...
 		player.resourcePanel.setPosition(0, PS.viewHeight - player.resourcePanel.getHeight());
-
+		player.resourcePanel.update(uiStage);
+		
 		OrthographicCamera cam = (OrthographicCamera) mainStage.getCamera();
 		Vector2 center = new Vector2();
 		camPos.setCenter(cam.position.x, cam.position.y);
@@ -126,17 +130,7 @@ public class GameplayScreen implements Screen {
 		stageMouseBlot.setSize(16 * zoomAmount, 16 * zoomAmount);
 		
 		
-		planetX.setCenter(stageMouseBlot.center.x, stageMouseBlot.center.y);
-		if (planetXLine != null) {
-			Line.deleteLine(planetXLine , mainStage);
-			
-		}
-		if (WorldGen.allPlanets.size() > 2) {
-			planetXLine= new Line(WorldGen.allPlanets.get(1), planetX, Faction.Braecious);
-			
-			Line.genLine(planetXLine , mainStage);
 		
-		}
 		// mouseBlot.addAction(Actions.scaleTo(zoomAmount, zoomAmount));
 		if (!PS.recordingGeneration) {
 			WorldGen.generate(mainStage, 0, 0);
@@ -178,10 +172,7 @@ public class GameplayScreen implements Screen {
 	
 
 
-		if (WorldGen.allPlanets.size() > 2) {
-			//Line.genLine(new Line(WorldGen.allPlanets.get(0), stageMouseBlot, Faction.Braecious), mainStage);
-
-		}
+	
 
 		Gdx.gl.glClearColor(0.0F, 0.0F, 0, 1);
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

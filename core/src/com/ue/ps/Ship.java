@@ -35,7 +35,7 @@ public class Ship extends BaseActor {
 	}
 
 	public void setDestination(Planet p, Player pla, Stage s) {
-		if (this.distanceTo(p.centerX, p.centerY) < pla.maxTravelDist) {
+		if (this.distanceTo(p.center.x, p.center.y) < pla.maxTravelDist) {
 			this.location.orbitingShips.remove(this);
 			//TODO make this work
 			Vector2 globalPos = this.location.localToStageCoordinates(this.center);

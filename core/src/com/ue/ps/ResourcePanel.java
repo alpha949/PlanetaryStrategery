@@ -1,5 +1,8 @@
 package com.ue.ps;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 public class ResourcePanel extends BaseActor {
@@ -10,7 +13,13 @@ public class ResourcePanel extends BaseActor {
 	private Label peopleCounter = new Label("3", PS.font);
 	private Label resourceCounter = new Label("6", PS.font);
 	private Label techCounter = new Label("9", PS.font);
-
+	
+	private BaseActor peopleIcon = new BaseActor("assets/personel.png");
+	private BaseActor resourceIcon = new BaseActor("assets/resource.png");
+	private BaseActor techIcon = new BaseActor("assets/tech.png");
+	private Vector2 copiedMousePos = new Vector2();
+	private BaseActor localMouseBlot = new BaseActor("assets/stageMouseBlot.png");
+	
 	public ResourcePanel(Faction f, Player p) {
 		super("assets/resourcePanel.png");
 		this.faction = f;
@@ -19,15 +28,15 @@ public class ResourcePanel extends BaseActor {
 		factionIcon.setPosition(1, 1);
 		this.addActor(factionIcon);
 
-		BaseActor peopleIcon = new BaseActor("assets/personel.png");
+		 peopleIcon = new BaseActor("assets/personel.png");
 		peopleIcon.setPosition(102, 33);
 		this.addActor(peopleIcon);
 
-		BaseActor resourceIcon = new BaseActor("assets/resource.png");
+		 resourceIcon = new BaseActor("assets/resource.png");
 		resourceIcon.setPosition(495, 33);
 		this.addActor(resourceIcon);
 
-		BaseActor techIcon = new BaseActor("assets/tech.png");
+		 techIcon = new BaseActor("assets/tech.png");
 		techIcon.setPosition(888, 33);
 		this.addActor(techIcon);
 
@@ -38,7 +47,21 @@ public class ResourcePanel extends BaseActor {
 		this.addActor(peopleCounter);
 		this.addActor(resourceCounter);
 		this.addActor(techCounter);
+		this.addActor(localMouseBlot);
 
+	}
+	
+	public void update(Stage uiStage) {
+		copiedMousePos.x = GameplayScreen.mouseBlot.getX();
+		copiedMousePos.y =  PS.viewHeight -GameplayScreen.mouseBlot.getY();
+		
+		Vector2 localMousePos = this.stageToLocalCoordinates(uiStage.screenToStageCoordinates(copiedMousePos));
+		localMouseBlot.setPosition(localMousePos.x , localMousePos.y);
+	
+		if (this.techIcon.getBoundingRectangle().contains(localMouseBlot.center) && Gdx.input.justTouched()) {
+			GameplayScreen.techTreePanel.open();
+			System.out.println("Hello!");
+		}
 	}
 
 }

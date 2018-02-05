@@ -31,7 +31,7 @@ public class SidePanel extends BaseActor {
 	private BaseActor prioritySymbol = new BaseActor("assets/priority.png");
 	private BaseActor capacitySymbol = new BaseActor("assets/capacity.png");
 	
-	private BaseActor uiMouseBlot = new BaseActor("assets/stageMouseBlot.png");
+	public static BaseActor uiMouseBlot = new BaseActor("assets/stageMouseBlot.png");
 	private Vector2 localMousePos = new Vector2();
 	
 	private Vector2 copiedMousePos = new Vector2();

@@ -28,20 +28,19 @@ public class Line {
 	
 
 	public static void genLine(Line l, Stage m) {
-		
+		//lines are still slightly off, zakiah, it's your job to fix this
 		for (int i = 0; i < l.lineSegments.length; i++) {
 			m.addActor(l.lineSegments[i]);
 			
 			l.lineSegments[i].setCenter(l.planet1.center.x, l.planet1.center.y);
 			Vector2 globalPos = l.planet1.localToStageCoordinates(l.lineSegments[i].center);
-			
-			//confirmed it is a problem with the point at formula,
-			//may be something to do with local/stage/screen coordinate conversion
-			
+		
 			double angle = Utils.pointAt(globalPos.x, globalPos.y, l.planet2.center.x, l.planet2.center.y);
 			l.lineSegments[i].setRotation((float) angle);
+	
 			Vector2 pos = Utils.polarToRect((i * 32), angle, l.planet1.center);
 			l.lineSegments[i].setCenter(pos.x, pos.y);
+			l.lineSegments[i].setZIndex(0);
 			
 			
 		}
