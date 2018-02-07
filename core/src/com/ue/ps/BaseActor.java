@@ -65,8 +65,6 @@ public class BaseActor extends Group {
 		vel = new Vector2(0, 0);
 		elapsedTime = 0;
 		this.center = new Vector2();
-		this.setOriginX(this.getWidth() / 2);
-		this.setOriginY(this.getHeight() / 2);
 		this.setRectangleBoundary();
 	}
 
@@ -77,6 +75,8 @@ public class BaseActor extends Group {
 		setWidth(w);
 		setHeight(h);
 		region.setRegion(t);
+		this.setOriginX(this.getWidth() / 2);
+		this.setOriginY(this.getHeight() / 2);
 		
 
 	}

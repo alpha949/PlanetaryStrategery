@@ -33,9 +33,9 @@ public class Line {
 			m.addActor(l.lineSegments[i]);
 			
 			l.lineSegments[i].setCenter(l.planet1.center.x, l.planet1.center.y);
-			Vector2 globalPos = l.planet1.localToStageCoordinates(l.lineSegments[i].center);
+			//Vector2 globalPos = l.planet1.localToStageCoordinates(l.lineSegments[i].center);
 		
-			double angle = Utils.pointAt(globalPos.x, globalPos.y, l.planet2.center.x, l.planet2.center.y);
+			double angle = Utils.pointAt(l.planet1.center.x, l.planet1.center.y, l.planet2.center.x, l.planet2.center.y);
 			l.lineSegments[i].setRotation((float) angle);
 	
 			Vector2 pos = Utils.polarToRect((i * 32), angle, l.planet1.center);
