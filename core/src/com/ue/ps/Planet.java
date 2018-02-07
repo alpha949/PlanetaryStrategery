@@ -17,6 +17,8 @@ public class Planet extends BaseActor{
 	public int resourceCapacity;
 	public int priority;
 	
+	public int id;
+	
 	//Display
 	public static final float focusZoomAmount = 0.4f;
 	public ArrayList<Ship> orbitingShips = new ArrayList<Ship>();

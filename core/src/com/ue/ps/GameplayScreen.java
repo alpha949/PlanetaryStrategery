@@ -1,19 +1,36 @@
 package com.ue.ps;
 
 import java.awt.DisplayMode;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.net.ServerSocket;
+import com.badlogic.gdx.net.ServerSocketHints;
+import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -55,8 +72,12 @@ public class GameplayScreen implements Screen {
 	
 	private Line planetXLine;
 	
+	private Server server = new Server();
+	
+	
 	public static TechTreePanel techTreePanel = new TechTreePanel();
-
+	private Label multMessage = new Label("", PS.font);
+	
 	public GameplayScreen(Game g) {
 		game = g;
 		create();
@@ -89,7 +110,12 @@ public class GameplayScreen implements Screen {
 
 		uiStage.addActor(player.resourcePanel);
 		uiStage.addActor(techTreePanel);
+		
+		uiStage.addActor(multMessage);
+		multMessage.setPosition(PS.viewWidth- 200, 25);
 		Gdx.input.setInputProcessor(new InputProcess());
+		
+	
 
 	}
 
@@ -168,7 +194,9 @@ public class GameplayScreen implements Screen {
 		}
 
 		
-		
+		if (Gdx.input.isKeyJustPressed(Keys.F)) {
+			server.send("HELLO WORLD!", "192.168.59.1");
+		}
 	
 
 

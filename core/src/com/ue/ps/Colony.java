@@ -8,6 +8,7 @@ public class Colony extends Building {
 		super("assets/colony.png");
 		this.health = 100;
 		this.resourceCost = 6;
+		this.id = 'c';
 	
 
 

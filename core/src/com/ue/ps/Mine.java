@@ -8,6 +8,7 @@ public class Mine extends Building {
 		super("assets/mine.png");
 		this.health = 50;
 		this.resourceCost = 5;
+		this.id = 'm';
 		// TODO Auto-generated constructor stub
 	}
 

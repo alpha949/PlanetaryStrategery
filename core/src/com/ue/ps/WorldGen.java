@@ -56,6 +56,7 @@ public class WorldGen {
 				m.addActor(p);
 				p.setCenter(pos.x, pos.y);
 				p.setColor(Color.GREEN);
+				p.id = 1;
 				failedSteps = 0;
 
 			} else {
