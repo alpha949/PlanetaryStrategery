@@ -29,6 +29,8 @@ public class Planet extends BaseActor{
 	
 	public Player owner;
 	
+	private int rotateDirection = MathUtils.randomSign();
+	
 		
 	private int builtBuildings = 0;
 	
@@ -82,6 +84,8 @@ public class Planet extends BaseActor{
 			s.setCenter(pos.x, pos.y);
 			s.setRotation(s.angle - 90);
 		}
+		
+		this.rotateBy(0.2f * rotateDirection);
 		
 		
 	}
