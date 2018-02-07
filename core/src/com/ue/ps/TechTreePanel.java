@@ -2,13 +2,15 @@ package com.ue.ps;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 public class TechTreePanel extends BaseActor{
 	
 	public boolean isOpen;
 	private static final int itemDist = 100;
-	
+	private static Texture techLineTexture = Utils.getImg("techLine");
 	private static ArrayList<TechTreeItem> items = new ArrayList<TechTreeItem>();
 	
 	public TechTreePanel() {
@@ -21,9 +23,10 @@ public class TechTreePanel extends BaseActor{
 	
 	
 	public void open() {
+	
 		this.setVisible(true);
 		for (TechTreeItem tti : items) {
-			if (tti != items.get(0)) {
+			if (tti != TechTreeItem.baseTech) {
 				this.placeItem(tti);
 			}
 			
@@ -37,7 +40,8 @@ public class TechTreePanel extends BaseActor{
 	}
 	
 	private void placeItem(TechTreeItem tti) {
-		int branch = 0;
+		int branch = -10;
+		boolean success = false;
 		for (int i = 0; i< 8; i++) {
 			for (int l = 0; l < 8; l++) {
 				if (!tti.preReq.branches[i] && !tti.branches[l]) {
@@ -48,21 +52,39 @@ public class TechTreePanel extends BaseActor{
 					}
 					tti.branches[oppositeBranch] = true;
 					branch = i;
+					System.out.println("success: " + tti.name);
+					success = true;
+					break;
 				}
 			}
+			if (success) {
+				break;
+			}
+		
 			
+		}
+		
+		if (branch == -10) {
+			
+			branch = -10;
+			System.out.println("error: " + tti.name);
+				
 		}
 		if (tti.preReq != null) {
 			if (tti.preReq == TechTreeItem.baseTech) {
 				tti.preReq.center.x = PS.viewWidth/2;
 				tti.preReq.center.y = PS.viewHeight/2;
 			}
-			System.out.println(tti.preReq.center);
+	
 			float angle = 360/8 * branch;
 			Vector2 ttiPos = Utils.polarToRect(itemDist, angle, tti.preReq.center);
 			tti.setCenter(ttiPos.x, ttiPos.y);
-			
 			this.addActor(tti);
+			BaseActor techLine = new BaseActor(techLineTexture);
+			techLine.setPosition(tti.preReq.center.x, tti.preReq.center.y);
+			techLine.setRotation(angle);
+			techLine.setOrigin(0, 0);
+			this.addActor(techLine);
 		}
 		
 		
