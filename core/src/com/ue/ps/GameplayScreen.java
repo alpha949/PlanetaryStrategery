@@ -67,6 +67,8 @@ public class GameplayScreen implements Screen {
 	public static TechTreePanel techTreePanel = new TechTreePanel();
 	private Label multMessage = new Label("HELLO!", PS.font);
 	
+	private BaseActor executeButton = new BaseActor("assets/execute.png");
+	
 	public GameplayScreen(Game g) {
 		game = g;
 		create();
@@ -102,6 +104,10 @@ public class GameplayScreen implements Screen {
 		
 		uiStage.addActor(multMessage);
 		multMessage.setPosition(PS.viewWidth- 200, 25);
+		
+		uiStage.addActor(executeButton);
+		executeButton.setPosition(PS.viewWidth- 128, 0);
+		
 		Gdx.input.setInputProcessor(new InputProcess());
 		
 	
@@ -163,6 +169,7 @@ public class GameplayScreen implements Screen {
 						this.sidePanel.setPlanet(p);
 					} else {
 						Ship.sendShipsTo(SidePanel.selectedShips.toArray(new Ship[SidePanel.selectedShips.size()]), p, mainStage, player);
+						SidePanel.selectedShips.clear();
 					}
 				
 					
@@ -170,6 +177,11 @@ public class GameplayScreen implements Screen {
 				}
 
 			}
+		}
+		
+		
+		if (!SidePanel.selectedShips.isEmpty()) {
+			Ship.renderShipPointer(SidePanel.selectedShips.toArray(new Ship[SidePanel.selectedShips.size()]), stageMouseBlot.center, mainStage);
 		}
 
 		if (targetPlanet != null && !this.hasFocusedOnSelectedPlanet) {

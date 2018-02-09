@@ -1,11 +1,15 @@
 package com.ue.ps;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 public class Ship extends BaseActor {
 
 	public int health;
@@ -24,7 +28,11 @@ public class Ship extends BaseActor {
 	
 	private Planet location;
 	
-	private static Texture warpTrailTexture = Utils.getImg("shipWarpTrail");
+	private static Texture pointerHeadTexture = Utils.getImg("pointerHead");
+	private static Texture pointerBodyTexture = Utils.getImg("pointerBody");
+	private static ArrayList<BaseActor> pointerBody;
+	
+	//private static ParticleSpawner shipWarpTrail = new ParticleSpawner("assets/particles/shipWarp");
 
 	public Ship(Faction faction, ShipType type) {
 		super();
@@ -40,16 +48,41 @@ public class Ship extends BaseActor {
 
 	public static void sendShipsTo(Ship[] ships, Planet p, Stage s, Player pla) {
 		//if (this.location.distanceTo(p.center.x, p.center.y) < pla.maxTravelDist) {
+			
+			//someone could replace this with a fancier particle effect
+			int numLineSegments = (int) Utils.distanceTo(ships[0].location.center.x,ships[0].location.center.y, p.center.x, p.center.y);
+			for (int i = 0; i < numLineSegments; i++){
+				ShipWarpTrail warp =new ShipWarpTrail();
+				s.addActor(warp);
+				warp.setColor(pla.faction.color);
+				double angle = Utils.pointAt(ships[0].location.center.x,ships[0].location.center.y, p.center.x, p.center.y);
+				
+				warp.setRotation(90);
+		
+				Vector2 poss = Utils.polarToRect((i), angle, ships[0].location.center);
+				warp.setCenter(poss.x, poss.y);
+				warp.setZIndex(0);
+				
+			
+				//warp.addAction(Actions.scaleBy(-16, -16, 16));
+				
+			    warp.addAction(Actions.fadeOut(0));
+				warp.addAction(Actions.fadeIn((float) (0.0001*i)));
+				warp.addAction(Actions.fadeOut((float) ((float) (0.0001*i) + 0.0001)));
+				
+				
+				
+			}
 			for (Ship ship : ships){
 				ship.location.removeActor(ship);
-				ship.location.orbitingShips.remove(s);
+				ship.location.orbitingShips.remove(ship);
 				p.orbitingShips.add(ship);
 				p.addActor(ship);
-				ship.angle = ship.angle;
+		
 				int orbitDist = 25 + 16;
 		
 				ship.setCenter(p.getWidth() / 2, p.getHeight() / 2);
-				Vector2 pos = Utils.polarToRect((int) (p.getWidth() / 2 + s.getWidth() / 2) + orbitDist, ship.angle,
+				Vector2 pos = Utils.polarToRect((int) (p.getWidth() / 2 + ship.getWidth() / 2) + orbitDist, ship.angle,
 						new Vector2(p.getWidth() / 2 - 16, p.getHeight() / 2 - 16));
 				ship.setCenter(pos.x, pos.y);
 				ship.setRotation(ship.angle - 90);
@@ -57,28 +90,45 @@ public class Ship extends BaseActor {
 			
 				
 			}
-			int numLineSegments = (int) Utils.distanceTo(ships[0].location.center.x,ships[0].location.center.y, p.center.x, p.center.y) / 16;
-			for (int i = 0; i < numLineSegments; i++){
-				BaseActor warp = new BaseActor(warpTrailTexture);
-				s.addActor(warp);
-				warp.setColor(pla.faction.color);
-				double angle = Utils.pointAt(ships[0].location.center.x,ships[0].location.center.y, p.center.x, p.center.y);
-				
-				warp.setRotation(90);
-		
-				Vector2 poss = Utils.polarToRect((i * 16), angle, ships[0].location.center);
-				warp.setCenter(poss.x, poss.y);
-				//warp.setZIndex(0);
-				
 			
-				warp.addAction(Actions.scaleBy(-16, -16, 16));
-				warp.addAction(Actions.fadeOut(16));
-				
-			}
+			
+		
+			
+			
+			
+			
 			
 			
 		//}
 	}
+	
+
+	public static void renderShipPointer(Ship[] ships, Vector2 mousePos, Stage s) {
+		
+		
+		
+		BaseActor head = new BaseActor(pointerHeadTexture);
+		int numLineSegments = (int) Utils.distanceTo(ships[0].location.center.x,ships[0].location.center.y,mousePos.x, mousePos.y)/ 64;
+	
+		for (int i = 0; i < numLineSegments; i++){
+			
+			BaseActor body = new BaseActor(pointerBodyTexture);
+			s.addActor(body);
+			double angle = Utils.pointAt(ships[0].location.center.x,ships[0].location.center.y, mousePos.x, mousePos.y);
+			
+			body.setRotation((float) angle);
+	
+			Vector2 poss = Utils.polarToRect((i * 64), angle, ships[0].location.center);
+			body.setCenter(poss.x, poss.y);
+			body.setZIndex(0);
+			
+		
+			
+			
+			
+		}
+	}
+	
 
 	public static void spawnShip(Faction f, Planet p, ShipType s, int angle) {
 		Ship newShip = new Ship(f, s);

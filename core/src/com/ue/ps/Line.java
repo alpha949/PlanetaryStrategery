@@ -44,6 +44,7 @@ public class Line {
 			
 			
 		}
+		
 	}
 	
 	public static void deleteLine(Line l, Stage m) {
