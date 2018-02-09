@@ -116,7 +116,7 @@ public class WorldGen {
 
 		for (int i = 0; i < numHomePlanets; i++) {
 			Vector2 vert = Utils.polarToRect(dist, (360 / numHomePlanets * i) + 45, planetBorder.getCenter(new Vector2()));
-			System.out.println(vert.x + " " + vert.y);
+
 			Planet home = getClosestPlanetTo(vert.x, vert.y);
 			home.setColor(Color.BLUE);
 			home.isHomePlanet = true;

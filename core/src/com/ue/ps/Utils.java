@@ -70,7 +70,7 @@ public class Utils {
 		double yDiff = y - y2;
 		double xDiff = x - x2;
 		double newAngle = Math.toDegrees(Math.atan2(yDiff, xDiff)) + 180;
-		System.out.println(newAngle);
+	
 
 		return newAngle;
 

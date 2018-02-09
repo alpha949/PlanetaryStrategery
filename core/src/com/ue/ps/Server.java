@@ -19,6 +19,7 @@ import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Json;
 
 public class Server {
 	
@@ -58,25 +59,37 @@ public class Server {
 	            public void run() {
 	                ServerSocketHints serverSocketHint = new ServerSocketHints();
 	                // 0 means no timeout.  Probably not the greatest idea in production!
-	                serverSocketHint.acceptTimeout = 4000;
+	                serverSocketHint.acceptTimeout = 0;
 	                
 	                // Create the socket server using TCP protocol and listening on 9021
 	                // Only one app can listen to a port at a time, keep in mind many ports are reserved
 	                // especially in the lower numbers ( like 21, 80, etc )
-	                ServerSocket serverSocket = Gdx.net.newServerSocket(Protocol.TCP, 9021, serverSocketHint);
-	                
+	                ServerSocket serverSocket = Gdx.net.newServerSocket(Protocol.TCP, 6001, serverSocketHint);
+	                Socket socket;
 	                // Loop forever
 	                while(true){
 	                	
+	                	
 	                    // Create a socket
-	                    Socket socket = serverSocket.accept(null);
+	                	try{
+	                		  socket = serverSocket.accept(null);
+	                	} catch(GdxRuntimeException e){
+	                		continue;
+	                	}
+	                  
 	                    
 	                    // Read data from the socket into a BufferedReader
 	                    BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
-	                    
+	                    System.out.println("Connection Successful from: " + socket.getRemoteAddress());
 	                    try {
 	                        // Read to the next newline (\n) and display that text on labelMessage
-	                    	message = buffer.readLine();    
+	                    
+                    		String line = buffer.readLine();  
+                    		System.out.println(line);
+                    		socket.dispose();
+	                    	  
+	                    	
+	                    
 	                    } catch (IOException e) {
 	                        e.printStackTrace();
 	                    }
@@ -87,6 +100,10 @@ public class Server {
 	
 	public String getMessage() {
 		return this.message;
+	}
+	
+	public void registerUser(){
+		
 	}
 	
 	public void send(String s, String ip) {
@@ -100,8 +117,9 @@ public class Server {
         socketHints.connectTimeout = 4000;
         //create the socket and connect to the server entered in the text box ( x.x.x.x format ) on port 9021
         try {
-        	  Socket socket = Gdx.net.newClientSocket(Protocol.TCP, ip, 9021, socketHints);
+        	  Socket socket = Gdx.net.newClientSocket(Protocol.TCP, ip, 6001, socketHints);
         	  socket.getOutputStream().write(textToSend.getBytes());
+        	  
         } catch (GdxRuntimeException e) {
         	System.out.println("Could not connect to: " + ip);
         } catch (IOException e) {

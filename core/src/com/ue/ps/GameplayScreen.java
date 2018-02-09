@@ -1,17 +1,6 @@
 package com.ue.ps;
 
-import java.awt.DisplayMode;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
+
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -76,7 +65,7 @@ public class GameplayScreen implements Screen {
 	
 	
 	public static TechTreePanel techTreePanel = new TechTreePanel();
-	private Label multMessage = new Label("", PS.font);
+	private Label multMessage = new Label("HELLO!", PS.font);
 	
 	public GameplayScreen(Game g) {
 		game = g;
@@ -128,7 +117,7 @@ public class GameplayScreen implements Screen {
 		
 		
 		
-		// Again with the weird arbitrary 24...
+	
 		player.resourcePanel.setPosition(0, PS.viewHeight - player.resourcePanel.getHeight());
 		player.resourcePanel.update(uiStage);
 		
@@ -149,9 +138,9 @@ public class GameplayScreen implements Screen {
 
 		mouseBlot.setPosition(Gdx.input.getX(), PS.viewHeight - Gdx.input.getY());
 		mousePos = mainStage.screenToStageCoordinates(uiStage.stageToScreenCoordinates(mouseBlot.center));
-		// these numbers (8 and 53) seem really arbitrary, there's probably some
+		// these numbers (8 and 13) seem really arbitrary, there's probably some
 		// reason for them...
-		stageMouseBlot.setPosition(mousePos.x - 8 * zoomAmount, mousePos.y - 8 * zoomAmount);
+		stageMouseBlot.setPosition(mousePos.x - 8* zoomAmount, mousePos.y + 13*zoomAmount);
 		// stageMouseBlot.setScale(zoomAmount, zoomAmount);
 		stageMouseBlot.setSize(16 * zoomAmount, 16 * zoomAmount);
 		
@@ -173,9 +162,7 @@ public class GameplayScreen implements Screen {
 						
 						this.sidePanel.setPlanet(p);
 					} else {
-						for (Ship s : SidePanel.selectedShips) {
-							s.setDestination(p, player, mainStage);
-						}
+						Ship.sendShipsTo(SidePanel.selectedShips.toArray(new Ship[SidePanel.selectedShips.size()]), p, mainStage, player);
 					}
 				
 					
@@ -195,8 +182,10 @@ public class GameplayScreen implements Screen {
 
 		
 		if (Gdx.input.isKeyJustPressed(Keys.F)) {
-			server.send("HELLO WORLD!", "192.168.59.1");
+			server.send("HELLO WORLD!", "10.0.0.181");
 		}
+		
+		multMessage.setText(server.getMessage());
 	
 
 

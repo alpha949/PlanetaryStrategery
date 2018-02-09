@@ -57,7 +57,7 @@ public class Planet extends BaseActor{
 		this.capacity = size * 4;
 		this.buildings = new Building[capacity];
 		this.genTexture("assets/planet" + size + ".png"); //TODO add type to path
-		//this.setRotation(MathUtils.random(0, 360)); //just need to take the rotation displacement into account and move the image core
+		this.setRotation(MathUtils.random(0, 360));
 		this.name = Utils.genName();
 	}
 	

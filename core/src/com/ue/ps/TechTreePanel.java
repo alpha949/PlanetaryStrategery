@@ -52,7 +52,7 @@ public class TechTreePanel extends BaseActor{
 					}
 					tti.branches[oppositeBranch] = true;
 					branch = i;
-					System.out.println("success: " + tti.name);
+				
 					success = true;
 					break;
 				}
@@ -67,7 +67,7 @@ public class TechTreePanel extends BaseActor{
 		if (branch == -10) {
 			
 			branch = -10;
-			System.out.println("error: " + tti.name);
+	
 				
 		}
 		if (tti.preReq != null) {
