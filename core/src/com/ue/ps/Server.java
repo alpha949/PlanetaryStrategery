@@ -26,6 +26,8 @@ public class Server {
 	public static String ipAddress;
 	public String message;
 	
+	private ArrayList<Player> allPlayers = new ArrayList<Player>();
+	
 	public Server(){
 		
 		
@@ -85,7 +87,7 @@ public class Server {
 	                        // Read to the next newline (\n) and display that text on labelMessage
 	                    
                     		String line = buffer.readLine();  
-                    		System.out.println(line);
+                    		GameplayScreen.packet.setData(line);
                     		socket.dispose();
 	                    	  
 	                    	
@@ -102,31 +104,31 @@ public class Server {
 		return this.message;
 	}
 	
-	public void registerUser(){
-		
+	public void registerUser(Player p){
+		allPlayers.add(p);
 	}
 	
 	public void send(String s, String ip) {
 		 String textToSend = s;
-        
-         textToSend += "\n";
        
-        
-        SocketHints socketHints = new SocketHints();
-        // Socket will time our in 4 seconds
-        socketHints.connectTimeout = 4000;
-        //create the socket and connect to the server entered in the text box ( x.x.x.x format ) on port 9021
-        try {
-        	  Socket socket = Gdx.net.newClientSocket(Protocol.TCP, ip, 6001, socketHints);
-        	  socket.getOutputStream().write(textToSend.getBytes());
-        	  
-        } catch (GdxRuntimeException e) {
-        	System.out.println("Could not connect to: " + ip);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        textToSend += "\n";
       
        
+       SocketHints socketHints = new SocketHints();
+       // Socket will time our in 4 seconds
+       socketHints.connectTimeout = 4000;
+       //create the socket and connect to the server entered in the text box ( x.x.x.x format ) on port 9021
+       try {
+       	  Socket socket = Gdx.net.newClientSocket(Protocol.TCP, ip, 6001, socketHints);
+       	  socket.getOutputStream().write(textToSend.getBytes());
+       	  
+       } catch (GdxRuntimeException e) {
+       	System.out.println("Could not connect to: " + ip);
+       } catch (IOException e) {
+           e.printStackTrace();
+       }
+     
+      
 	}
 	
 }

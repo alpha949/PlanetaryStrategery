@@ -22,6 +22,8 @@ public class WorldGen {
 	public static ArrayList<Planet> allPlanets = new ArrayList<Planet>();
 	private static int failedSteps = 0;
 	private static boolean done = false;
+	
+	private static int prevId;
 
 	public static void setup(Stage m) {
 
@@ -56,7 +58,8 @@ public class WorldGen {
 				m.addActor(p);
 				p.setCenter(pos.x, pos.y);
 				p.setColor(Color.GREEN);
-				p.id = 1;
+				p.id = 1 + prevId;
+				prevId = p.id;
 				failedSteps = 0;
 
 			} else {

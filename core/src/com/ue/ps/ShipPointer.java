@@ -17,21 +17,19 @@ public class ShipPointer {
 	private Planet destination;
 	private boolean isStatic;
 	private boolean hasStaticRendered;
+	public ArrayList<Ship> ships = new ArrayList<Ship>();
 	
 	public ShipPointer(Planet location){
 		this.location = location;
 	}
-	private ShipPointer(Planet location, Planet destination){
-		this.location = location;
-		this.destination = destination;
-		
-	}
+	
 	
 	public void delete(){
 		for (BaseActor ba : pointerBody){
 			ba.remove();
 		}
 		pointerBody.clear();
+		ships.clear();
 	}
 	
 	public void renderShipPointer(Vector2 mousePos, Stage s) {
@@ -103,5 +101,7 @@ public class ShipPointer {
 		this.destination = d;
 		isStatic = true;
 	}
+	
+	
 	
 }

@@ -73,6 +73,8 @@ public class GameplayScreen implements Screen {
 	
 	private ShipPointer activePointer;
 	
+	public static Packet packet = new Packet();
+	
 	private ArrayList<ShipPointer> allPointers = new ArrayList<ShipPointer>();
 	
 	public GameplayScreen(Game g) {
@@ -174,12 +176,10 @@ public class GameplayScreen implements Screen {
 						
 						this.sidePanel.setPlanet(p);
 					} else {
-				
-						Ship.sendShipsTo(SidePanel.selectedShips.toArray(new Ship[SidePanel.selectedShips.size()]), p, mainStage, player);
-						SidePanel.selectedShips.clear();
 						if (activePointer !=null){
 							activePointer.setDestination(p);
-							
+							activePointer.ships = SidePanel.selectedShips;
+							packet.addAction(new Action(Utils.getShipIds(SidePanel.selectedShips), SidePanel.selectedShips.get(0).location, p));
 							allPointers.add(activePointer);
 							activePointer.delete();
 							activePointer = null;
@@ -194,7 +194,7 @@ public class GameplayScreen implements Screen {
 			}
 		}
 		
-		System.out.println(activePointer);
+
 		if (!SidePanel.selectedShips.isEmpty()) {
 			if (activePointer == null){
 				activePointer = new ShipPointer(SidePanel.selectedShips.get(0).location);
@@ -276,6 +276,12 @@ public class GameplayScreen implements Screen {
 				PS.paused = true;
 			}
 			//Gdx.graphics.setWindowedMode(PS.viewWidth, PS.viewHeight);
+		}
+		
+		if (executeButton.getBoundingRectangle().contains(mouseBlot.center) && Gdx.input.justTouched()) {
+			//send ip here;
+			packet.send("");
+				
 		}
 
 		if (!PS.paused) {

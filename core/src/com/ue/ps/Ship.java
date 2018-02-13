@@ -28,6 +28,8 @@ public class Ship extends BaseActor {
 	
 	public Planet location;
 	
+	public String id;
+	
 
 	private static ArrayList<BaseActor> pointerBody = new ArrayList<BaseActor>();
 	
@@ -122,6 +124,7 @@ public class Ship extends BaseActor {
 		newShip.setCenter(pos.x, pos.y);
 		newShip.setRotation(newShip.angle - 90);
 		newShip.location = p;
+		newShip.id = Utils.genId();
 
 	}
 }

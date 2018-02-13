@@ -1,5 +1,8 @@
 package com.ue.ps;
 
+import java.util.ArrayList;
+import java.util.UUID;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
@@ -96,6 +99,23 @@ public class Utils {
 		
 		return name;
 	}
+	
+	public static String genId() {
+		UUID id = UUID.randomUUID();
+		System.out.println(id.toString());
+		return id.toString();
+	}
+	
+	public static String[] getShipIds(ArrayList<Ship> ships) {
+		String[] ids = new String[ships.size()];
+		for (int i = 0; i < ids.length; i++) {
+			ids[i] = ships.get(i).id;
+		
+			
+		}
+		
+		return ids;
+	}
 
 	private static Array<String> nameBits;
 	static {
@@ -109,5 +129,7 @@ public class Utils {
 		}
 
 	}
+	
+	
 
 }
