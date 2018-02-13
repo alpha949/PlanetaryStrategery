@@ -2,6 +2,8 @@ package com.ue.ps;
 
 
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -68,6 +70,10 @@ public class GameplayScreen implements Screen {
 	private Label multMessage = new Label("HELLO!", PS.font);
 	
 	private BaseActor executeButton = new BaseActor("assets/execute.png");
+	
+	private ShipPointer activePointer;
+	
+	private ArrayList<ShipPointer> allPointers = new ArrayList<ShipPointer>();
 	
 	public GameplayScreen(Game g) {
 		game = g;
@@ -168,8 +174,17 @@ public class GameplayScreen implements Screen {
 						
 						this.sidePanel.setPlanet(p);
 					} else {
+				
 						Ship.sendShipsTo(SidePanel.selectedShips.toArray(new Ship[SidePanel.selectedShips.size()]), p, mainStage, player);
 						SidePanel.selectedShips.clear();
+						if (activePointer !=null){
+							activePointer.setDestination(p);
+							
+							allPointers.add(activePointer);
+							activePointer.delete();
+							activePointer = null;
+						}
+						
 					}
 				
 					
@@ -179,10 +194,26 @@ public class GameplayScreen implements Screen {
 			}
 		}
 		
-		
+		System.out.println(activePointer);
 		if (!SidePanel.selectedShips.isEmpty()) {
-			Ship.renderShipPointer(SidePanel.selectedShips.toArray(new Ship[SidePanel.selectedShips.size()]), stageMouseBlot.center, mainStage);
+			if (activePointer == null){
+				activePointer = new ShipPointer(SidePanel.selectedShips.get(0).location);
+				
+			}
+			if (activePointer !=null){
+				activePointer.renderShipPointer(stageMouseBlot.center, mainStage);
+				
+			}
+		} else {
+			if (activePointer !=null){
+				activePointer.delete();
+				
+			}
 		}
+		
+		for (ShipPointer sp : allPointers){
+			sp.staticRender(mainStage);
+		}	
 
 		if (targetPlanet != null && !this.hasFocusedOnSelectedPlanet) {
 
@@ -191,6 +222,8 @@ public class GameplayScreen implements Screen {
 				targetPlanet = null;
 			}
 		}
+		
+		
 
 		
 		if (Gdx.input.isKeyJustPressed(Keys.F)) {
@@ -252,7 +285,8 @@ public class GameplayScreen implements Screen {
 		}
 
 	}
-
+	
+	
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub

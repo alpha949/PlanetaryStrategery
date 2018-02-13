@@ -26,11 +26,10 @@ public class Ship extends BaseActor {
 	public Planet destination;
 	public float angle;
 	
-	private Planet location;
+	public Planet location;
 	
-	private static Texture pointerHeadTexture = Utils.getImg("pointerHead");
-	private static Texture pointerBodyTexture = Utils.getImg("pointerBody");
-	private static ArrayList<BaseActor> pointerBody;
+
+	private static ArrayList<BaseActor> pointerBody = new ArrayList<BaseActor>();
 	
 	//private static ParticleSpawner shipWarpTrail = new ParticleSpawner("assets/particles/shipWarp");
 
@@ -100,33 +99,12 @@ public class Ship extends BaseActor {
 			
 			
 		//}
-	}
+	
 	
 
-	public static void renderShipPointer(Ship[] ships, Vector2 mousePos, Stage s) {
-		
-		
-		
-		BaseActor head = new BaseActor(pointerHeadTexture);
-		int numLineSegments = (int) Utils.distanceTo(ships[0].location.center.x,ships[0].location.center.y,mousePos.x, mousePos.y)/ 64;
 	
-		for (int i = 0; i < numLineSegments; i++){
-			
-			BaseActor body = new BaseActor(pointerBodyTexture);
-			s.addActor(body);
-			double angle = Utils.pointAt(ships[0].location.center.x,ships[0].location.center.y, mousePos.x, mousePos.y);
-			
-			body.setRotation((float) angle);
 	
-			Vector2 poss = Utils.polarToRect((i * 64), angle, ships[0].location.center);
-			body.setCenter(poss.x, poss.y);
-			body.setZIndex(0);
-			
-		
-			
-			
-			
-		}
+	
 	}
 	
 
