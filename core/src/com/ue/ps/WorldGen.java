@@ -60,6 +60,8 @@ public class WorldGen {
 				p.setColor(Color.GREEN);
 				p.id = 1 + prevId;
 				prevId = p.id;
+				p.owner = GameplayScreen.player;
+				
 				failedSteps = 0;
 
 			} else {

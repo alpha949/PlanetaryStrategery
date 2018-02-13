@@ -48,7 +48,7 @@ public class GameplayScreen implements Screen {
 	private Planet selectedPlanet = new Planet();
 	private boolean running = false;
 	private boolean hasFocusedOnSelectedPlanet;
-	private Player player = new Player(Faction.Xin);
+	public static Player player = new Player(Faction.Xin);
 
 	private Camera camera;
 	private Camera uiCamera;
@@ -166,16 +166,17 @@ public class GameplayScreen implements Screen {
 		} else if (Gdx.input.isTouched()) {
 			PS.recordingGeneration = false;
 		}
-
+		//clicking on planets
 		for (Planet p : WorldGen.allPlanets) {
 			if (p.getBoundingRectangle().overlaps(stageMouseBlot.getBoundingRectangle())) {
 	
 				if (Gdx.input.justTouched() ) {
-					if (SidePanel.selectedShips.isEmpty()) {
+					if (SidePanel.selectedShips.isEmpty() && p.owner == player) {
 						targetPlanet = p;
 						
 						this.sidePanel.setPlanet(p);
 					} else {
+						this.sidePanel.onDestinationSet(p);
 						if (activePointer !=null){
 							activePointer.setDestination(p);
 							activePointer.ships = SidePanel.selectedShips;
@@ -331,6 +332,7 @@ public class GameplayScreen implements Screen {
 	public void dispose() {
 		// TODO Auto-generated method stub
 
+		
 	}
 
 	public boolean focusCameraOnPlanet(Planet p, OrthographicCamera c) {

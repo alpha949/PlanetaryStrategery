@@ -15,6 +15,7 @@ public class Faction {
 	private Texture cruiserImg;
 	private Texture dreadImg;
 	private Texture flagshipImg;
+	private Texture symbolImg;
 
 	public Faction(String name, String abv, Color color) {
 		this.name = name;
@@ -26,6 +27,7 @@ public class Faction {
 		this.cruiserImg = Utils.getImg(abv + "cruiser");
 		this.dreadImg = Utils.getImg(abv + "dread");
 		this.flagshipImg = Utils.getImg(abv + "flagship");
+		this.symbolImg = Utils.getImg(abv);
 	}
 
 	public Texture getShipTypeTexture(ShipType s) {
@@ -46,6 +48,10 @@ public class Faction {
 				return this.droneImg;
 		}
 
+	}
+	
+	public Texture getSymbolTexture() {
+		return this.symbolImg;
 	}
 
 	public static Faction Braecious = new Faction("Braecious", "brc", Color.RED);

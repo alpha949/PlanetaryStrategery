@@ -12,7 +12,8 @@ public class ShipContainer extends BaseActor{
 	private Ship ship;
 	private BaseActor shipImg = new BaseActor();
 	private boolean isSelected;
-	
+	private String distinationName;
+	private boolean isDestinationSet;
 	public ShipContainer() {
 		super(texture);
 		shipImg.setPosition(1, 1);
@@ -47,14 +48,30 @@ public class ShipContainer extends BaseActor{
 			this.setColor(Color.WHITE);
 		}
 		
-		if (this.getBoundingRectangle().contains(mousePos) && Gdx.input.justTouched()) {
-			this.isSelected = true;
-			this.setColor(Color.LIGHT_GRAY);
+		if (this.getBoundingRectangle().contains(mousePos)) {
+			
+			if (this.isDestinationSet) {
+				//TODO show destination of ships here
+			}
+			
+			if (Gdx.input.justTouched()) {
+				this.isSelected = true;
+				this.setColor(Color.LIGHT_GRAY);
+			}
+			
 		}
 	}
 	
 	public boolean isSelected() {
 		return isSelected;
 	}
+	
+	
+	public void setDestinationInfo(Planet destination) {
+		this.setColor(Color.GREEN);
+		distinationName = destination.name;
+		this.isDestinationSet = true;
+	}
+	
 	
 }

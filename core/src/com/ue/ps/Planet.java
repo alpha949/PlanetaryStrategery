@@ -90,6 +90,7 @@ public class Planet extends BaseActor{
 		this.rotateBy(0.2f * rotateDirection);
 		
 		
+		
 	}
 	
 	
@@ -143,6 +144,7 @@ public class Planet extends BaseActor{
 	}
 	
 	
+
 	
 	
 	

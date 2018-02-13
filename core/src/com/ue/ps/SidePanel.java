@@ -308,5 +308,20 @@ public class SidePanel extends BaseActor {
 	private void hideDestroy() {
 		this.destroyBuildingBox.setPosition(-100, -100);
 	}
+	
+	private ShipContainer getShipContainer(Ship s) {
+		for (ShipContainer sc : this.shipContainers) {
+			if (sc.getShip() == s) {
+				return sc;
+			} 
+		}
+		return null;
+	}
+	
+	public void onDestinationSet(Planet destination) {
+		for (Ship s : selectedShips) {
+			getShipContainer(s).setDestinationInfo(destination);
+		}
+	}
 
 }
