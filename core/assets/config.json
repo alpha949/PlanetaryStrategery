@@ -1,6 +1,7 @@
 {
 	"username" : "coo",
 	"server_ip" : "10.0.0.181",
-	"server_port" : "6001"
+	"server_port" : "6001",
+	"use_server": true
 
 }

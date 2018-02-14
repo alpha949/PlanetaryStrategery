@@ -23,13 +23,15 @@ public class Ship extends BaseActor {
 
 	public int buildProgress;
 
-	public Planet destination;
+
 	public float angle;
 	
 	public Planet location;
 	
 	public String id;
+	private String ownerName;
 	
+	private static int shipCount;
 
 	private static ArrayList<BaseActor> pointerBody = new ArrayList<BaseActor>();
 	
@@ -41,12 +43,7 @@ public class Ship extends BaseActor {
 
 	}
 
-	public void update() {
-		if (destination != null) {
-			
-		}
-	}
-
+	
 	public static void sendShipsTo(Ship[] ships, Planet p, Stage s, Player pla) {
 		//if (this.location.distanceTo(p.center.x, p.center.y) < pla.maxTravelDist) {
 			
@@ -110,8 +107,8 @@ public class Ship extends BaseActor {
 	}
 	
 
-	public static void spawnShip(Faction f, Planet p, ShipType s, int angle) {
-		Ship newShip = new Ship(f, s);
+	public static void spawnShip(Player pla, Planet p, ShipType s, int angle) {
+		Ship newShip = new Ship(pla.faction, s);
 		p.orbitingShips.add(newShip);
 
 		p.addActor(newShip);
@@ -124,7 +121,20 @@ public class Ship extends BaseActor {
 		newShip.setCenter(pos.x, pos.y);
 		newShip.setRotation(newShip.angle - 90);
 		newShip.location = p;
-		newShip.id = Utils.genId();
+		newShip.id = genId(pla);
+		newShip.ownerName = pla.userName;
+		shipCount += 1;
 
+	}
+	
+	private static String genId(Player owner){
+		String id = owner.userName + shipCount;
+		
+		return id;
+		
+	}
+	
+	public String getOwnerName(){
+		return this.ownerName;
 	}
 }

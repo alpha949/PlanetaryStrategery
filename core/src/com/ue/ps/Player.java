@@ -6,7 +6,9 @@ public class Player {
 	public int resource;
 	public int people;
 	public int maxTravelDist = 100 * 8 * 3;
+	public String userName;
 	public Faction faction;
+	
 
 	public ResourcePanel resourcePanel;
 

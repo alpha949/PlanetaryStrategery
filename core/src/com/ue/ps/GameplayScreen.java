@@ -63,7 +63,7 @@ public class GameplayScreen implements Screen {
 	
 	private Line planetXLine;
 	
-	private Server server = new Server();
+	private GameServerClient server = new GameServerClient();
 	
 	
 	public static TechTreePanel techTreePanel = new TechTreePanel();
@@ -74,6 +74,8 @@ public class GameplayScreen implements Screen {
 	private ShipPointer activePointer;
 	
 	public static Packet packet = new Packet();
+	
+	public static Boolean useServer;
 	
 	private ArrayList<ShipPointer> allPointers = new ArrayList<ShipPointer>();
 	
@@ -118,8 +120,16 @@ public class GameplayScreen implements Screen {
 		
 		Gdx.input.setInputProcessor(new InputProcess());
 		
-	
-
+		//TODO move to ui
+		String[] config = ConfigReader.readFile("assets/config.json");
+		
+		useServer = Boolean.parseBoolean(config[3]);
+		player.userName = config[0];
+		if (useServer){
+				this.server.registerUser(player, config[1],Integer.parseInt(config[2]));
+		}
+		
+		
 	}
 
 	public void render(float dt) {
@@ -167,7 +177,7 @@ public class GameplayScreen implements Screen {
 			PS.recordingGeneration = false;
 		}
 		//clicking on planets
-		for (Planet p : WorldGen.allPlanets) {
+		for (Planet p : World.getWorld()) {
 			if (p.getBoundingRectangle().overlaps(stageMouseBlot.getBoundingRectangle())) {
 	
 				if (Gdx.input.justTouched() ) {
@@ -227,9 +237,7 @@ public class GameplayScreen implements Screen {
 		
 
 		
-		if (Gdx.input.isKeyJustPressed(Keys.F)) {
-			server.send("HELLO WORLD!", "10.0.0.181");
-		}
+		
 		
 		multMessage.setText(server.getMessage());
 	

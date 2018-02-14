@@ -3,6 +3,7 @@ package com.ue.ps;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -21,14 +22,14 @@ import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 
-public class Server {
+public class GameServerClient {
 	
 	public static String ipAddress;
 	public String message;
 	
 	private ArrayList<Player> allPlayers = new ArrayList<Player>();
 	
-	public Server(){
+	public GameServerClient(){
 		
 		
 		 List<String> addresses = new ArrayList<String>();
@@ -55,7 +56,7 @@ public class Server {
 	        
 	        
 	     // Now we create a thread that will listen for incoming socket connections
-	        new Thread(new Runnable(){
+	     /*   new Thread(new Runnable(){
 
 	            @Override
 	            public void run() {
@@ -97,18 +98,16 @@ public class Server {
 	                    }
 	                }
 	            }
-	        }).start(); // And, start the thread running
+	        }).start(); // And, start the thread running*/
 	}
 	
 	public String getMessage() {
 		return this.message;
 	}
 	
-	public void registerUser(Player p){
-		allPlayers.add(p);
-	}
 	
-	public void send(String s, String ip) {
+	
+	public void send(String s, String ip, int port) {
 		 String textToSend = s;
        
         textToSend += "\n";
@@ -119,7 +118,7 @@ public class Server {
        socketHints.connectTimeout = 4000;
        //create the socket and connect to the server entered in the text box ( x.x.x.x format ) on port 9021
        try {
-       	  Socket socket = Gdx.net.newClientSocket(Protocol.TCP, ip, 6001, socketHints);
+       	  Socket socket = Gdx.net.newClientSocket(Protocol.TCP, ip, port, socketHints);
        	  socket.getOutputStream().write(textToSend.getBytes());
        	  
        } catch (GdxRuntimeException e) {
@@ -129,6 +128,21 @@ public class Server {
        }
      
       
+	}
+	
+	public void registerUser(Player p, String ip, int port){
+		Json j = new Json();
+		
+		StringWriter sw = new StringWriter();
+		j.setWriter(sw);
+		j.writeObjectStart();
+		j.writeValue("username", p.userName);
+		j.writeObjectEnd();
+		
+		
+		System.out.println(sw.toString());
+		
+		this.send(sw.toString(), ip, port);
 	}
 	
 }
