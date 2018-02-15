@@ -77,6 +77,7 @@ public class GameplayScreen implements Screen {
 	
 	public static Boolean useServer;
 	
+	private ResourcePanel resourcePanel;
 
 	
 	public GameplayScreen(Game g) {
@@ -85,7 +86,8 @@ public class GameplayScreen implements Screen {
 	}
 
 	public void create() {
-
+		player = PS.p1;
+		resourcePanel = new ResourcePanel(player.faction, player);
 		camera = new OrthographicCamera();
 		uiCamera = new OrthographicCamera();
 		viewport = new ScreenViewport(camera);
@@ -109,7 +111,7 @@ public class GameplayScreen implements Screen {
 		uiStage.addActor(sidePanel);
 		
 
-		uiStage.addActor(player.resourcePanel);
+		uiStage.addActor(resourcePanel);
 		uiStage.addActor(techTreePanel);
 		
 		uiStage.addActor(multMessage);
@@ -125,9 +127,13 @@ public class GameplayScreen implements Screen {
 		
 		useServer = Boolean.parseBoolean(config[3]);
 		player.userName = config[0];
+		PS.p2.userName = "siv";
+		PS.p1.userName = "coo";
 		if (useServer){
 				this.server.registerUser(player, config[1],Integer.parseInt(config[2]));
 		}
+		
+		
 		
 		
 	}
@@ -142,8 +148,8 @@ public class GameplayScreen implements Screen {
 		
 		
 	
-		player.resourcePanel.setPosition(0, PS.viewHeight - player.resourcePanel.getHeight());
-		player.resourcePanel.update(uiStage);
+		resourcePanel.setPosition(0, PS.viewHeight - resourcePanel.getHeight());
+		resourcePanel.update(uiStage);
 		
 		OrthographicCamera cam = (OrthographicCamera) mainStage.getCamera();
 		Vector2 center = new Vector2();
@@ -181,7 +187,9 @@ public class GameplayScreen implements Screen {
 			if (p.getBoundingRectangle().overlaps(stageMouseBlot.getBoundingRectangle())) {
 	
 				if (Gdx.input.justTouched() ) {
-					if (SidePanel.selectedShips.isEmpty() && p.owner == player) {
+					
+					
+					if (SidePanel.selectedShips.isEmpty()) {
 						targetPlanet = p;
 						
 						this.sidePanel.setPlanet(p);

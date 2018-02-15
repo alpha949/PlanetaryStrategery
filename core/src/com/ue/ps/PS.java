@@ -20,7 +20,10 @@ public class PS extends Game {
 	public static LabelStyle font;
 	public static boolean paused;
 	public static boolean recordingGeneration;
-
+	
+	public static Player p1;
+	public static Player p2;
+	public static Player[] allPlayers = new Player[2];
 	@Override
 	public void create() {
 		// viewBorder = new Rectangle(1, 0, PS.viewWidth-1, PS.viewHeight-220);
@@ -32,6 +35,11 @@ public class PS extends Game {
 		generator.dispose(); // don't forget to dispose to avoid memory leaks!
 
 		font = new LabelStyle(new BitmapFont(), Color.WHITE);
+		
+		p1 = new Player(Faction.Xin);
+		p2 = new Player(Faction.Reach);
+		allPlayers[0] = p1;
+		allPlayers[1] = p2;
 
 		GameplayScreen ms = new GameplayScreen(this);
 

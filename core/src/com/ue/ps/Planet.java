@@ -63,6 +63,7 @@ public class Planet extends BaseActor{
 		this.genTexture("assets/planet" + size + ".png"); //TODO add type to path
 		this.setRotation(MathUtils.random(0, 360));
 		this.name = Utils.genName();
+		this.setColor(this.type.color);
 	}
 	
 	public void setType(PlanetType p){

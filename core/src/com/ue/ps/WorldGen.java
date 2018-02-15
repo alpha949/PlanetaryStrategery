@@ -57,10 +57,10 @@ public class WorldGen {
 				allPlanets.add(p);
 				m.addActor(p);
 				p.setCenter(pos.x, pos.y);
-				p.setColor(Color.GREEN);
+				
 				p.id = 1 + prevId;
 				prevId = p.id;
-				p.owner = GameplayScreen.player;
+				p.owner = null;
 				
 				failedSteps = 0;
 
@@ -81,9 +81,7 @@ public class WorldGen {
 			}
 
 			if (failedSteps > 100) {
-				for (Planet p : allPlanets) {
-					p.setColor(Colors.getColors().values().toArray().get(MathUtils.random(0, Colors.getColors().values().toArray().size - 1)));
-				}
+				
 				done = true;
 
 				genHomePlanets(2, m);
@@ -132,6 +130,7 @@ public class WorldGen {
 			p.setColor(Color.TEAL);
 			m.addActor(p);
 			p.setCenter(vert.x, vert.y);
+			p.owner = PS.allPlayers[i];
 
 		}
 		
@@ -139,10 +138,12 @@ public class WorldGen {
 		allPlanets.get(2).addBuilding(new Factory(), 1);
 		
 		for (Planet p : allPlanets) {
-			for (int i = 0; i < p.capacity; i++) {
-				
-				Ship.spawnShip(Faction.Xin, p, ShipType.drone, 10 * i);
+			if (p.isHomePlanet) {
+				Ship.spawnShip(Faction.Xin, p, ShipType.drone, 10);
 			}
+				
+				
+			
 		}
 		
 		Line.genLine(new Line(allPlanets.get(1), allPlanets.get(2), Faction.Xin), m);
