@@ -35,6 +35,8 @@ public class Planet extends BaseActor{
 	
 	private int rotateDirection = MathUtils.randomSign();
 	
+	public ArrayList<ShipPointer> pointers = new ArrayList<ShipPointer>();
+	
 		
 	private int builtBuildings = 0;
 	

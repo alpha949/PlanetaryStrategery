@@ -14,6 +14,8 @@ public class ShipContainer extends BaseActor{
 	private boolean isSelected;
 	private String distinationName;
 	private boolean isDestinationSet;
+	
+	public boolean isDestinationUnset;
 	public ShipContainer() {
 		super(texture);
 		shipImg.setPosition(1, 1);
@@ -43,7 +45,7 @@ public class ShipContainer extends BaseActor{
 				numNotHovering += 1;
 			}
 		}
-		if (numNotHovering == otherShipContainers.size() && Gdx.input.justTouched()) {
+		if (numNotHovering == otherShipContainers.size() && Gdx.input.justTouched() && this.getColor() != Color.GREEN ) {
 			this.isSelected = false;
 			this.setColor(Color.WHITE);
 		}
@@ -56,7 +58,11 @@ public class ShipContainer extends BaseActor{
 			
 			if (Gdx.input.justTouched()) {
 				this.isSelected = true;
+				if (this.isDestinationSet) {
+					unsetDestination();
+				}
 				this.setColor(Color.LIGHT_GRAY);
+				
 			}
 			
 		}
@@ -71,6 +77,14 @@ public class ShipContainer extends BaseActor{
 		this.setColor(Color.GREEN);
 		distinationName = destination.name;
 		this.isDestinationSet = true;
+		System.out.println("Destination set");
+	}
+	
+	public void unsetDestination() {
+		this.isDestinationUnset = true;
+		distinationName = "";
+		this.isDestinationSet = false;
+		
 	}
 	
 	

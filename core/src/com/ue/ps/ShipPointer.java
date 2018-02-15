@@ -13,8 +13,8 @@ public class ShipPointer {
 	private static Texture pointerHeadTexture = Utils.getImg("pointerHead");
 	private static Texture pointerBodyTexture = Utils.getImg("pointerBody");
 	
-	private Planet location;
-	private Planet destination;
+	public Planet location;
+	public Planet destination;
 	private boolean isStatic;
 	private boolean hasStaticRendered;
 	public ArrayList<Ship> ships = new ArrayList<Ship>();
@@ -29,7 +29,7 @@ public class ShipPointer {
 			ba.remove();
 		}
 		pointerBody.clear();
-		ships.clear();
+		
 	}
 	
 	public void renderShipPointer(Vector2 mousePos, Stage s) {
@@ -100,6 +100,16 @@ public class ShipPointer {
 	public void setDestination(Planet d){
 		this.destination = d;
 		isStatic = true;
+	}
+	
+	public ShipPointer clone() {
+		ShipPointer newSP = new ShipPointer(this.location);
+		newSP.destination = this.destination;
+		newSP.ships = this.ships;
+		newSP.isStatic = this.isStatic;
+		newSP.pointerBody = this.pointerBody;
+		newSP.hasStaticRendered = this.hasStaticRendered;
+		return newSP;
 	}
 	
 	

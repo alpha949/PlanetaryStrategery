@@ -169,9 +169,25 @@ public class SidePanel extends BaseActor {
 	
 			this.shipContainers.add(sbox);
 			this.addActor(sbox);
+			
+			
+			
 			if (this.planet.orbitingShips.get(i) != null) {
 				//for some strange reason, getting the ship's texture returns null
 				sbox.setShip(this.planet.orbitingShips.get(i));
+			}
+			
+			for (ShipPointer pointer : this.planet.pointers) {
+				System.out.println(pointer);
+				for (Ship s : pointer.ships) {
+					System.out.println(s);
+					if (s != null && getShipContainer(s) != null) {
+						getShipContainer(s).setDestinationInfo(pointer.destination);
+					} else {
+						System.out.println("Missing ship container!");
+					}
+					
+				}
 			}
 		}
 
@@ -268,6 +284,18 @@ public class SidePanel extends BaseActor {
 			} else {
 				selectedShips.remove(sc.getShip());
 			}
+			ShipPointer deleteThisPointer = null;
+			if (sc.isDestinationUnset) {
+				for (ShipPointer sp : this.planet.pointers) {
+					sp.ships.remove(sc.getShip());
+					
+					if (sp.ships.isEmpty()) {
+						sp.delete();
+						deleteThisPointer = sp;
+					}
+				}
+			}
+			this.planet.pointers.remove(deleteThisPointer);
 		}
 		
 		

@@ -77,7 +77,7 @@ public class GameplayScreen implements Screen {
 	
 	public static Boolean useServer;
 	
-	private ArrayList<ShipPointer> allPointers = new ArrayList<ShipPointer>();
+
 	
 	public GameplayScreen(Game g) {
 		game = g;
@@ -164,7 +164,7 @@ public class GameplayScreen implements Screen {
 		mousePos = mainStage.screenToStageCoordinates(uiStage.stageToScreenCoordinates(mouseBlot.center));
 		// these numbers (8 and 13) seem really arbitrary, there's probably some
 		// reason for them...
-		stageMouseBlot.setPosition(mousePos.x - 8* zoomAmount, mousePos.y + 13*zoomAmount);
+		stageMouseBlot.setPosition(mousePos.x - 8* zoomAmount, mousePos.y - 8*zoomAmount);
 		// stageMouseBlot.setScale(zoomAmount, zoomAmount);
 		stageMouseBlot.setSize(16 * zoomAmount, 16 * zoomAmount);
 		
@@ -189,9 +189,14 @@ public class GameplayScreen implements Screen {
 						this.sidePanel.onDestinationSet(p);
 						if (activePointer !=null){
 							activePointer.setDestination(p);
-							activePointer.ships = SidePanel.selectedShips;
+							for (Ship s : SidePanel.selectedShips) {
+								activePointer.ships.add(s);
+							}
+							
+							
+							activePointer.location.pointers.add(activePointer.clone());
 							packet.addAction(new Action(Utils.getShipIds(SidePanel.selectedShips), SidePanel.selectedShips.get(0).location, p));
-							allPointers.add(activePointer);
+							
 							activePointer.delete();
 							activePointer = null;
 						}
@@ -222,8 +227,11 @@ public class GameplayScreen implements Screen {
 			}
 		}
 		
-		for (ShipPointer sp : allPointers){
-			sp.staticRender(mainStage);
+		for (Planet p : World.getWorld()){
+			for (ShipPointer sp : p.pointers) {
+				sp.staticRender(mainStage);
+			}
+			
 		}	
 
 		if (targetPlanet != null && !this.hasFocusedOnSelectedPlanet) {
