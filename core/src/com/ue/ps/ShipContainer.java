@@ -15,11 +15,14 @@ public class ShipContainer extends BaseActor{
 	private String distinationName;
 	private boolean isDestinationSet;
 	
+	private HoverPanel hoverPanel;
+	
 	public boolean isDestinationUnset;
 	public ShipContainer() {
 		super(texture);
 		shipImg.setPosition(1, 1);
 		this.addActor(shipImg);
+		
 	}
 	
 	public void setShip(Ship s) {
@@ -30,7 +33,9 @@ public class ShipContainer extends BaseActor{
 		} else {
 			shipImg.setTexture(Utils.emptyTexture);
 		}
-		
+		this.hoverPanel = new HoverPanel(HoverPanel.standardInfo, ship.getOwnerName(), Integer.toString(ship.health));
+		this.hoverPanel.setPosition(this.getWidth(), this.getHeight()/2);
+		this.addActor(this.hoverPanel);
 		
 	}
 	
@@ -52,6 +57,8 @@ public class ShipContainer extends BaseActor{
 		
 		if (this.getBoundingRectangle().contains(mousePos)) {
 			
+			this.hoverPanel.setVisible(true);
+			
 			if (this.isDestinationSet) {
 				//TODO show destination of ships here
 			}
@@ -65,6 +72,8 @@ public class ShipContainer extends BaseActor{
 				
 			}
 			
+		} else {
+			this.hoverPanel.setVisible(false);
 		}
 	}
 	
@@ -74,10 +83,14 @@ public class ShipContainer extends BaseActor{
 	
 	
 	public void setDestinationInfo(Planet destination) {
-		this.setColor(Color.GREEN);
-		distinationName = destination.name;
-		this.isDestinationSet = true;
-		System.out.println("Destination set");
+		if (destination.name != distinationName) {
+			this.setColor(Color.GREEN);
+			distinationName = destination.name;
+			this.isDestinationSet = true;
+			System.out.println("Destination set");
+			this.hoverPanel.addInfo("Heading", distinationName);
+		}
+		
 	}
 	
 	public void unsetDestination() {
