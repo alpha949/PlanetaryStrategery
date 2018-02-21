@@ -204,7 +204,7 @@ public class GameplayScreen implements Screen {
 							
 							activePointer.location.pointers.add(activePointer.clone());
 							packet.addAction(new Action(Utils.getShipIds(SidePanel.selectedShips), SidePanel.selectedShips.get(0).location, p));
-							
+							sidePanel.selectedShips.clear();
 							activePointer.delete();
 							activePointer = null;
 						}
@@ -222,15 +222,15 @@ public class GameplayScreen implements Screen {
 		if (!SidePanel.selectedShips.isEmpty()) {
 			if (activePointer == null){
 				activePointer = new ShipPointer(SidePanel.selectedShips.get(0).location);
-				
 			}
 			if (activePointer !=null){
 				activePointer.renderShipPointer(stageMouseBlot.center, mainStage);
-				
 			}
 		} else {
 			if (activePointer !=null){
 				activePointer.delete();
+				activePointer = null;
+				SidePanel.selectedShips.clear();
 				
 			}
 		}
@@ -297,6 +297,8 @@ public class GameplayScreen implements Screen {
 		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
 			if (PS.paused) {
 				PS.paused = false;
+			} else if (techTreePanel.isOpen) {
+				techTreePanel.close();
 			} else {
 				PS.paused = true;
 			}
