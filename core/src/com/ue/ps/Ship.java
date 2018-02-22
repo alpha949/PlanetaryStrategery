@@ -40,6 +40,7 @@ public class Ship extends BaseActor {
 	public Ship(Faction faction, ShipType type) {
 		super();
 		this.setTexture(faction.getShipTypeTexture(type));
+		this.type = type;
 
 	}
 
@@ -110,7 +111,7 @@ public class Ship extends BaseActor {
 	public static void spawnShip(Player pla, Planet p, ShipType s, int angle) {
 		Ship newShip = new Ship(pla.faction, s);
 		p.orbitingShips.add(newShip);
-
+		
 		p.addActor(newShip);
 		newShip.angle = angle;
 		int orbitDist = 25 + 16;

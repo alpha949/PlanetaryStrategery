@@ -12,7 +12,8 @@ public class HoverPanel extends BaseActor{
 	private static Texture chunkTopTexture = Utils.getImg("chunkTop");
 	private static Texture chunkBottomTexture = Utils.getImg("chunkBottom");
 	
-	public static String[] standardInfo = {"Name", "Health"};
+	public static String[] standardInfo = {"Type", "Health"};
+	public static String[] shipInfo = {"Type", "Health", "Heading"};
 	
 	private ArrayList<Label> info = new ArrayList<Label>();
 	private ArrayList<BaseActor> background = new ArrayList<BaseActor>();
@@ -25,11 +26,11 @@ public class HoverPanel extends BaseActor{
 		for (int i = 0; i < info.length; i++) {
 			BaseActor background;
 			if (i == 0) {
-				background = new BaseActor(chunkBottomTexture);
-				bottom = background;
-			} else if (i == info.length -1) {
 				background = new BaseActor(chunkTopTexture);
 				top = background;
+			} else if (i == info.length -1) {
+				background = new BaseActor(chunkBottomTexture);
+				bottom = background;
 			} else {
 				background = new BaseActor(chunkTexture);
 			}
@@ -57,5 +58,8 @@ public class HoverPanel extends BaseActor{
 		this.addActor(newLabel);
 	}
 	
+	public ArrayList<Label> getInfo() {
+		return this.info;
+	}
 	
 }

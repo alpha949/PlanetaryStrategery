@@ -30,12 +30,13 @@ public class ShipContainer extends BaseActor{
 		if (s != null) {
 
 			shipImg.setTexture(s.getTexture());
+			this.hoverPanel = new HoverPanel(HoverPanel.shipInfo, ship.type.name(), Integer.toString(ship.health), "N/A");
+			this.hoverPanel.setPosition(this.getWidth(), this.getHeight()/2);
+			this.addActor(this.hoverPanel);
 		} else {
 			shipImg.setTexture(Utils.emptyTexture);
 		}
-		this.hoverPanel = new HoverPanel(HoverPanel.standardInfo, ship.getOwnerName(), Integer.toString(ship.health));
-		this.hoverPanel.setPosition(this.getWidth(), this.getHeight()/2);
-		this.addActor(this.hoverPanel);
+	
 		
 	}
 	
@@ -63,12 +64,17 @@ public class ShipContainer extends BaseActor{
 				//TODO show destination of ships here
 			}
 			
-			if (Gdx.input.justTouched()) {
-				this.isSelected = true;
-				if (this.isDestinationSet) {
-					unsetDestination();
+			if (Gdx.input.justTouched() ) {
+				
+				if ( this.ship.getOwnerName().equals(GameServerClient.clientPlayer.userName)) {
+					this.isSelected = true;
+					if (this.isDestinationSet) {
+						unsetDestination();
+					}
+					this.setColor(Color.LIGHT_GRAY);
 				}
-				this.setColor(Color.LIGHT_GRAY);
+				
+				
 				
 			}
 			
@@ -88,8 +94,10 @@ public class ShipContainer extends BaseActor{
 			distinationName = destination.name;
 			this.isDestinationSet = true;
 			System.out.println("Destination set");
-			this.hoverPanel.addInfo("Heading", distinationName);
+			this.hoverPanel.getInfo().get(2).setText("Heading: " + distinationName);
+			
 		}
+		
 		
 	}
 	
@@ -97,6 +105,7 @@ public class ShipContainer extends BaseActor{
 		this.isDestinationUnset = true;
 		distinationName = "";
 		this.isDestinationSet = false;
+		this.hoverPanel.getInfo().get(2).setText("Heading: N/A");
 		
 	}
 	

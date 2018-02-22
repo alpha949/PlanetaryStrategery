@@ -37,7 +37,7 @@ public class WorldGen {
 
 	}
 
-	public static void generate(Stage m, int sizeX, int sizeY) {
+	public static boolean generate(Stage m, int sizeX, int sizeY) {
 
 		if (!done) {
 			canGenerate = true;
@@ -86,11 +86,12 @@ public class WorldGen {
 
 				genHomePlanets(2, m);
 				World.setWorld(allPlanets);
+				return true;
 
 			}
-
+			return false;
 		} else {
-			
+			return false;
 		}
 
 	}
@@ -130,7 +131,8 @@ public class WorldGen {
 			p.setColor(Color.TEAL);
 			m.addActor(p);
 			p.setCenter(vert.x, vert.y);
-			p.owner = PS.allPlayers[i];
+			home.owner = PS.allPlayers[i];
+			PS.allPlayers[i].homePlanet = home;
 
 		}
 		
@@ -139,7 +141,7 @@ public class WorldGen {
 		
 		for (Planet p : allPlanets) {
 			if (p.isHomePlanet) {
-				Ship.spawnShip(Faction.Xin, p, ShipType.drone, 10);
+				Ship.spawnShip(p.owner, p, ShipType.drone, 10);
 			}
 				
 				

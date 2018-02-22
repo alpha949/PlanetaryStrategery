@@ -51,6 +51,10 @@ public class Packet {
 		resolveData();
 	}
 	
+	public ArrayList<Action> getActions(){
+		return this.actions;
+	}
+	
 	public void send(String ip) {
 		 String textToSend = compactData();
        

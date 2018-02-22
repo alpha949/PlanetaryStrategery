@@ -149,7 +149,7 @@ public class SidePanel extends BaseActor {
 		for (int i = 0; i < this.planet.buildings.length; i++) {
 			BuildingContainer bc = new BuildingContainer();
 			bc.setPosition(10, PS.viewHeight - 150 - i * 20);
-		
+			bc.planet = p;
 			this.buildingContainers.add(bc);
 			this.addActor(bc);
 			

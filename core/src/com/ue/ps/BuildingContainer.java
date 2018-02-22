@@ -11,6 +11,8 @@ public class BuildingContainer extends BaseActor{
 	private BaseActor buildingImg = new BaseActor();
 	private boolean isSelected;
 	
+	public Planet planet;
+	
 	public BuildingContainer() {
 		super(texture);
 		buildingImg.setPosition(1, 1);
@@ -35,8 +37,11 @@ public class BuildingContainer extends BaseActor{
 	
 	public void update(Vector2 mousePos) {
 		if (this.getBoundingRectangle().contains(mousePos) && Gdx.input.justTouched()) {
-			this.isSelected = true;
-			this.setColor(Color.LIGHT_GRAY);
+			if (planet.owner == GameServerClient.clientPlayer) {
+				this.isSelected = true;
+				this.setColor(Color.LIGHT_GRAY);
+			}
+			
 		} else if (Gdx.input.justTouched()) {
 			this.isSelected = false;
 			this.setColor(Color.WHITE);

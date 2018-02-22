@@ -10,7 +10,7 @@ public class Player {
 	public Faction faction;
 	
 
-	
+	public Planet homePlanet;
 
 	public Player(Faction f) {
 		this.resource = 0;

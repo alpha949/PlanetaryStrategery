@@ -8,6 +8,7 @@ public abstract class Building extends BaseActor {
 	public int resourceCost;
 	public static ArrayList<Building> allBuildings = new ArrayList<Building>();
 	public char id;
+	public Player owner;
 
 	public Building(String path) {
 		super(path);

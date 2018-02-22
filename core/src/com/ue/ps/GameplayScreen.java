@@ -48,7 +48,7 @@ public class GameplayScreen implements Screen {
 	private Planet selectedPlanet = new Planet();
 	private boolean running = false;
 	private boolean hasFocusedOnSelectedPlanet;
-	public static Player player = new Player(Faction.Xin);
+	
 
 	private Camera camera;
 	private Camera uiCamera;
@@ -78,6 +78,8 @@ public class GameplayScreen implements Screen {
 	public static Boolean useServer;
 	
 	private ResourcePanel resourcePanel;
+	
+	private boolean hasFocusedOnHome;
 
 	
 	public GameplayScreen(Game g) {
@@ -86,8 +88,8 @@ public class GameplayScreen implements Screen {
 	}
 
 	public void create() {
-		player = PS.p1;
-		resourcePanel = new ResourcePanel(player.faction, player);
+		GameServerClient.clientPlayer = PS.p1;
+		resourcePanel = new ResourcePanel(GameServerClient.clientPlayer.faction, GameServerClient.clientPlayer);
 		camera = new OrthographicCamera();
 		uiCamera = new OrthographicCamera();
 		viewport = new ScreenViewport(camera);
@@ -126,11 +128,11 @@ public class GameplayScreen implements Screen {
 		String[] config = ConfigReader.readFile("assets/config.json");
 		
 		useServer = Boolean.parseBoolean(config[3]);
-		player.userName = config[0];
+		GameServerClient.clientPlayer.userName = config[0];
 		PS.p2.userName = "siv";
 		PS.p1.userName = "coo";
 		if (useServer){
-				this.server.registerUser(player, config[1],Integer.parseInt(config[2]));
+				this.server.registerUser(GameServerClient.clientPlayer, config[1],Integer.parseInt(config[2]));
 		}
 		
 		
@@ -178,7 +180,10 @@ public class GameplayScreen implements Screen {
 		
 		// mouseBlot.addAction(Actions.scaleTo(zoomAmount, zoomAmount));
 		if (!PS.recordingGeneration) {
-			WorldGen.generate(mainStage, 0, 0);
+			if (WorldGen.generate(mainStage, 0, 0) && !hasFocusedOnHome) {
+				targetPlanet = GameServerClient.clientPlayer.homePlanet;
+				hasFocusedOnHome = true;
+			};
 		} else if (Gdx.input.isTouched()) {
 			PS.recordingGeneration = false;
 		}
@@ -200,11 +205,12 @@ public class GameplayScreen implements Screen {
 							for (Ship s : SidePanel.selectedShips) {
 								activePointer.ships.add(s);
 							}
-							
-							
+							//-----------------------------------------------------
+							//TODO unset packet actions
+							//-----------------------------------------------------
 							activePointer.location.pointers.add(activePointer.clone());
 							packet.addAction(new Action(Utils.getShipIds(SidePanel.selectedShips), SidePanel.selectedShips.get(0).location, p));
-							sidePanel.selectedShips.clear();
+							SidePanel.selectedShips.clear();
 							activePointer.delete();
 							activePointer = null;
 						}
@@ -304,11 +310,39 @@ public class GameplayScreen implements Screen {
 			}
 			//Gdx.graphics.setWindowedMode(PS.viewWidth, PS.viewHeight);
 		}
-		
+		//this doesn't work
 		if (executeButton.getBoundingRectangle().contains(mouseBlot.center) && Gdx.input.justTouched()) {
-			//send ip here;
-			packet.send("");
+			System.out.println("hit");
+			if (!useServer) {
+				System.out.println("executing actions...");
+				//temporary
+				for (Action a : packet.getActions()) {
+					Action.execute(a, mainStage, GameServerClient.clientPlayer);
+				}
+			} else {
+				packet.send(GameServerClient.ipAddress);
+			}
 				
+		}
+		
+		if (Gdx.input.isKeyJustPressed(Keys.Q)) {
+			System.out.println("hit");
+			if (!useServer) {
+				System.out.println("executing actions...");
+				//temporary
+				for (Action a : packet.getActions()) {
+					Action.execute(a, mainStage, GameServerClient.clientPlayer);
+				}
+				//clear pointers
+				for (Planet p : World.getWorld()) {
+					for (ShipPointer sp : p.pointers) {
+						sp.delete();
+					}
+					p.pointers.clear();
+				}
+			} else {
+				packet.send(GameServerClient.ipAddress);
+			}
 		}
 
 		if (!PS.paused) {

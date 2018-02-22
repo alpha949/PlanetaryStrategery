@@ -29,6 +29,9 @@ public class GameServerClient {
 	
 	private ArrayList<Player> allPlayers = new ArrayList<Player>();
 	
+	public static Player clientPlayer = new Player(Faction.Xin);
+
+	
 	public GameServerClient(){
 		
 		

@@ -135,6 +135,11 @@ public class Planet extends BaseActor{
 		
 	}
 	
+	public void colonize(Player p) {
+		this.owner = p;
+		this.addBuilding(new Colony(), 0);
+	}
+	
 	public Planet copy() {
 		Planet newPlanet = new Planet(this.type, this.size);
 		newPlanet.buildings = this.buildings;
