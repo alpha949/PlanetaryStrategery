@@ -2,6 +2,8 @@ package com.ue.ps;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.math.MathUtils;
@@ -80,8 +82,9 @@ public class WorldGen {
 				pos = allPlanets.get(0).center;
 			}
 
+			failedSteps = Gdx.input.isKeyPressed(Keys.SPACE) ? 100 : failedSteps;
 			if (failedSteps > 100) {
-				
+
 				done = true;
 
 				genHomePlanets(2, m);
