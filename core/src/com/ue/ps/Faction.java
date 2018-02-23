@@ -21,12 +21,12 @@ public class Faction {
 		this.name = name;
 		this.color = color;
 
-		this.droneImg = Utils.getImg(abv + "drone");
-		this.scoutImg = Utils.getImg(abv + "scout");
-		this.transportImg = Utils.getImg(abv + "transport");
-		this.cruiserImg = Utils.getImg(abv + "cruiser");
-		this.dreadImg = Utils.getImg(abv + "dread");
-		this.flagshipImg = Utils.getImg(abv + "flagship");
+		this.droneImg = Utils.getImg("ships/" + abv + "Drone");
+		this.scoutImg = Utils.getImg("ships/" + abv + "Scout");
+		this.transportImg = Utils.getImg("ships/" + abv + "Transport");
+		this.cruiserImg = Utils.getImg("ships/" + abv + "Cruiser");
+		this.dreadImg = Utils.getImg("ships/" + abv + "Dread");
+		this.flagshipImg = Utils.getImg("ships/" + abv + "Flagship");
 		this.symbolImg = Utils.getImg(abv);
 	}
 
