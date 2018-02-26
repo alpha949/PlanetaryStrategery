@@ -211,9 +211,7 @@ public class SidePanel extends BaseActor {
 		for (BuildingContainer bc : this.buildingContainers) {
 			bc.update(uiMouseBlot.center);
 		}
-		for (ShipContainer sc : this.shipContainers) {
-			sc.update(uiMouseBlot.center, shipContainers);
-		}
+		
 		
 		
 		
@@ -278,9 +276,13 @@ public class SidePanel extends BaseActor {
 		}
 		
 		//update selectedships
+		
 		for (ShipContainer sc : this.shipContainers) {
 			if (sc.isSelected()) {
-				selectedShips.add(sc.getShip());
+				if  (!selectedShips.contains(sc.getShip())){
+					selectedShips.add(sc.getShip());
+				}
+				
 			} else {
 				selectedShips.remove(sc.getShip());
 			}
@@ -296,6 +298,10 @@ public class SidePanel extends BaseActor {
 				}
 			}
 			this.planet.pointers.remove(deleteThisPointer);
+		}
+		
+		for (ShipContainer sc : this.shipContainers) {
+			sc.update(uiMouseBlot.center, shipContainers);
 		}
 		
 		

@@ -12,8 +12,8 @@ public class Action {
 	public ActionType type;
 	
 	private String[] shipIds;
-	private Planet locaction;
-	private Planet destination;
+	private int locactionId;
+	private int destinationId;
 	
 	private int planetId;
 	private int buildingSlot;
@@ -22,11 +22,11 @@ public class Action {
 	private ShipType shipType;
 	
 	
-	public Action(String[] ids, Planet loc, Planet dest) {
+	public Action(String[] ids, int loc, int dest) {
 		this.type = ActionType.sendShips;
 		this.shipIds = ids;
-		this.locaction = loc;
-		this.destination = dest;
+		this.locactionId = loc;
+		this.destinationId = dest;
 	}
 	
 	public Action(int id, int slot, Building b){
@@ -59,7 +59,7 @@ public class Action {
 					}
 				}
 			}
-			Ship.sendShipsTo(ships, a.destination, m, pla);
+			Ship.sendShipsTo(ships, World.getPlanetById(a.destinationId), m, pla);
 			break;
 			
 		case buildBuilding:

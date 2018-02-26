@@ -63,7 +63,7 @@ public class GameplayScreen implements Screen {
 	
 	private Line planetXLine;
 	
-	private GameServerClient server = new GameServerClient();
+	private GameServerClient server;
 	
 	
 	public static TechTreePanel techTreePanel = new TechTreePanel();
@@ -80,6 +80,9 @@ public class GameplayScreen implements Screen {
 	private ResourcePanel resourcePanel;
 	
 	private boolean hasFocusedOnHome;
+	private boolean turnActive = true;
+	
+	private boolean hasAskedServer = false;
 
 	
 	public GameplayScreen(Game g) {
@@ -129,10 +132,12 @@ public class GameplayScreen implements Screen {
 		
 		useServer = Boolean.parseBoolean(config[3]);
 		GameServerClient.clientPlayer.userName = config[0];
+		server = new GameServerClient("http://" + config[1] + ":" + config[2]);
 		PS.p2.userName = "siv";
 		PS.p1.userName = "coo";
 		if (useServer){
-				this.server.registerUser(GameServerClient.clientPlayer, config[1],Integer.parseInt(config[2]));
+				this.server.registerUser(GameServerClient.clientPlayer);
+				this.server.registerUser(PS.p2);
 		}
 		
 		
@@ -194,11 +199,7 @@ public class GameplayScreen implements Screen {
 				if (Gdx.input.justTouched() ) {
 					
 					
-					if (SidePanel.selectedShips.isEmpty()) {
-						targetPlanet = p;
-						
-						this.sidePanel.setPlanet(p);
-					} else {
+					if (!SidePanel.selectedShips.isEmpty()) {
 						this.sidePanel.onDestinationSet(p);
 						if (activePointer !=null){
 							activePointer.setDestination(p);
@@ -209,11 +210,16 @@ public class GameplayScreen implements Screen {
 							//TODO unset packet actions
 							//-----------------------------------------------------
 							activePointer.location.pointers.add(activePointer.clone());
-							packet.addAction(new Action(Utils.getShipIds(SidePanel.selectedShips), SidePanel.selectedShips.get(0).location, p));
+							packet.addAction(new Action(Utils.getShipIds(SidePanel.selectedShips), SidePanel.selectedShips.get(0).location.id, p.id));
 							SidePanel.selectedShips.clear();
 							activePointer.delete();
 							activePointer = null;
 						}
+						
+					} else {
+						targetPlanet = p;
+						
+						this.sidePanel.setPlanet(p);
 						
 					}
 				
@@ -261,7 +267,6 @@ public class GameplayScreen implements Screen {
 		
 		
 		
-		multMessage.setText(server.getMessage());
 	
 
 
@@ -320,13 +325,12 @@ public class GameplayScreen implements Screen {
 					Action.execute(a, mainStage, GameServerClient.clientPlayer);
 				}
 			} else {
-				packet.send(GameServerClient.ipAddress);
+				//packet.send(GameServerClient.ipAddress);
 			}
 				
 		}
 		
 		if (Gdx.input.isKeyJustPressed(Keys.Q)) {
-			System.out.println("hit");
 			if (!useServer) {
 				System.out.println("executing actions...");
 				//temporary
@@ -341,8 +345,25 @@ public class GameplayScreen implements Screen {
 					p.pointers.clear();
 				}
 			} else {
-				packet.send(GameServerClient.ipAddress);
+				server.sendRequest(packet.getCompressedData(), "client");
+				turnActive = false;
 			}
+		}
+		
+		if (!turnActive){
+			if (!hasAskedServer){
+				server.sendRequest("", "action");
+				hasAskedServer = true;
+			}
+			if (!server.getRecievedData().isEmpty()){
+				packet.setData(server.getRecievedData());
+				for (Action a : packet.getActions()) {
+					Action.execute(a, mainStage, GameServerClient.clientPlayer);
+				}
+				turnActive = true;
+				hasAskedServer = true;
+			}
+			
 		}
 
 		if (!PS.paused) {

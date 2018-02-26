@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
+import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
 public class Packet {
 	
@@ -22,27 +23,32 @@ public class Packet {
 	
 	private ArrayList<Action> actions = new ArrayList<Action>();
 	private Json jsonData = new Json();
-	private String data;
+	private String data = "";
 	
 	
 	public Packet() {
-		
+		jsonData.setOutputType(OutputType.json);
 	}
 	
 	
 	
 	
 	private void resolveData() {
-		actions = (ArrayList<Action>) jsonData.fromJson(ArrayList.class, data);
+		System.out.println(data);
+		if (data != null){
+			actions = (ArrayList<Action>) jsonData.fromJson(ArrayList.class, data);
+		}
+		
 	}
 	
 	private String compactData() {
-		data = jsonData.toJson(actions);
-		return data;
+		
+		return jsonData.toJson(actions);
 	
 	}
 	
 	public void addAction(Action a) {
+		System.out.println("added an action");
 		actions.add(a);
 	}
 	
@@ -55,27 +61,12 @@ public class Packet {
 		return this.actions;
 	}
 	
-	public void send(String ip) {
-		 String textToSend = compactData();
-       
-        textToSend += "\n";
-      
-       
-       SocketHints socketHints = new SocketHints();
-       // Socket will time our in 4 seconds
-       socketHints.connectTimeout = 4000;
-       //create the socket and connect to the server entered in the text box ( x.x.x.x format ) on port 9021
-       try {
-       	  Socket socket = Gdx.net.newClientSocket(Protocol.TCP, ip, 6001, socketHints);
-       	  socket.getOutputStream().write(textToSend.getBytes());
-       	  
-       } catch (GdxRuntimeException e) {
-       	System.out.println("Could not connect to: " + ip);
-       } catch (IOException e) {
-           e.printStackTrace();
-       }
-     
-      
+	public String getData(){
+		return this.data;
+	}
+	
+	public String getCompressedData(){
+		return compactData();
 	}
 	
 	

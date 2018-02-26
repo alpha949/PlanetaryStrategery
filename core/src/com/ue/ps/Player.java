@@ -8,7 +8,7 @@ public class Player {
 	public int maxTravelDist = 100 * 8 * 3;
 	public String userName;
 	public Faction faction;
-	
+	public String clientToken;
 
 	public Planet homePlanet;
 
