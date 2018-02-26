@@ -56,7 +56,7 @@ public class SidePanel extends BaseActor {
 	
 	private BaseActor destroyBuildingBox = new BaseActor("assets/destoryBuilding.png");
 	
-	
+	private Label planetResource = new Label("", PS.font);
 	
 	
 	public SidePanel() {
@@ -67,6 +67,9 @@ public class SidePanel extends BaseActor {
 		
 		planetType.setPosition(70, this.getHeight() - 75);
 		this.addActor(planetType);
+		
+		planetResource.setPosition(70 + 21 + 21 + 21 + 21, this.getHeight() - 75 - 16 - 10);
+		this.addActor(planetResource);
 		
 		capacitySymbol.setPosition(70, this.getHeight() - 75 - 16 - 10);
 		this.addActor(capacitySymbol);
@@ -224,6 +227,8 @@ public class SidePanel extends BaseActor {
 		localMousePos = this.stageToLocalCoordinates(uiStage.screenToStageCoordinates(copiedMousePos));
 
 		uiMouseBlot.setPosition(localMousePos.x , localMousePos.y);
+		
+		this.planetResource.setText("Resource: " + this.planet.resource);
 		
 		//update containers
 		for (BuildingContainer bc : this.buildingContainers) {

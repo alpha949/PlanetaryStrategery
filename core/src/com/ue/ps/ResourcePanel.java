@@ -60,7 +60,7 @@ public class ResourcePanel extends BaseActor {
 	
 		if (this.techIcon.getBoundingRectangle().contains(localMouseBlot.center) && Gdx.input.justTouched()) {
 			GameplayScreen.techTreePanel.open();
-			System.out.println("Hello!");
+		
 		}
 	}
 
