@@ -422,35 +422,7 @@ public class SidePanel extends BaseActor {
 	
 	public void unset() {
 		//remove old planet
-			this.planet = new Planet();
-			this.removeActor(this.dispPlanet);
-			//get displayable planet copy
-		
-		
-			//update text fields
-			planetName.setText(" ");
-
-			planetType.setText(" ");
-			//remove old building boxes
-			for (BuildingContainer bbox : this.buildingContainers) {
-				this.removeActor(bbox);
-			}
-			
-			for (BaseActor sbox : this.shipContainers) {
-				this.removeActor(sbox);
-			}
-			
-		
-			this.buildingContainers.clear();
-			this.buildingCost.clear();
-
-			
-			this.shipContainers.clear();
-
-			
-			//setup building boxes
-			hideBuildBoxes();
-				
+			this.setPlanet(this.planet);
 
 			
 	}

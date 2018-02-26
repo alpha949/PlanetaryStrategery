@@ -22,7 +22,7 @@ public class Ship extends BaseActor {
 	public ShipType type;
 
 	
-
+	public Planet prevLocation;
 
 	public float angle;
 	
@@ -50,46 +50,59 @@ public class Ship extends BaseActor {
 		//if (this.location.distanceTo(p.center.x, p.center.y) < pla.maxTravelDist) {
 			
 			//someone could replace this with a fancier particle effect
-			int numLineSegments = (int) Utils.distanceTo(ships[0].location.center.x,ships[0].location.center.y, p.center.x, p.center.y);
-			for (int i = 0; i < numLineSegments; i++){
-				ShipWarpTrail warp =new ShipWarpTrail();
-				s.addActor(warp);
-				warp.setColor(pla.faction.color);
-				double angle = Utils.pointAt(ships[0].location.center.x,ships[0].location.center.y, p.center.x, p.center.y);
-				
-				warp.setRotation(90);
-		
-				Vector2 poss = Utils.polarToRect((i), angle, ships[0].location.center);
-				warp.setCenter(poss.x, poss.y);
-				warp.setZIndex(0);
-				
+			if (ships[0] != null) {
+				int numLineSegments = (int) Utils.distanceTo(ships[0].location.center.x,ships[0].location.center.y, p.center.x, p.center.y);
+				for (int i = 0; i < numLineSegments; i++){
+					ShipWarpTrail warp =new ShipWarpTrail();
+					s.addActor(warp);
+					warp.setColor(pla.faction.color);
+					double angle = Utils.pointAt(ships[0].location.center.x,ships[0].location.center.y, p.center.x, p.center.y);
+					
+					warp.setRotation(90);
 			
-				//warp.addAction(Actions.scaleBy(-16, -16, 16));
+					Vector2 poss = Utils.polarToRect((i), angle, ships[0].location.center);
+					warp.setCenter(poss.x, poss.y);
+					warp.setZIndex(0);
+					
 				
-			    warp.addAction(Actions.fadeOut(0));
-				warp.addAction(Actions.fadeIn((float) (0.0001*i)));
-				warp.addAction(Actions.fadeOut((float) ((float) (0.0001*i) + 0.0001)));
-				
-				
-				
-			}
-			for (Ship ship : ships){
-				ship.location.removeActor(ship);
-				ship.location.orbitingShips.remove(ship);
-				p.orbitingShips.add(ship);
-				p.addActor(ship);
-		
-				int orbitDist = 25 + 16;
-		
-				ship.setCenter(p.getWidth() / 2, p.getHeight() / 2);
-				Vector2 pos = Utils.polarToRect((int) (p.getWidth() / 2 + ship.getWidth() / 2) + orbitDist, ship.angle,
-						new Vector2(p.getWidth() / 2 - 16, p.getHeight() / 2 - 16));
-				ship.setCenter(pos.x, pos.y);
-				ship.setRotation(ship.angle - 90);
-				ship.location = p;
+					//warp.addAction(Actions.scaleBy(-16, -16, 16));
+					
+				    warp.addAction(Actions.fadeOut(0));
+					warp.addAction(Actions.fadeIn((float) (0.0001*i)));
+					warp.addAction(Actions.fadeOut((float) ((float) (0.0001*i) + 0.0001)));
+					
+					
+					
+				}
+				for (Ship ship : ships){
+					
+					//colonization
+					if (ship.type == ShipType.colonizer && ship.location == p) {
+						p.colonizeFrom(ship.prevLocation, pla, s);
+						ship.location.orbitingShips.remove(ship);
+						ship.remove();
+						
+						break;
+					}
+					ship.prevLocation = ship.location;
+					ship.location.removeActor(ship);
+					ship.location.orbitingShips.remove(ship);
+					p.orbitingShips.add(ship);
+					p.addActor(ship);
 			
+					int orbitDist = 25 + 16;
+			
+					ship.setCenter(p.getWidth() / 2, p.getHeight() / 2);
+					Vector2 pos = Utils.polarToRect((int) (p.getWidth() / 2 + ship.getWidth() / 2) + orbitDist, ship.angle,
+							new Vector2(p.getWidth() / 2 - 16, p.getHeight() / 2 - 16));
+					ship.setCenter(pos.x, pos.y);
+					ship.setRotation(ship.angle - 90);
+					ship.location = p;
 				
+					
+				}
 			}
+			
 			
 			
 		

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
@@ -135,9 +136,13 @@ public class Planet extends BaseActor{
 		
 	}
 	
-	public void colonize(Player p) {
-		this.owner = p;
-		this.addBuilding(new Colony(), 0);
+	public void colonizeFrom(Planet P, Player p, Stage m) {
+		if (this.owner != p) {
+			this.owner = p;
+			this.addBuilding(new Colony(), 0);
+			Line.genLine(new Line(P, this, p.faction), m);
+		}
+		
 	}
 	
 	public Planet copy() {

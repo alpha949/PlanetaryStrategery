@@ -1,17 +1,17 @@
 package com.ue.ps;
 
 public enum ShipType {
-	drone, scout, transport, cruiser, dread, flagship;
+	drone, scout, colonizer, transport, cruiser, dread, flagship;
 	
 	private char id;
-	private int buildLimit;
+	private int cost;
 	
 	public char getId() {
 		return this.id;
 	}
 	
 	public int getBuildLimit() {
-		return this.buildLimit;
+		return this.cost;
 	}
 	
 	public static ShipType getShipType(char id) {
@@ -27,22 +27,25 @@ public enum ShipType {
 	
 	static {
 		drone.id = 'd';
-		drone.buildLimit = 40;
+		drone.cost = 40;
 		
 		scout.id = 's';
-		scout.buildLimit = 100;
+		scout.cost = 100;
+		
+		colonizer.id = 'c';
+		colonizer.cost = 70;
 		
 		transport.id = 't';
-		transport.buildLimit = 120;
+		transport.cost = 120;
 		
 		cruiser.id = 'c';
-		cruiser.buildLimit = 200;
+		cruiser.cost = 200;
 		
 		dread.id = 'D';
-		cruiser.buildLimit = 350;
+		cruiser.cost = 350;
 		
 		flagship.id = 'f';
-		flagship.buildLimit = 500;
+		flagship.cost = 500;
 	}
 	
 }
