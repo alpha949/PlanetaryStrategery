@@ -2,6 +2,6 @@
 	"username" : "coo",
 	"server_ip" : "10.0.0.182",
 	"server_port" : "8090",
-	"use_server": true
+	"use_server": false
 
 }

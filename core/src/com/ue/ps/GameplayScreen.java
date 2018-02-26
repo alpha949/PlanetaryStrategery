@@ -112,7 +112,7 @@ public class GameplayScreen implements Screen {
 		mainStage.addActor(stageMouseBlot);
 
 		
-		sidePanel.setPosition(0, 0);
+		sidePanel.setPosition(0, PS.viewHeight - sidePanel.getHeight());
 		uiStage.addActor(sidePanel);
 		
 
@@ -343,7 +343,18 @@ public class GameplayScreen implements Screen {
 						sp.delete();
 					}
 					p.pointers.clear();
+					
+					//update buildings
+					for (Building b : p.buildings) {
+						if (b != null) {
+							b.update(p);
+						}
+						
+					}
 				}
+				
+				
+				sidePanel.unset();
 			} else {
 				server.sendRequest(packet.getCompressedData(), "client");
 				turnActive = false;

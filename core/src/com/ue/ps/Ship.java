@@ -21,7 +21,7 @@ public class Ship extends BaseActor {
 
 	public ShipType type;
 
-	public int buildProgress;
+	
 
 
 	public float angle;
@@ -41,6 +41,7 @@ public class Ship extends BaseActor {
 		super();
 		this.setTexture(faction.getShipTypeTexture(type));
 		this.type = type;
+	
 
 	}
 

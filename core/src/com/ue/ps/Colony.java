@@ -1,5 +1,7 @@
 package com.ue.ps;
 
+import com.badlogic.gdx.scenes.scene2d.Stage;
+
 public class Colony extends Building {
 
 	private int production = 1;
@@ -14,14 +16,12 @@ public class Colony extends Building {
 
 	}
 
-	public void update(Player p, Planet P) {
-		P.people += production;
-		p.techPoints += 1;
-	}
+	
 
 	@Override
 	public void update(Planet p) {
-		// TODO Auto-generated method stub
+		p.people += production;
+		owner.techPoints += 1;
 		
 	}
 

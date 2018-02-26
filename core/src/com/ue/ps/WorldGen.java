@@ -139,8 +139,7 @@ public class WorldGen {
 
 		}
 		
-		allPlanets.get(1).addBuilding(new Factory(), 1);
-		allPlanets.get(2).addBuilding(new Factory(), 1);
+		
 		
 		for (Planet p : allPlanets) {
 			if (p.isHomePlanet) {

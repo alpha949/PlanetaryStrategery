@@ -2,7 +2,7 @@ package com.ue.ps;
 
 public class Mine extends Building {
 
-	public int production;
+	public int production = 5;
 
 	public Mine() {
 		super("assets/mine.png");
@@ -12,13 +12,12 @@ public class Mine extends Building {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void update(Player p) {
-		p.resource += production;
-	}
+
 
 	@Override
 	public void update(Planet p) {
-		// TODO Auto-generated method stub
+		p.resource += this.production;
+		System.out.println("Planet resource: " + p.resource);
 		
 	}
 }

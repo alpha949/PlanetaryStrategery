@@ -103,7 +103,7 @@ public class Planet extends BaseActor{
 		if (builtBuildings < capacity && slot < capacity){
 			this.addActor(b);
 			buildings[slot] = b;
-			
+			b.owner = this.owner;
 			int angle = 360/capacity * slot;
 			b.setRotation(angle);
 			b.setCenter(this.getWidth()/2, this.getHeight()/2);

@@ -14,6 +14,7 @@ public class HoverPanel extends BaseActor{
 	
 	public static String[] standardInfo = {"Type", "Health"};
 	public static String[] shipInfo = {"Type", "Health", "Heading"};
+	public static String[] factoryInfo = {"Type", "Health", "Ship", "Progress"};
 	
 	private ArrayList<Label> info = new ArrayList<Label>();
 	private ArrayList<BaseActor> background = new ArrayList<BaseActor>();

@@ -49,46 +49,50 @@ public class SidePanel extends BaseActor {
 	
 	
 	private BaseActor[] buildBoxes;
+	private BaseActor[] shipBuildBoxes;
 	private int selectedBuildingSlot = -1;
 	private boolean buildBoxesShowing;
+	private boolean shipBuildBoxesShowing;
 	
 	private BaseActor destroyBuildingBox = new BaseActor("assets/destoryBuilding.png");
 	
 	
+	
+	
 	public SidePanel() {
 		super("assets/sidePanel.png");
-		planetName.setPosition(98, PS.viewHeight - 47);
+		planetName.setPosition(98, this.getHeight() - 47);
 		planetName.setFontScale(2);
 		this.addActor(planetName);
 		
-		planetType.setPosition(70, PS.viewHeight - 75);
+		planetType.setPosition(70, this.getHeight() - 75);
 		this.addActor(planetType);
 		
-		capacitySymbol.setPosition(70, PS.viewHeight - 75 - 16 - 10);
+		capacitySymbol.setPosition(70, this.getHeight() - 75 - 16 - 10);
 		this.addActor(capacitySymbol);
 		
-		prioritySymbol.setPosition(70, PS.viewHeight - 75 - 16 - 10 - 16 - 10);
+		prioritySymbol.setPosition(70, this.getHeight() - 75 - 16 - 10 - 16 - 10);
 		this.addActor(prioritySymbol);
 		
-		capContainer.setPosition(70 + 21, PS.viewHeight - 75 - 16 - 10);
+		capContainer.setPosition(70 + 21, this.getHeight() - 75 - 16 - 10);
 		this.addActor(capContainer);
-		planetCap.setPosition(74 + 21,  PS.viewHeight - 75 - 16 - 11);
+		planetCap.setPosition(74 + 21,  this.getHeight() - 75 - 16 - 11);
 		this.addActor(planetCap);
-		incrementCapButton.setPosition(70 + 21 + 21, PS.viewHeight - 75 - 16 - 10);
+		incrementCapButton.setPosition(70 + 21 + 21, this.getHeight() - 75 - 16 - 10);
 		this.addActor(incrementCapButton);
-		deincrementCapButton.setPosition(70 + 21 + 21 + 21, PS.viewHeight - 75 - 16 - 10);
+		deincrementCapButton.setPosition(70 + 21 + 21 + 21, this.getHeight() - 75 - 16 - 10);
 		this.addActor(deincrementCapButton);
 		
 		
 		
 		
-		priorityContainer.setPosition(70 + 21, PS.viewHeight - 75 - 16 - 10 - 16 - 10);
+		priorityContainer.setPosition(70 + 21, this.getHeight() - 75 - 16 - 10 - 16 - 10);
 		this.addActor(priorityContainer);
-		planetPrioirity.setPosition(74 + 21,  PS.viewHeight - 75 - 16 - 10 - 16 - 11);
+		planetPrioirity.setPosition(74 + 21,  this.getHeight() - 75 - 16 - 10 - 16 - 11);
 		this.addActor(planetPrioirity);
-		incrementPriorityButton.setPosition(70 + 21 + 21, PS.viewHeight - 75 - 16 - 10 - 16 - 10);
+		incrementPriorityButton.setPosition(70 + 21 + 21, this.getHeight() - 75 - 16 - 10 - 16 - 10);
 		this.addActor(incrementPriorityButton);
-		deincrementPriorityButton.setPosition(70 + 21 + 21 + 21, PS.viewHeight - 75 - 16 - 10 - 16 - 10);
+		deincrementPriorityButton.setPosition(70 + 21 + 21 + 21, this.getHeight() - 75 - 16 - 10 - 16 - 10);
 		this.addActor(deincrementPriorityButton);
 		
 		this.addActor(this.uiMouseBlot);
@@ -108,6 +112,16 @@ public class SidePanel extends BaseActor {
 			buildBoxes[i].addActor(l);
 			this.addActor(buildBoxes[i]);
 		}
+		
+		shipBuildBoxes = new BaseActor[ShipType.values().length];
+		for (int i = 0; i < ShipType.values().length; i ++) {
+			shipBuildBoxes[i] = new BaseActor("assets/shipBuildBox.png");
+			shipBuildBoxes[i].setPosition(-100, -100);
+			BaseActor shipImg = new BaseActor(GameServerClient.clientPlayer.faction.getShipTypeTexture(ShipType.values()[i]));
+			shipImg.setPosition(1, 1);
+			shipBuildBoxes[i].addActor(shipImg);
+			this.addActor(shipBuildBoxes[i]);
+		}
 	}
 	/**
 	 * Sets the side panel to display a specific planet's stats.
@@ -122,7 +136,7 @@ public class SidePanel extends BaseActor {
 		this.dispPlanet = p.copy();
 		this.addActor(dispPlanet);
 		dispPlanet.setSize(dispPlanet.getXbyY().x / 5, dispPlanet.getXbyY().y / 5);
-		dispPlanet.setCenter(32, PS.viewHeight - 98);
+		dispPlanet.setCenter(32, this.getHeight() - 98);
 		
 		//update text fields
 		planetName.setText(this.planet.name);
@@ -145,23 +159,7 @@ public class SidePanel extends BaseActor {
 		this.shipContainers.clear();
 
 		
-		//setup building boxes
-		for (int i = 0; i < this.planet.buildings.length; i++) {
-			BuildingContainer bc = new BuildingContainer();
-			bc.setPosition(10, PS.viewHeight - 150 - i * 20);
-			bc.planet = p;
-			this.buildingContainers.add(bc);
-			this.addActor(bc);
-			
-			if (this.planet.buildings[i] != null) {
-				bc.setBuilding(this.planet.buildings[i]);
-			} else {
-				bc.setBuilding(null);
-			
-				
-			}
-
-		}
+	
 		
 		for (int i = 0; i < this.planet.orbitingShips.size(); i++) {
 			ShipContainer sbox = new ShipContainer();
@@ -190,6 +188,26 @@ public class SidePanel extends BaseActor {
 				}
 			}
 		}
+		
+		//setup building boxes
+		for (int i = 0; i < this.planet.buildings.length; i++) {
+			BuildingContainer bc = new BuildingContainer();
+			bc.setPosition(10, PS.viewHeight - 150 - i * 20);
+			bc.planet = p;
+			this.buildingContainers.add(bc);
+			this.addActor(bc);
+			
+			if (this.planet.buildings[i] != null) {
+				bc.setBuilding(this.planet.buildings[i]);
+			} else {
+				bc.setBuilding(null);
+			
+				
+			}
+
+		}
+		hideBuildBoxes();
+		hideShipBuildBoxes();
 
 	}
 
@@ -237,11 +255,30 @@ public class SidePanel extends BaseActor {
 					showDestroy();
 					selectedBuildingSlot = i;
 				}
+				
+				if (this.buildingContainers.get(i).getBuilding() instanceof Factory) {
+					this.hideBuildBoxes();
+					this.showShipBuildBoxes();
+				} else {
+					this.hideShipBuildBoxes();
+				}
+				
+		
 		
 				
 				
 				
 			}
+		}
+		
+		if (shipBuildBoxesShowing) {
+			for (int i = 0; i < this.shipBuildBoxes.length; i++) {
+				if (shipBuildBoxes[i].getBoundingRectangle().contains(uiMouseBlot.center) && Gdx.input.justTouched()) {
+					buildingContainers.get(selectedBuildingSlot).setFactoryShip(ShipType.values()[i]);
+					System.out.println("Factory has shipType: " + ShipType.values()[i].name() );
+					hideShipBuildBoxes();
+				}
+			}	
 		}
 		//check for clicking on buildBox
 		if (buildBoxesShowing) {
@@ -265,6 +302,8 @@ public class SidePanel extends BaseActor {
 					
 				}
 			}
+			
+			
 		}
 		//check for destroying building
 		if (this.destroyBuildingBox.getBoundingRectangle().contains(uiMouseBlot.center) && Gdx.input.justTouched()) {
@@ -343,6 +382,24 @@ public class SidePanel extends BaseActor {
 		this.destroyBuildingBox.setPosition(-100, -100);
 	}
 	
+	private void showShipBuildBoxes() {
+		for (int i = 0; i < shipBuildBoxes.length; i++) {
+			shipBuildBoxes[i].setPosition(50, PS.viewHeight - 150 - i * 20);
+			
+		}
+		shipBuildBoxesShowing = true;
+	}
+	/**
+	 * hide the buildBoxes
+	 */
+	private void hideShipBuildBoxes() {
+		for (int i = 0; i < shipBuildBoxes.length; i++) {
+			shipBuildBoxes[i].setPosition(-100, -100);
+			
+		}
+		shipBuildBoxesShowing = false;
+	}
+	
 	private ShipContainer getShipContainer(Ship s) {
 		for (ShipContainer sc : this.shipContainers) {
 			if (sc.getShip() == s) {
@@ -357,5 +414,39 @@ public class SidePanel extends BaseActor {
 			getShipContainer(s).setDestinationInfo(destination);
 		}
 	}
+	
+	public void unset() {
+		//remove old planet
+			this.planet = new Planet();
+			this.removeActor(this.dispPlanet);
+			//get displayable planet copy
+		
+		
+			//update text fields
+			planetName.setText(" ");
 
+			planetType.setText(" ");
+			//remove old building boxes
+			for (BuildingContainer bbox : this.buildingContainers) {
+				this.removeActor(bbox);
+			}
+			
+			for (BaseActor sbox : this.shipContainers) {
+				this.removeActor(sbox);
+			}
+			
+		
+			this.buildingContainers.clear();
+			this.buildingCost.clear();
+
+			
+			this.shipContainers.clear();
+
+			
+			//setup building boxes
+			hideBuildBoxes();
+				
+
+			
+	}
 }

@@ -2,8 +2,10 @@ package com.ue.ps;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.scenes.scene2d.Stage;
+
 public abstract class Building extends BaseActor {
-	public int health;
+	public int health = 10;
 
 	public int resourceCost;
 	public static ArrayList<Building> allBuildings = new ArrayList<Building>();

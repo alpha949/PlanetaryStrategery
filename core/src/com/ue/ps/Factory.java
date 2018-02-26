@@ -1,12 +1,17 @@
 package com.ue.ps;
 
+import com.badlogic.gdx.scenes.scene2d.Stage;
+
 public class Factory extends Building {
 
 	private int resourceInput = 3;
 	private int shipProgressOutput = 10;
 	
 
-	public Ship buildingShip;
+	public ShipType buildingShip;
+	
+	public int buildProgress;
+	
 
 	public Factory() {
 		super("assets/factory.png");
@@ -18,13 +23,22 @@ public class Factory extends Building {
 
 	@Override
 	public void update(Planet p) {
-
-		if (p.resource > resourceInput) {
+		//check to see if it can work on building the ship
+		if (buildingShip != null && p.resource > resourceInput) {
 			p.resource -= resourceInput;
 
-			buildingShip.buildProgress += shipProgressOutput;
+			buildProgress += shipProgressOutput;
+			System.out.println("Ship Prog: " + buildProgress + "/" + buildingShip.getBuildLimit() );
 		}
-
+		//check to see if ship is built
+		if (buildingShip != null && buildProgress >= buildingShip.getBuildLimit()) {
+		
+			Ship.spawnShip(owner, p, buildingShip, 90);
+			buildProgress = 0;
+			this.buildingShip = null;
+		}
+		
+		
 	}
 
 }
