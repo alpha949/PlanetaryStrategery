@@ -83,7 +83,8 @@ public class GameplayScreen implements Screen {
 	private boolean turnActive = true;
 	
 	private boolean hasAskedServer = false;
-
+	
+	private Vector2 uiMousePos = new Vector2();
 	
 	public GameplayScreen(Game g) {
 		game = g;
@@ -175,6 +176,8 @@ public class GameplayScreen implements Screen {
 
 		mouseBlot.setPosition(Gdx.input.getX(), PS.viewHeight - Gdx.input.getY());
 		mousePos = mainStage.screenToStageCoordinates(uiStage.stageToScreenCoordinates(mouseBlot.center));
+		mouseBlot.setPosition(Gdx.input.getX(), PS.viewHeight - Gdx.input.getY());
+		uiMousePos = uiStage.screenToStageCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 		// these numbers (8 and 13) seem really arbitrary, there's probably some
 		// reason for them...
 		stageMouseBlot.setPosition(mousePos.x - 8* zoomAmount, mousePos.y - 8*zoomAmount);
@@ -291,16 +294,16 @@ public class GameplayScreen implements Screen {
 
 		cam.zoom = zoomAmount;
 
-		if (Gdx.input.isKeyPressed(Keys.UP)) {
+		if (Gdx.input.isKeyPressed(Keys.W)) {
 			cam.position.y += 10 * zoomAmount;
 			cameraOffsetY += 10 * zoomAmount;
-		} else if (Gdx.input.isKeyPressed(Keys.LEFT)) {
+		} else if (Gdx.input.isKeyPressed(Keys.A)) {
 			cam.position.x -= 10 * zoomAmount;
 			cameraOffsetX -= 10 * zoomAmount;
-		} else if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
+		} else if (Gdx.input.isKeyPressed(Keys.D)) {
 			cam.position.x += 10 * zoomAmount;
 			cameraOffsetX += 10 * zoomAmount;
-		} else if (Gdx.input.isKeyPressed(Keys.DOWN)) {
+		} else if (Gdx.input.isKeyPressed(Keys.S)) {
 			cam.position.y -= 10 * zoomAmount;
 			cameraOffsetY -= 10 * zoomAmount;
 		}
@@ -316,21 +319,9 @@ public class GameplayScreen implements Screen {
 			//Gdx.graphics.setWindowedMode(PS.viewWidth, PS.viewHeight);
 		}
 		//this doesn't work
-		if (executeButton.getBoundingRectangle().contains(mouseBlot.center) && Gdx.input.justTouched()) {
-			System.out.println("hit");
-			if (!useServer) {
-				System.out.println("executing actions...");
-				//temporary
-				for (Action a : packet.getActions()) {
-					Action.execute(a, mainStage, GameServerClient.clientPlayer);
-				}
-			} else {
-				//packet.send(GameServerClient.ipAddress);
-			}
-				
-		}
-		
-		if (Gdx.input.isKeyJustPressed(Keys.Q)) {
+		System.out.println(uiMousePos);
+		System.out.println(this.executeButton.center);
+		if (this.executeButton.getBoundingRectangle().contains(uiMousePos) && Gdx.input.justTouched()){
 			if (!useServer) {
 				System.out.println("executing actions...");
 				//temporary
@@ -360,6 +351,8 @@ public class GameplayScreen implements Screen {
 				turnActive = false;
 			}
 		}
+		
+		
 		
 		if (!turnActive){
 			if (!hasAskedServer){
