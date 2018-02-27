@@ -38,6 +38,7 @@ public class Planet extends BaseActor{
 	
 	public ArrayList<ShipPointer> pointers = new ArrayList<ShipPointer>();
 	
+	private boolean isCombat = false;
 		
 	private int builtBuildings = 0;
 	
@@ -94,9 +95,27 @@ public class Planet extends BaseActor{
 		}
 		
 		this.rotateBy(0.2f * rotateDirection);
+		isCombat = false;
+		for (Ship s1 : this.orbitingShips){
+			for (Ship s2 : this.orbitingShips){
+				if (!s1.getOwnerName().equals(s2.getOwnerName())){
+					isCombat = true;
+				}
+			}
+		}
 		
 		
 		
+	}
+	
+	public void performCombat(){
+		ArrayList<Ship> p1ships;
+		ArrayList<Ship> p2ships;
+		ArrayList<Ship> p3ships;
+		ArrayList<Ship> p4ships;
+		for (Ship s : this.orbitingShips){
+			
+		}
 	}
 	
 	

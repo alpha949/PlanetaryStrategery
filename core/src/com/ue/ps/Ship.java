@@ -33,7 +33,7 @@ public class Ship extends BaseActor {
 	
 	private static int shipCount;
 
-	private static ArrayList<BaseActor> pointerBody = new ArrayList<BaseActor>();
+	
 	
 	//private static ParticleSpawner shipWarpTrail = new ParticleSpawner("assets/particles/shipWarp");
 
@@ -161,6 +161,8 @@ public class Ship extends BaseActor {
 		shipCount += 1;
 
 	}
+	
+	
 	
 	private static String genId(Player owner){
 		String id = owner.userName + shipCount;
