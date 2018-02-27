@@ -108,16 +108,46 @@ public class Planet extends BaseActor{
 		
 	}
 	
-	public void performCombat(){
-		ArrayList<Ship> p1ships;
-		ArrayList<Ship> p2ships;
-		ArrayList<Ship> p3ships;
-		ArrayList<Ship> p4ships;
-		for (Ship s : this.orbitingShips){
-			
+	public void performCombat(Player owner){
+		ArrayList<Ship> clientShips = splitShipsByOwner(owner);
+		ArrayList<Building> buildingTargets = new ArrayList<Building>();
+		ArrayList<Ship> shipTargets = new ArrayList<Ship>();
+		if (this.owner != owner){
+			for (Building b : this.buildings){
+				if (b != null){
+					buildingTargets.add(b);
+				}
+				
+			}
 		}
+		for (Ship s : this.orbitingShips){
+			if (s.getOwnerName() != owner.userName){
+				shipTargets.add(s);
+			}
+		}
+		for (Ship s : clientShips){
+			s.attack(shipTargets, buildingTargets);
+		}
+		
 	}
 	
+	private ArrayList<Ship> splitShipsByOwner(Player owner){
+		ArrayList<Ship> ownersShips = new ArrayList<Ship>();
+		for (Ship s : this.orbitingShips){
+			if (s.getOwnerName().equals(owner.userName)){
+				ownersShips.add(s);
+			}
+		}
+		return ownersShips;
+		
+		
+	}
+	
+	public void onTurnUpdate(){
+		if (isCombat){
+			this.performCombat(GameServerClient.clientPlayer);
+		}
+	}
 	
 	public void addBuilding(Building b, int slot){
 		if (builtBuildings < capacity && slot < capacity){

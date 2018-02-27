@@ -342,6 +342,8 @@ public class GameplayScreen implements Screen {
 						}
 						
 					}
+					//perform combat
+					p.onTurnUpdate();
 				}
 				
 				

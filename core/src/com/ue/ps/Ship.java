@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -12,11 +13,13 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 public class Ship extends BaseActor {
 
-	public int health;
+	public int health = 20;
 	public int maxhp;
 
 	public int people;
 	public int peoplecap;
+	
+	private int damage = 5;
 
 
 	public ShipType type;
@@ -43,6 +46,28 @@ public class Ship extends BaseActor {
 		this.type = type;
 	
 
+	}
+	
+	public void attack(ArrayList<Ship> spaceTargets, ArrayList<Building> buildingTargets){
+		//whether this ship will attack a building or a ship
+		int targetType;
+		//target ship
+		
+		//check to see if there are buildings to target
+		if (!buildingTargets.isEmpty()){
+			targetType = MathUtils.random(1, 3);
+		} else {
+			targetType = 3;
+		}
+		
+		//attack ships
+		if (targetType > 1){
+			spaceTargets.get(MathUtils.random(0, spaceTargets.size()-1)).health -= this.damage;
+		}
+		//attack buildings
+		else {
+			buildingTargets.get(MathUtils.random(0, buildingTargets.size()-1)).health -= this.damage;
+		}
 	}
 
 	
@@ -119,6 +144,15 @@ public class Ship extends BaseActor {
 	
 	
 	
+	
+	}
+	
+	public void act(float dt){
+		super.act(dt);
+		if (this.health < 0){
+			this.remove();
+			this.location.orbitingShips.remove(this);
+		}
 	}
 	
 

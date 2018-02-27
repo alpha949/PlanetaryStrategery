@@ -130,6 +130,12 @@ public class Utils {
 
 	}
 	
+	public static <T> T getRandObjFromArray(ArrayList<T> arr){
+		
+		return arr.get(MathUtils.random(0, arr.size()-1));
+		
+	}
+	
 	
 
 }
