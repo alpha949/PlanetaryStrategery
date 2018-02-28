@@ -16,6 +16,7 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
@@ -36,6 +37,19 @@ public class GameServerClient {
 	private String recievedData = "";
 	private String connectionResult = "";
 	private String ip;
+	
+	
+	private static class PlanetData{
+		public PlanetType type;
+		public int size;
+		public int x;
+		public int y;
+		public boolean isHomePlanet;
+		private PlanetData() {
+			
+		}
+	}
+	
 	/**
 	 * Creates a severClient connection to the given ip;
 	 * this will only throw errors when calling sendRequest if the ip can't be found
@@ -141,6 +155,15 @@ public class GameServerClient {
 			System.out.println("No valid data to obtain");
 			return "";
 		}
+	}
+	
+	public Planet constructPlanet(String validJsonData) {
+		Json j = new Json();
+		PlanetData planetData = j.fromJson(PlanetData.class, validJsonData);
+		Planet p = new Planet(planetData.type, planetData.size);
+		p.setPosition(planetData.x, planetData.y);
+		p.isHomePlanet = planetData.isHomePlanet;
+		return p;
 	}
 	
 	

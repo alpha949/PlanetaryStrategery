@@ -5,46 +5,100 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 public class Action {
 	
 	private enum ActionType {
-		sendShips, buildBuilding, buildShip;
+		sendShips, buildBuilding, buildShip, attackShip, attackBuilding;
 	}
 	
 	
 	public ActionType type;
 	
 	private String[] shipIds;
+	private String id;
+	private int damage;
 	private int locactionId;
 	private int destinationId;
 	
 	private int planetId;
 	private int buildingSlot;
-	private Building building;
+	private char buildingId;
 	
-	private ShipType shipType;
+	private char shipTypeId;
 	
 	
-	public Action(String[] ids, int loc, int dest) {
+	private Action(String[] ids, int loc, int dest) {
 		this.type = ActionType.sendShips;
 		this.shipIds = ids;
 		this.locactionId = loc;
 		this.destinationId = dest;
 	}
-	
-	public Action(int id, int slot, Building b){
+	private Action(int id, int slot, char buildingId){
 		this.type = ActionType.buildBuilding;
 		this.planetId = id;
 		this.buildingSlot = slot;
-		this.building = b;
+		this.buildingId = buildingId;
 	}
-	/**
-	 * Build ship action	
-	 * @param id the planet id
-	 * @param type the shipType
-	 */
-	public Action(int id, ShipType type){
+	private Action(int id, char type){
 		this.type = ActionType.buildShip;
 		this.planetId = id;
-		this.shipType = type;
+		this.shipTypeId = type;
 	}
+	private Action(String id, int damage){
+		this.type = ActionType.attackShip;
+		this.id = id;
+		this.damage = damage;
+	}
+	private Action(int id, int slot, int damage){
+		this.type = ActionType.attackBuilding;
+		this.planetId = id;
+		this.buildingSlot = slot;
+		this.damage = damage;
+	}
+	
+	
+	/**
+	 * Tells server to move ships
+	 * @param ids the ids of the ships to move
+	 * @param loc the planet id of the location of the ships
+	 * @param dest the plant id of the destination of the ships
+	 */
+	public static Action sendShips(String[] ids, int loc, int dest) {
+		return new Action(ids, loc, dest);
+	}
+	/**
+	 * Tells server to build a building
+	 * @param id the id of the planet of the building
+	 * @param slot the slot of the building on that planet
+	 * @param buildingId the type of building to build
+	 */
+	public static Action buildBuilding(int id, int slot, char buildingId) {
+		return new Action(id, slot, buildingId);
+	}
+	/**
+	 * Tells server to build a ship
+	 * @param id the planet id to spawn this ship
+	 * @param type the type of ship to spawn
+	 */
+	public static Action buildShip(int id, char type) {
+		return new Action(id, type);
+	}
+	/**
+	 * Tells server to attack a ship
+	 * @param id the id of the ship to be attacked
+	 * @param damage the damage to deal to the ship
+	 */
+	public static Action attackShip(String id, int damage) {
+		return new Action(id, damage);
+	}
+	/**
+	 * Tells server to attack a building
+	 * @param id the id of the planet of the building
+	 * @param slot the slot of the building on that planet
+	 * @param damage the damage to deal to the building
+	 */
+	public static Action attackBuilding(int id, int slot, int damage) {
+		return new Action(id, slot, damage);
+	}
+	
+	
 	
 	public static void execute(Action a, Stage m, Player pla){
 		switch(a.type){
@@ -64,14 +118,31 @@ public class Action {
 			
 		case buildBuilding:
 			
-			World.getPlanetById(a.planetId).addBuilding(a.building, a.buildingSlot);
+			World.getPlanetById(a.planetId).addBuilding(Building.getBuildingFromId(a.buildingId), a.buildingSlot);
 			
 			break;
 			
 		case buildShip:
 	
 			//TODO angle gen
-			Ship.spawnShip(pla, World.getPlanetById(a.planetId), a.shipType, 90);
+			Ship.spawnShip(pla, World.getPlanetById(a.planetId), ShipType.getShipType(a.shipTypeId), 90);
+			
+			break;
+		case attackShip:
+			
+
+			for (Planet p : World.getWorld()) {
+				for (Ship s : p.orbitingShips) {
+					if (s.id.equals(a.id)) {
+						s.health -= a.damage;
+					}
+				}
+			}
+			
+			break;
+		case attackBuilding:
+			
+			
 			
 			break;
 		

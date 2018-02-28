@@ -13,14 +13,14 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 public class Ship extends BaseActor {
 
-	public int health = 20;
+	public int health;
 	public int maxhp;
 
 	public int people;
 	public int peoplecap;
 	
-	private int damage = 5;
-
+	private int damage;
+	private int cost;
 
 	public ShipType type;
 
@@ -44,11 +44,14 @@ public class Ship extends BaseActor {
 		super();
 		this.setTexture(faction.getShipTypeTexture(type));
 		this.type = type;
+		this.health = this.type.getStat(0);
+		this.damage = this.type.getStat(1);
+		this.cost = this.type.getStat(2);
 	
 
 	}
 	
-	public void attack(ArrayList<Ship> spaceTargets, ArrayList<Building> buildingTargets){
+	public void attack(ArrayList<Ship> spaceTargets, ArrayList<Building> buildingTargets, Planet orbitingPlanet){
 		//whether this ship will attack a building or a ship
 		int targetType;
 		//target ship
@@ -62,11 +65,13 @@ public class Ship extends BaseActor {
 		
 		//attack ships
 		if (targetType > 1){
-			spaceTargets.get(MathUtils.random(0, spaceTargets.size()-1)).health -= this.damage;
+			Ship target =spaceTargets.get(MathUtils.random(0, spaceTargets.size()-1));
+			GameplayScreen.packet.addAction(Action.attackShip(target.id, this.damage));
 		}
 		//attack buildings
 		else {
-			buildingTargets.get(MathUtils.random(0, buildingTargets.size()-1)).health -= this.damage;
+			Building target = buildingTargets.get(MathUtils.random(0, buildingTargets.size()-1));
+			GameplayScreen.packet.addAction(Action.attackBuilding(orbitingPlanet.id, orbitingPlanet.getBuildingSlot(target), this.damage));
 		}
 	}
 

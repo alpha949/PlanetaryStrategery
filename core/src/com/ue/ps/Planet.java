@@ -126,7 +126,7 @@ public class Planet extends BaseActor{
 			}
 		}
 		for (Ship s : clientShips){
-			s.attack(shipTargets, buildingTargets);
+			s.attack(shipTargets, buildingTargets, this);
 		}
 		
 	}
@@ -169,6 +169,15 @@ public class Planet extends BaseActor{
 		this.removeActor(buildings[slot]);
 		buildings[slot] = null;
 		builtBuildings -= 1;
+	}
+	
+	public int getBuildingSlot(Building b) {
+		for (int i = 0; i < buildings.length; i++) {
+			if (buildings[i].equals(b)) {
+				return i;
+			}
+		}
+		return 0;
 	}
 	
 	public Vector2 getXbyY() {

@@ -11,6 +11,7 @@ public abstract class Building extends BaseActor {
 	public static ArrayList<Building> allBuildings = new ArrayList<Building>();
 	public char id;
 	public Player owner;
+	
 
 	public Building(String path) {
 		super(path);
@@ -30,6 +31,14 @@ public abstract class Building extends BaseActor {
 			}
 		}
 		return null;
+	}
+	
+	public void act(float dt){
+		super.act(dt);
+		if (this.health < 0){
+			this.remove();
+			//TODO remove building from planet
+		}
 	}
 	
 	//all buildings must be registered here, if some one can find a way to do this automagically, that would be awsome

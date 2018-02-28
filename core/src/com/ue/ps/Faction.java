@@ -17,6 +17,8 @@ public class Faction {
 	private Texture flagshipImg;
 	private Texture symbolImg;
 
+	private int[][] shipModifiers = new int[ShipType.values().length][3];
+
 	public Faction(String name, String abv, Color color) {
 		this.name = name;
 		this.color = color;
@@ -53,6 +55,19 @@ public class Faction {
 	public Texture getSymbolTexture() {
 		return this.symbolImg;
 	}
+	/**
+	 * Sets the ship modifiers of the faction
+	 * @param mods a list of integers, first is health mod, then damage mod, then cost mod
+	 */
+	private void setShipModifiers(ShipType ship, int...mods) {
+		for (int i = 0; i < mods.length; i++) {
+			shipModifiers[ship.ordinal()][i] = mods[i];
+		}
+	}
+	
+	public int getMod(ShipType ship, int modNum) {
+		return this.shipModifiers[ship.ordinal()][modNum];
+	}
 
 	public static Faction Braecious = new Faction("Braecious", "brc", Color.RED);
 	public static Faction Reach = new Faction("The Reach", "trc", Color.BLUE);
@@ -61,5 +76,11 @@ public class Faction {
 	public static Faction Vilioth = new Faction("Vilioth", "vlt", Color.PURPLE);
 	public static Faction Efferent = new Faction("Efferent", "efr", Color.ORANGE);
 	public static Faction Xin = new Faction("Xin", "xin", Color.GREEN);
+	
+	static{
+		Braecious.setShipModifiers(ShipType.cruiser, -5, 4, 0);
+		Reach.setShipModifiers(ShipType.scout, 0, 1, -5);
+		Lelouk.setShipModifiers(ShipType.flagship, 0, 1, 0);
+	}
 
 }

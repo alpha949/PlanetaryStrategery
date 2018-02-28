@@ -213,7 +213,7 @@ public class GameplayScreen implements Screen {
 							//TODO unset packet actions
 							//-----------------------------------------------------
 							activePointer.location.pointers.add(activePointer.clone());
-							packet.addAction(new Action(Utils.getShipIds(SidePanel.selectedShips), SidePanel.selectedShips.get(0).location.id, p.id));
+							packet.addAction(Action.sendShips(Utils.getShipIds(SidePanel.selectedShips), SidePanel.selectedShips.get(0).location.id, p.id));
 							SidePanel.selectedShips.clear();
 							activePointer.delete();
 							activePointer = null;
@@ -319,8 +319,7 @@ public class GameplayScreen implements Screen {
 			//Gdx.graphics.setWindowedMode(PS.viewWidth, PS.viewHeight);
 		}
 		//this doesn't work
-		System.out.println(uiMousePos);
-		System.out.println(this.executeButton.center);
+	
 		if (this.executeButton.getBoundingRectangle().contains(uiMousePos) && Gdx.input.justTouched()){
 			if (!useServer) {
 				System.out.println("executing actions...");
@@ -328,6 +327,7 @@ public class GameplayScreen implements Screen {
 				for (Action a : packet.getActions()) {
 					Action.execute(a, mainStage, GameServerClient.clientPlayer);
 				}
+				packet.getActions().clear();
 				//clear pointers
 				for (Planet p : World.getWorld()) {
 					for (ShipPointer sp : p.pointers) {

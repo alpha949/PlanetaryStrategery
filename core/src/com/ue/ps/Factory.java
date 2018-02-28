@@ -28,12 +28,13 @@ public class Factory extends Building {
 			p.resource -= resourceInput;
 
 			buildProgress += shipProgressOutput;
-			System.out.println("Ship Prog: " + buildProgress + "/" + buildingShip.getBuildLimit() );
+			System.out.println("Ship Prog: " + buildProgress + "/" + buildingShip.getStat(2) );
 		}
 		//check to see if ship is built
-		if (buildingShip != null && buildProgress >= buildingShip.getBuildLimit()) {
+		if (buildingShip != null && buildProgress >= buildingShip.getStat(2)) {
 		
 			Ship.spawnShip(owner, p, buildingShip, 90);
+			GameplayScreen.packet.addAction(Action.buildShip(p.id, buildingShip.getId()));
 			buildProgress = 0;
 			this.buildingShip = null;
 		}

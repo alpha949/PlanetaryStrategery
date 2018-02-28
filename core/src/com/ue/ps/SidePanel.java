@@ -296,6 +296,7 @@ public class SidePanel extends BaseActor {
 							this.planet.addBuilding(newBuilding, selectedBuildingSlot);
 							//update building boxes
 							buildingContainers.get(selectedBuildingSlot).setBuilding(newBuilding);
+							GameplayScreen.packet.addAction(Action.buildBuilding(planet.id, selectedBuildingSlot, newBuilding.id));
 							hideBuildBoxes();
 							
 						} catch (InstantiationException e) {

@@ -78,7 +78,7 @@ public class BuildingContainer extends BaseActor{
 		}
 		if (this.building != null && this.building instanceof Factory && ((Factory)this.building).buildingShip != null) {
 			this.hoverPanel.getInfo().get(2).setText("Ship: " + ((Factory)this.building).buildingShip.name());
-			this.hoverPanel.getInfo().get(3).setText("Progress: " + ((Factory)this.building).buildProgress + "/" + ((Factory)this.building).buildingShip.getBuildLimit());
+			this.hoverPanel.getInfo().get(3).setText("Progress: " + ((Factory)this.building).buildProgress + "/" + ((Factory)this.building).buildingShip.getStat(2));
 		}
 	}
 	

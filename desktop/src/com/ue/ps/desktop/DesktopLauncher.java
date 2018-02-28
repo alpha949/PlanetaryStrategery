@@ -16,8 +16,13 @@ public class DesktopLauncher {
 		cfg.addIcon("assets/icon.png", FileType.Internal);
 
 		for (int i = 0; i < arg.length - 1; i++){
+			System.out.println(arg[i]);
 			if (arg[i].equals("recording") || arg[i].equals("r")){
 				PS.recordingGeneration = true;
+			}
+			else if (arg[i].equals("menu") || arg[i].equals("m")){
+				PS.directToGame = false;
+				System.out.println("to the menu!");
 			}
 		}
 	

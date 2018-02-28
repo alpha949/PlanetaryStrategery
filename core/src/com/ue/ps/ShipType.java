@@ -4,15 +4,26 @@ public enum ShipType {
 	drone, scout, colonizer, transport, cruiser, dread, flagship;
 	
 	private char id;
-	private int cost;
+	
+	private int[] baseStats = new int[3];
 	
 	public char getId() {
 		return this.id;
 	}
 	
-	public int getBuildLimit() {
-		return this.cost;
+
+	
+	
+	public int getStat(int stat) {
+		return this.baseStats[stat];
 	}
+	
+	private void setStats( int...stats) {
+		for (int i = 0; i < stats.length; i++) {
+			this.baseStats[i] = stats[i];
+		}
+	}
+	
 	
 	public static ShipType getShipType(char id) {
 		for (ShipType st : ShipType.values()) {
@@ -27,25 +38,26 @@ public enum ShipType {
 	
 	static {
 		drone.id = 'd';
-		drone.cost = 40;
-		
+		drone.setStats(5, 1, 25);
+	
 		scout.id = 's';
-		scout.cost = 100;
+		scout.setStats(20, 3, 50);
 		
 		colonizer.id = 'c';
-		colonizer.cost = 70;
+		colonizer.setStats(30, 0, 60);
 		
 		transport.id = 't';
-		transport.cost = 120;
+		transport.setStats(25, 0, 40);
 		
 		cruiser.id = 'c';
-		cruiser.cost = 200;
+		cruiser.setStats(40, 5, 75);
 		
 		dread.id = 'D';
-		cruiser.cost = 350;
+		dread.setStats(80, 10, 125);
 		
 		flagship.id = 'f';
-		flagship.cost = 500;
+		flagship.setStats(160, 20, 200);
+		
 	}
 	
 }
