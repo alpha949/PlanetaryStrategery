@@ -37,6 +37,10 @@ public class GameServerClient {
 	private String recievedData = "";
 	private String connectionResult = "";
 	private String ip;
+
+
+
+	public static Packet packet = new Packet();
 	
 	
 	private static class PlanetData{

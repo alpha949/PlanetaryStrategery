@@ -34,7 +34,7 @@ public class Factory extends Building {
 		if (buildingShip != null && buildProgress >= buildingShip.getStat(2)) {
 		
 			Ship.spawnShip(owner, p, buildingShip, 90);
-			GameplayScreen.packet.addAction(Action.buildShip(p.id, buildingShip.getId()));
+			GameServerClient.packet.addAction(Action.buildShip(p.id, buildingShip.getId()));
 			buildProgress = 0;
 			this.buildingShip = null;
 		}

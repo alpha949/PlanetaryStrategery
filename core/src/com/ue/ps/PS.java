@@ -48,11 +48,11 @@ public class PS extends Game {
 		allPlayers[1] = p2;
 		
 		GameplayScreen gs = new GameplayScreen(this);
-		MenuScreen ms = new MenuScreen(this);
+		//MenuScreen ms = new MenuScreen(this);
 		if (directToGame) {
 			setScreen(gs);
 		} else {
-			setScreen(ms);
+			//setScreen(ms);
 		}
 		
 	}

@@ -66,12 +66,12 @@ public class Ship extends BaseActor {
 		//attack ships
 		if (targetType > 1){
 			Ship target =spaceTargets.get(MathUtils.random(0, spaceTargets.size()-1));
-			GameplayScreen.packet.addAction(Action.attackShip(target.id, this.damage));
+			GameServerClient.packet.addAction(Action.attackShip(target.id, this.damage));
 		}
 		//attack buildings
 		else {
 			Building target = buildingTargets.get(MathUtils.random(0, buildingTargets.size()-1));
-			GameplayScreen.packet.addAction(Action.attackBuilding(orbitingPlanet.id, orbitingPlanet.getBuildingSlot(target), this.damage));
+			GameServerClient.packet.addAction(Action.attackBuilding(orbitingPlanet.id, orbitingPlanet.getBuildingSlot(target), this.damage));
 		}
 	}
 

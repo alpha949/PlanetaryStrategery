@@ -73,8 +73,6 @@ public class GameplayScreen implements Screen {
 	
 	private ShipPointer activePointer;
 	
-	public static Packet packet = new Packet();
-	
 	public static Boolean useServer;
 	
 	private ResourcePanel resourcePanel;
@@ -213,7 +211,7 @@ public class GameplayScreen implements Screen {
 							//TODO unset packet actions
 							//-----------------------------------------------------
 							activePointer.location.pointers.add(activePointer.clone());
-							packet.addAction(Action.sendShips(Utils.getShipIds(SidePanel.selectedShips), SidePanel.selectedShips.get(0).location.id, p.id));
+							GameServerClient.packet.addAction(Action.sendShips(Utils.getShipIds(SidePanel.selectedShips), SidePanel.selectedShips.get(0).location.id, p.id));
 							SidePanel.selectedShips.clear();
 							activePointer.delete();
 							activePointer = null;
@@ -324,10 +322,10 @@ public class GameplayScreen implements Screen {
 			if (!useServer) {
 				System.out.println("executing actions...");
 				//temporary
-				for (Action a : packet.getActions()) {
+				for (Action a : GameServerClient.packet.getActions()) {
 					Action.execute(a, mainStage, GameServerClient.clientPlayer);
 				}
-				packet.getActions().clear();
+				GameServerClient.packet.getActions().clear();
 				//clear pointers
 				for (Planet p : World.getWorld()) {
 					for (ShipPointer sp : p.pointers) {
@@ -349,7 +347,7 @@ public class GameplayScreen implements Screen {
 				
 				sidePanel.unset();
 			} else {
-				server.sendRequest(packet.getCompressedData(), "client");
+				server.sendRequest(GameServerClient.packet.getCompressedData(), "client");
 				turnActive = false;
 			}
 		}
@@ -362,8 +360,8 @@ public class GameplayScreen implements Screen {
 				hasAskedServer = true;
 			}
 			if (!server.getRecievedData().isEmpty()){
-				packet.setData(server.getRecievedData());
-				for (Action a : packet.getActions()) {
+				GameServerClient.packet.setData(server.getRecievedData());
+				for (Action a : GameServerClient.packet.getActions()) {
 					Action.execute(a, mainStage, GameServerClient.clientPlayer);
 				}
 				turnActive = true;

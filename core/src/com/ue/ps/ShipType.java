@@ -37,19 +37,23 @@ public enum ShipType {
 	}
 	
 	static {
+		//true resource cost is shipCost/factoryEffeciency * factoryConsumption
+		
+		//non combat
 		drone.id = 'd';
 		drone.setStats(5, 1, 25);
 	
-		scout.id = 's';
-		scout.setStats(20, 3, 50);
-		
 		colonizer.id = 'c';
 		colonizer.setStats(30, 0, 60);
 		
 		transport.id = 't';
 		transport.setStats(25, 0, 40);
 		
-		cruiser.id = 'c';
+		//combat
+		scout.id = 's';
+		scout.setStats(20, 3, 50);
+		
+		cruiser.id = 'C';
 		cruiser.setStats(40, 5, 75);
 		
 		dread.id = 'D';
