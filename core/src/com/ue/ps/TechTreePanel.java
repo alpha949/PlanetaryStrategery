@@ -9,9 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 public class TechTreePanel extends BaseActor{
 	
 	public boolean isOpen;
-	private static final int itemDist = 100;
+	private static final int itemDist = 150;
 	private static Texture techLineTexture = Utils.getImg("techLine");
 	private static ArrayList<TechTreeItem> items = new ArrayList<TechTreeItem>();
+	
+	private boolean isSetup;
 	
 	public TechTreePanel() {
 		super("assets/grayBack.png");
@@ -25,12 +27,17 @@ public class TechTreePanel extends BaseActor{
 	public void open() {
 	
 		this.setVisible(true);
-		for (TechTreeItem tti : items) {
-			if (tti != TechTreeItem.baseTech) {
-				this.placeItem(tti);
+		if (!isSetup) {
+			for (TechTreeItem tti : items) {
+				if (tti != TechTreeItem.baseTech) {
+					this.placeItem(tti);
+					tti.unlock();
+				}
+				
 			}
-			
+			isSetup = true;
 		}
+		
 		this.isOpen = true;
 	}
 	
@@ -45,13 +52,41 @@ public class TechTreePanel extends BaseActor{
 		for (int i = 0; i< 8; i++) {
 			for (int l = 0; l < 8; l++) {
 				if (!tti.preReq.branches[i] && !tti.branches[l]) {
+					//find no goes from tii
+					int notBranchTop = i + 3;
+					int notBranchBottom = i - 3;
+					if (notBranchTop > 8) {
+						notBranchTop -= 8;
+					}
+					if (notBranchBottom < 0) {
+						notBranchBottom += 8;
+						
+					}
+					//find no goes from preReq
+					int noGoBranchTop = i +1;
+					int noGoBranchBottom = i - 1;
+					if (noGoBranchTop > 8) {
+						noGoBranchTop -= 8;
+					}
+					if (noGoBranchBottom < 0) {
+						noGoBranchBottom += 8;
+					}
+					
 					tti.preReq.branches[i] = true;
 					int oppositeBranch = l - 4;
 					if (oppositeBranch < 0) {
-						oppositeBranch = l + 4;
+						oppositeBranch = l  + 4;
 					}
 					tti.branches[oppositeBranch] = true;
+					
+					if (tti.preReq.branches[noGoBranchTop]) {
+						tti.branches[notBranchTop] = true;
+					}
+					if (tti.preReq.branches[noGoBranchBottom]) {
+						tti.branches[notBranchBottom] = true;
+					}
 					branch = i;
+					
 				
 					success = true;
 					break;
