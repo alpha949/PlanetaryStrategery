@@ -62,7 +62,7 @@ public class Planet extends BaseActor{
 	private void finish(){
 		this.capacity = size * 4;
 		this.buildings = new Building[capacity];
-		this.genTexture("assets/planet" + size + ".png"); //TODO add type to path
+		this.setTexture(this.type.tex); //TODO resize the images based on planet size
 		this.setRotation(MathUtils.random(0, 360));
 		this.name = Utils.genName();
 		this.setColor(this.type.color);
