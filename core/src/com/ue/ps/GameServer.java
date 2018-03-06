@@ -20,7 +20,7 @@ import com.badlogic.gdx.utils.Json;
 public class GameServer {
 	
 	public enum ServerCommands{
-		registerUser, recieveActions, getWorld;
+		registerUser, recieveActions, getWorld, initConnect, getAllActions;
 		
 		private char id;
 		
@@ -32,10 +32,17 @@ public class GameServer {
 			}
 			return null;
 		}
+		
+		public char getId() {
+			return this.id;
+		}
+		
 		static{
 			registerUser.id = 'u';
 			recieveActions.id = 't';
 			getWorld.id = 'w';
+			initConnect.id = 'c';
+			getAllActions.id = 'a';
 		}
 	}
 	
@@ -65,14 +72,20 @@ public class GameServer {
                 BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
                 
                 try {
-                    // 
+                   String jsonData = "";
                    String recievedData = buffer.readLine(); 
                    char serverCommand = recievedData.charAt(recievedData.length()-1);
-                   String jsonData = recievedData.substring(0, recievedData.length()-2);
-                   switch(ServerCommands.getServerCommandById(serverCommand)){
+                   if (recievedData.length() > 1) {
+                	   jsonData = recievedData.substring(0, recievedData.length()-2);
+                        
+                   } else {
+                	   jsonData = "";
+                   }
+                     switch(ServerCommands.getServerCommandById(serverCommand)){
                    case registerUser:
                 	   players.add(jsonHandler.fromJson(Player.class, jsonData));
                 	   returnMessage = "welcome!";
+                	   System.out.println("succesful connection");
                 	 
                 	   break;
                    case recieveActions:
@@ -81,8 +94,14 @@ public class GameServer {
                 	   break;
                    case getWorld:
                 	   break;
+                   case initConnect:
+                	   returnMessage = "HELLO MY FRIEND";
+                	   break;
+                	
+                   case getAllActions:
+                	   break;
                    }
-                   
+                    System.out.println("Sending back: " + returnMessage);
                    socket.getOutputStream().write(returnMessage.getBytes());
                 	
                 } catch (IOException e) {
@@ -92,9 +111,5 @@ public class GameServer {
         }
     }); // And, start the thread running
 
-	
-	public static String setServerCommand(String jsonStringToSend, ServerCommands com){
-		jsonStringToSend += com.id;
-		return jsonStringToSend;
-	}
+
 }

@@ -66,7 +66,7 @@ public class ShipContainer extends BaseActor{
 			
 			if (Gdx.input.justTouched() ) {
 				
-				if ( this.ship.getOwnerName().equals(GameServerClient.clientPlayer.userName)) {
+				if ( this.ship.getOwnerName().equals(GameServerClient.clientPlayer.getUser().getUserName())) {
 					this.isSelected = true;
 					if (this.isDestinationSet) {
 						unsetDestination();

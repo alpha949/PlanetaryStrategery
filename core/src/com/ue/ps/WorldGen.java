@@ -149,9 +149,7 @@ public class WorldGen {
 				
 			
 		}
-		
-		Line.genLine(new Line(allPlanets.get(1), allPlanets.get(2), Faction.Xin), m);
-		Line.genLine(new Line(allPlanets.get(2), allPlanets.get(1), Faction.Xin), m);
+	
 		
 		return ring;
 

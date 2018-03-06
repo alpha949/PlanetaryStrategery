@@ -73,7 +73,7 @@ public class GameplayScreen implements Screen {
 	
 	private ShipPointer activePointer;
 	
-	public static Boolean useServer;
+
 	
 	private ResourcePanel resourcePanel;
 	
@@ -90,7 +90,6 @@ public class GameplayScreen implements Screen {
 	}
 
 	public void create() {
-		GameServerClient.clientPlayer = PS.p1;
 		resourcePanel = new ResourcePanel(GameServerClient.clientPlayer.faction, GameServerClient.clientPlayer);
 		camera = new OrthographicCamera();
 		uiCamera = new OrthographicCamera();
@@ -127,17 +126,18 @@ public class GameplayScreen implements Screen {
 		Gdx.input.setInputProcessor(new InputProcess());
 		
 		//TODO move to ui
-		String[] config = ConfigReader.readFile("assets/config.json");
 		
-		useServer = Boolean.parseBoolean(config[3]);
-		GameServerClient.clientPlayer.userName = config[0];
-		server = new GameServerClient("http://" + config[1] + ":" + config[2]);
-		PS.p2.userName = "siv";
-		PS.p1.userName = "coo";
-		if (useServer){
-				this.server.registerUser(GameServerClient.clientPlayer);
-				this.server.registerUser(PS.p2);
+		
+		
+		
+
+		if (PS.useServer){
+				GameServer.Server.start();
+				server = new GameServerClient("192.168.59.1", 9021);
+				this.server.registerUser(GameServerClient.clientUser);
+			
 		}
+		
 		
 		
 		
@@ -150,7 +150,7 @@ public class GameplayScreen implements Screen {
 		uiStage.act();
 		
 		sidePanel.update(uiStage);
-		
+	 
 		
 		
 	
@@ -319,7 +319,7 @@ public class GameplayScreen implements Screen {
 		//this doesn't work
 	
 		if (this.executeButton.getBoundingRectangle().contains(uiMousePos) && Gdx.input.justTouched()){
-			if (!useServer) {
+			if (!PS.useServer) {
 				System.out.println("executing actions...");
 				//temporary
 				for (Action a : GameServerClient.packet.getActions()) {
@@ -347,7 +347,7 @@ public class GameplayScreen implements Screen {
 				
 				sidePanel.unset();
 			} else {
-				server.sendRequest(GameServerClient.packet.getCompressedData(), "client");
+				server.sendRequest(GameServerClient.packet.getCompressedData(), GameServer.ServerCommands.recieveActions);
 				turnActive = false;
 			}
 		}
@@ -356,7 +356,7 @@ public class GameplayScreen implements Screen {
 		
 		if (!turnActive){
 			if (!hasAskedServer){
-				server.sendRequest("", "action");
+				server.sendRequest("", GameServer.ServerCommands.recieveActions);
 				hasAskedServer = true;
 			}
 			if (!server.getRecievedData().isEmpty()){

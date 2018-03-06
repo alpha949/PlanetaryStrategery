@@ -71,7 +71,6 @@ public class MenuScreen implements Screen {
 	}
 
 	public void create() {
-		GameServerClient.clientPlayer = PS.p1;
 		camera = new OrthographicCamera();
 		viewport = new ScreenViewport(camera);
 

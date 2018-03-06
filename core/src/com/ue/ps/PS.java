@@ -28,7 +28,7 @@ public class PS extends Game {
 	
 	public static boolean directToGame = true;
 	
-	private static ShipType donotdelete;
+	public static Boolean useServer;
 	
 	@Override
 	public void create() {
@@ -39,13 +39,18 @@ public class PS extends Game {
 		 theFont = generator.generateFont(parameter); // font size 12
 																// pixels
 		generator.dispose(); // don't forget to dispose to avoid memory leaks!
+		
+		//Read user's data;
+		String[] config = ConfigReader.readFile("assets/config.json");
+		
+		useServer = Boolean.parseBoolean(config[3]);
+		GameServerClient.clientUser.setUserName(config[0]);
+		GameServerClient.setUpPlayer(Faction.Xin);
 
 		font = new LabelStyle(new BitmapFont(), Color.WHITE);
-		
-		p1 = new Player(Faction.Xin);
-		p2 = new Player(Faction.Reach);
-		allPlayers[0] = p1;
-		allPlayers[1] = p2;
+		p2 = new Player(new User("siv"), Faction.Efferent);
+		allPlayers[0] = p2;
+		allPlayers[1] = GameServerClient.clientPlayer;
 		
 		GameplayScreen gs = new GameplayScreen(this);
 		//MenuScreen ms = new MenuScreen(this);
