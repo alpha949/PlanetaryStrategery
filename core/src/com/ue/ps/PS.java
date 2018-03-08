@@ -26,7 +26,7 @@ public class PS extends Game {
 	public static Player[] allPlayers = new Player[2];
 	public static BitmapFont theFont;
 	
-	public static boolean directToGame = true;
+
 	
 	public static Boolean useServer;
 	
@@ -52,13 +52,12 @@ public class PS extends Game {
 		allPlayers[0] = p2;
 		allPlayers[1] = GameServerClient.clientPlayer;
 		
-		GameplayScreen gs = new GameplayScreen(this);
-		//MenuScreen ms = new MenuScreen(this);
-		if (directToGame) {
-			setScreen(gs);
-		} else {
-			//setScreen(ms);
-		}
+
+		MenuScreen ms = new MenuScreen(this);
+	
+		
+		setScreen(ms);
+		
 		
 	}
 

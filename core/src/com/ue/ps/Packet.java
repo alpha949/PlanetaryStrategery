@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
+import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
 public class Packet {
@@ -34,9 +35,14 @@ public class Packet {
 	
 	
 	private void resolveData() {
-		System.out.println(data);
+		System.out.println("Resolving: " + data);
 		if (data != null){
-			actions = (ArrayList<Action>) jsonData.fromJson(ArrayList.class, data);
+		   try {
+			   actions = (ArrayList<Action>) jsonData.fromJson(ArrayList.class, data);
+       	   } catch (SerializationException e) {
+       		   System.out.println("ERROR: Attempted to parse invalid Json: " + data);
+       	   }
+			
 		}
 		
 	}

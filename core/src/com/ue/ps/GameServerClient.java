@@ -136,6 +136,8 @@ public class GameServerClient {
 					
 					if (buffer.ready()) {
 						receivedData = buffer.readLine();
+						
+						
 					} else {
 						receivedData = "nothing";
 					}
@@ -154,6 +156,7 @@ public class GameServerClient {
 	 * @return String the data recieve from the server
 	 */
 	public String getRecievedData(){
+	
 		return this.receivedData;
 	}
 	

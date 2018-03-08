@@ -347,8 +347,16 @@ public class GameplayScreen implements Screen {
 				
 				sidePanel.unset();
 			} else {
+				//send actions
 				server.sendRequest(GameServerClient.packet.getCompressedData(), GameServer.ServerCommands.recieveActions);
 				turnActive = false;
+				
+				for (Planet p : World.getWorld()) {
+					for (ShipPointer sp : p.pointers) {
+						sp.delete();
+					}
+					p.pointers.clear();
+				}
 			}
 		}
 		
@@ -356,10 +364,10 @@ public class GameplayScreen implements Screen {
 		
 		if (!turnActive){
 			if (!hasAskedServer){
-				server.sendRequest("", GameServer.ServerCommands.recieveActions);
+				server.sendRequest("", GameServer.ServerCommands.getAllActions);
 				hasAskedServer = true;
 			}
-			if (!server.getRecievedData().isEmpty()){
+			if (!server.getRecievedData().equals("here are actions")){
 				GameServerClient.packet.setData(server.getRecievedData());
 				for (Action a : GameServerClient.packet.getActions()) {
 					Action.execute(a, mainStage, GameServerClient.clientPlayer);

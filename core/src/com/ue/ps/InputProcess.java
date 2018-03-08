@@ -4,7 +4,12 @@ import com.badlogic.gdx.InputProcessor;
 
 public class InputProcess implements InputProcessor {
 	public char lastCharTyped;
+	
+	
+	private static boolean leftMouseDown;
+	private static boolean rightMouseDown;
 
+	
 	@Override
 	public boolean keyDown(int keycode) {
 		// TODO Auto-generated method stub
@@ -25,11 +30,21 @@ public class InputProcess implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		if (button == 0) {
+			leftMouseDown = true;
+		} else if (button == 1) {
+			rightMouseDown = true;
+		}
 		return false;
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		if (button == 0) {
+			leftMouseDown = false;
+		} else if (button == 1) {
+			rightMouseDown = false;
+		}
 		return false;
 	}
 
@@ -67,5 +82,15 @@ public class InputProcess implements InputProcessor {
 		
 		return false; //why not make it void instead of a boolean?
 	}
+	
+	public static boolean leftMouseClicked() {
+		return leftMouseDown;
+	}
+	public static boolean rightMouseClicked() {
+		return rightMouseDown;
+	}
+	
+	
+
 
 }
