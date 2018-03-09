@@ -8,9 +8,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 public class HoverPanel extends BaseActor{
 	
-	private static Texture chunkTexture = Utils.getImg("chunkMiddle");
-	private static Texture chunkTopTexture = Utils.getImg("chunkTop");
-	private static Texture chunkBottomTexture = Utils.getImg("chunkBottom");
+	private static Texture chunkTexture = Images.getImg("chunkMiddle");
+	private static Texture chunkTopTexture = Images.getImg("chunkTop");
+	private static Texture chunkBottomTexture = Images.getImg("chunkBottom");
 	
 	public static String[] standardInfo = {"Type", "Health"};
 	public static String[] shipInfo = {"Type", "Health", "Heading"};
@@ -21,7 +21,7 @@ public class HoverPanel extends BaseActor{
 	private BaseActor top;
 	private BaseActor bottom;
 	public HoverPanel(String[] info, String...data) {
-		super(Utils.emptyTexture);
+		super(Images.emptyTexture);
 		
 		
 		for (int i = 0; i < info.length; i++) {

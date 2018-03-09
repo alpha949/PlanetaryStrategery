@@ -23,13 +23,13 @@ public class Faction {
 		this.name = name;
 		this.color = color;
 
-		this.droneImg = Utils.getImg("ships/" + abv + "Drone");
-		this.scoutImg = Utils.getImg("ships/" + abv + "Scout");
-		this.transportImg = Utils.getImg("ships/" + abv + "Transport");
-		this.cruiserImg = Utils.getImg("ships/" + abv + "Cruiser");
-		this.dreadImg = Utils.getImg("ships/" + abv + "Dread");
-		this.flagshipImg = Utils.getImg("ships/" + abv + "Flagship");
-		this.symbolImg = Utils.getImg(abv);
+		this.droneImg = Images.getImg("ships/" + abv + "Drone");
+		this.scoutImg = Images.getImg("ships/" + abv + "Scout");
+		this.transportImg = Images.getImg("ships/" + abv + "Transport");
+		this.cruiserImg = Images.getImg("ships/" + abv + "Cruiser");
+		this.dreadImg = Images.getImg("ships/" + abv + "Dread");
+		this.flagshipImg = Images.getImg("ships/" + abv + "Flagship");
+		this.symbolImg = Images.getImg(abv);
 	}
 
 	public Texture getShipTypeTexture(ShipType s) {

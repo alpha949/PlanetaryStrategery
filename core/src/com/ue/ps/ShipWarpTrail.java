@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 public class ShipWarpTrail extends BaseActor{
 
-	private static Texture warpTrailTexture = Utils.getImg("shipWarpTrail");
+	private static Texture warpTrailTexture = Images.getImg("shipWarpTrail");
 	private int deathTime = 60;
 	
 	public ShipWarpTrail() {

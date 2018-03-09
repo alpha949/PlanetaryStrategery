@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
 public class BuildingContainer extends BaseActor{
-	private static Texture texture = Utils.getImg("buildingContainer");
+	private static Texture texture = Images.getImg("buildingContainer");
 	private Building building;
 	private BaseActor buildingImg = new BaseActor();
 	private boolean isSelected;
@@ -34,7 +34,7 @@ public class BuildingContainer extends BaseActor{
 			this.addActor(this.hoverPanel);
 			hoverPanel.setZIndex(1000);
 		} else {
-			buildingImg.setTexture(Utils.emptyTexture);
+			buildingImg.setTexture(Images.emptyTexture);
 		}
 		
 		

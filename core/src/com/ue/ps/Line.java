@@ -9,7 +9,7 @@ public class Line {
 	public Planet planet1;
 	public Planet planet2;
 	private BaseActor[] lineSegments;
-	private static Texture lineTexture = Utils.getImg("line");
+	private static Texture lineTexture = Images.getImg("line");
 
 	public Line(Planet p1, Planet p2, Faction f) {
 		planet1 = p1;

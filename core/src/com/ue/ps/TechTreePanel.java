@@ -10,7 +10,7 @@ public class TechTreePanel extends BaseActor{
 	
 	public boolean isOpen;
 	private static final int itemDist = 150;
-	private static Texture techLineTexture = Utils.getImg("techLine");
+	private static Texture techLineTexture = Images.getImg("techLine");
 	private static ArrayList<TechTreeItem> items = new ArrayList<TechTreeItem>();
 	
 	private boolean isSetup;

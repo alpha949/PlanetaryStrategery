@@ -10,8 +10,8 @@ public class ShipPointer {
 	
 	public ArrayList<BaseActor> pointerBody = new ArrayList<BaseActor>();
 	
-	private static Texture pointerHeadTexture = Utils.getImg("pointerHead");
-	private static Texture pointerBodyTexture = Utils.getImg("pointerBody");
+	private static Texture pointerHeadTexture = Images.getImg("pointerHead");
+	private static Texture pointerBodyTexture = Images.getImg("pointerBody");
 	
 	public Planet location;
 	public Planet destination;

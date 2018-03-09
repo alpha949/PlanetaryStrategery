@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.Array;
 public class Utils {
 	
 	
-	public static Texture emptyTexture = Utils.getImg("empty");
+	
 	
 	public static Vector2 polarToRect(int r, double angle, Vector2 origin) {
 		Vector2 v = new Vector2();
@@ -36,6 +36,7 @@ public class Utils {
 
 	}
 
+	@Deprecated //PLZ remove?
 	public static Texture getImg(String path) {
 		try {
 			Texture t = new Texture(Gdx.files.internal("assets/" + path + ".png"));

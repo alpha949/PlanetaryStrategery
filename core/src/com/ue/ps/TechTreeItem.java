@@ -3,7 +3,7 @@ package com.ue.ps;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
-public class TechTreeItem extends BaseActor{
+public class TechTreeItem extends Button{ //PLZ change(d) to extends button? would prob help in future, make easier
 	
 	public int cost;
 	public String name;
@@ -15,16 +15,16 @@ public class TechTreeItem extends BaseActor{
 	private Label nameLabel = new Label("", PS.font);
 	private boolean isUnlocked;
 	
-	private Texture lockTex = Utils.getImg("lockTech");
+	private Texture lockTex = Images.getImg("lockTech");
 	private BaseActor lock = new BaseActor(lockTex);
 
 	public boolean[] branches = new boolean[8];
 	
 	public TechTreeItem() {
-		super("assets/techTreeItemHolder.png");
+		super(Images.TechTreeHolder);
 	}
 	public TechTreeItem(TechTreeItem preReq, int preReqLevelReq, String name, int cost, int maxLevel, float costMult) {
-		super("assets/techTreeItemHolder.png");
+		super(Images.TechTreeHolder);
 		this.preReq = preReq;
 		this.name = name;
 		this.nameLabel.setText(name);

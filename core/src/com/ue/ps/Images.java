@@ -7,13 +7,15 @@ public class Images {
 	
 	//Base textures
 	public static final Texture na = getImg("missingTex");
+	public static final Texture emptyTexture = getImg("empty");
 	
 	//Button Textures
 	public static final Texture Increment = getImg("increment");
 	public static final Texture Deincrement = getImg("deincrement");
 	
-	public static final Texture BuildBox = getImg("buildBox");
-	public static final Texture ShipBuildBox = getImg("shipBuildBox");
+	public static Texture BuildBox = getImg("buildBox");
+	public static Texture ShipBuildBox = getImg("shipBuildBox");
+	public static Texture TechTreeHolder = getImg("assets/techTreeItemHolder");
 	
 	//Ingame textures
 	public static final Texture planetAsteroids = getImg("planets/asteroids");
@@ -30,7 +32,7 @@ public class Images {
 
 		} catch (Exception GdxRuntimeException) {
 			System.out.println("Error: Could not find: " + path + " substituting...");
-			Texture t = new Texture(Gdx.files.internal("assets/missingTex.png"));
+			Texture t = new Texture(na.getTextureData());
 			return t;
 		}
 	}

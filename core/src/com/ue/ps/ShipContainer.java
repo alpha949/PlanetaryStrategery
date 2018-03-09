@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
 public class ShipContainer extends BaseActor{
-	private static Texture texture = Utils.getImg("shipContainer");
+	private static Texture texture = Images.getImg("shipContainer");
 	private Ship ship;
 	private BaseActor shipImg = new BaseActor();
 	private boolean isSelected;
@@ -34,7 +34,7 @@ public class ShipContainer extends BaseActor{
 			this.hoverPanel.setPosition(this.getWidth(), this.getHeight()/2);
 			this.addActor(this.hoverPanel);
 		} else {
-			shipImg.setTexture(Utils.emptyTexture);
+			shipImg.setTexture(Images.emptyTexture);
 		}
 	
 		
