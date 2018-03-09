@@ -6,6 +6,8 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.ue.ps.PS;
 
 public class DesktopLauncher {
+	
+	public static boolean directToGame = true;
 	public static void main (String[] arg) {
 		PS theGame = new PS();
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
@@ -21,7 +23,7 @@ public class DesktopLauncher {
 				PS.recordingGeneration = true;
 			}
 			else if (arg[i].equals("menu") || arg[i].equals("m")){
-				PS.directToGame = false;
+				directToGame = false;
 				System.out.println("to the menu!");
 			}
 		}

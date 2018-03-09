@@ -19,12 +19,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -40,7 +43,7 @@ public class MenuScreen implements Screen {
 	public Game game;
 	private ShapeRenderer shapeRender;
 	public static Vector2 mousePos = new Vector2();
-
+	public static BaseActor mouseBlot = new BaseActor("assets/mouseBlot.png");
 
 	
 
@@ -57,10 +60,11 @@ public class MenuScreen implements Screen {
 	private BaseActor beginButton = new BaseActor();
 	
 	private TextFieldStyle style = new TextFieldStyle(PS.theFont, Color.WHITE, null, null, null);
-	private TextField ipInput = new TextField("IP:", style);
+	private TextField ipInput;
 	
 	
 
+	private Skin skin = new Skin();
 	
 	
 
@@ -71,7 +75,6 @@ public class MenuScreen implements Screen {
 	}
 
 	public void create() {
-		GameServerClient.clientPlayer = PS.p1;
 		camera = new OrthographicCamera();
 		viewport = new ScreenViewport(camera);
 
@@ -79,10 +82,14 @@ public class MenuScreen implements Screen {
 	
 
 		//Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+		skin = new Skin(Gdx.files.internal("assets/skin/uiskin.json"));
+		
+		ipInput = new TextField("", skin);
+		ipInput.setPosition(100, 100);
+		
 		mainStage.addActor(ipInput);
 
 		shapeRender = new ShapeRenderer();
-	
 		
 	
 		Gdx.input.setInputProcessor(new InputProcess());
@@ -91,10 +98,17 @@ public class MenuScreen implements Screen {
 		String[] config = ConfigReader.readFile("assets/config.json");
 		
 		
+		mainStage.addActor(mouseBlot);
+		ipInput.addListener(new ChangeListener() {
+
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				System.out.println(ipInput.getText());		
+			}
+
+		});
 		
-		
-		
-		
+		//ipInput.setMessageText("test");
 	}
 
 	public void render(float dt) {
@@ -102,6 +116,7 @@ public class MenuScreen implements Screen {
 		mainStage.act(dt);
 	
 		
+	
 		
 		
 	
@@ -121,7 +136,7 @@ public class MenuScreen implements Screen {
 	
 
 
-	
+		mouseBlot.setCenter(Gdx.input.getX(), PS.viewHeight - Gdx.input.getY());
 
 		Gdx.gl.glClearColor(0.0F, 0.0F, 0, 1);
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -131,10 +146,14 @@ public class MenuScreen implements Screen {
 		mainStage.draw();
 	
 	
-		if (!PS.paused) {
-			Gdx.input.setCursorCatched(true);
-		} else {
+		if (Gdx.input.isKeyPressed(Keys.ESCAPE)) {
 			Gdx.input.setCursorCatched(false);
+		} else {
+			Gdx.input.setCursorCatched(true);
+		}
+		
+		if (Gdx.input.isKeyJustPressed(Keys.SHIFT_LEFT)) {
+			this.game.setScreen(new GameplayScreen(this.game));
 		}
 
 	}

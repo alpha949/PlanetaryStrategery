@@ -61,11 +61,12 @@ public class Planet extends BaseActor{
 	//Does calculations that will be done on every planet, no matter what.
 	private void finish(){
 		this.capacity = size * 4;
+		this.setSize(this.getWidth() * size, this.getHeight() * size);
 		this.buildings = new Building[capacity];
 		this.setTexture(this.type.tex); //TODO resize the images based on planet size
 		this.setRotation(MathUtils.random(0, 360));
 		this.name = Utils.genName();
-		this.setColor(this.type.color);
+		
 	}
 	
 	public void setType(PlanetType p){
@@ -121,7 +122,7 @@ public class Planet extends BaseActor{
 			}
 		}
 		for (Ship s : this.orbitingShips){
-			if (s.getOwnerName() != owner.userName){
+			if (s.getOwnerName() != owner.getUser().getUserName()){
 				shipTargets.add(s);
 			}
 		}
@@ -134,7 +135,7 @@ public class Planet extends BaseActor{
 	private ArrayList<Ship> splitShipsByOwner(Player owner){
 		ArrayList<Ship> ownersShips = new ArrayList<Ship>();
 		for (Ship s : this.orbitingShips){
-			if (s.getOwnerName().equals(owner.userName)){
+			if (s.getOwnerName().equals(owner.getUser().getUserName())){
 				ownersShips.add(s);
 			}
 		}
