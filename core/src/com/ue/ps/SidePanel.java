@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -20,10 +21,10 @@ public class SidePanel extends BaseActor {
 	private Label planetCap = new Label("5", PS.font);
 	private Label planetPrioirity = new Label("9", PS.font);
 	
-	private BaseActor incrementCapButton = new BaseActor("assets/increment.png");
-	private BaseActor incrementPriorityButton = new BaseActor("assets/increment.png");
-	private BaseActor deincrementCapButton = new BaseActor("assets/deincrement.png");
-	private BaseActor deincrementPriorityButton = new BaseActor("assets/deincrement.png");
+	private Button incrementCapButton = new Button(Images.Increment);
+	private Button incrementPriorityButton = new Button(Images.Increment);
+	private Button deincrementCapButton = new Button(Images.Deincrement);
+	private Button deincrementPriorityButton = new Button(Images.Deincrement);
 	
 	private BaseActor capContainer = new BaseActor("assets/numContainer.png");
 	private BaseActor priorityContainer = new BaseActor("assets/numContainer.png");
@@ -48,8 +49,8 @@ public class SidePanel extends BaseActor {
 	public static ArrayList<Ship> selectedShips = new ArrayList<Ship>();
 	
 	
-	private BaseActor[] buildBoxes;
-	private BaseActor[] shipBuildBoxes;
+	private Button[] buildBoxes;
+	private Button[] shipBuildBoxes;
 	private int selectedBuildingSlot = -1;
 	private boolean buildBoxesShowing;
 	private boolean shipBuildBoxesShowing;
@@ -99,14 +100,16 @@ public class SidePanel extends BaseActor {
 		this.addActor(deincrementPriorityButton);
 		
 		this.addActor(this.uiMouseBlot);
-		buildBoxes = new BaseActor[Building.allBuildings.size()];
+		buildBoxes = new Button[Building.allBuildings.size()]; //PLZ is this the ammount of buildings you can put on a planet?
 		
 		this.destroyBuildingBox.setPosition(-100, -100);
 		this.addActor(destroyBuildingBox);
 		for (int i = 0; i < buildBoxes.length; i++) {
-			buildBoxes[i] = new BaseActor("assets/buildBox.png");
+			buildBoxes[i] = new Button(Images.BuildBox);
 			buildBoxes[i].setPosition(-100, -100);
-			BaseActor buildingImg = new BaseActor(Building.allBuildings.get(i).getTexture());
+			BaseActor buildingImg = new BaseActor(Building.allBuildings.get(i).getTexture()); 
+			//PLZ there has to be a better way to do this, both getting texture wise and using an entire actor just for an image
+			//maybe its own image class?
 			buildingImg.setPosition(1, 1);
 			buildBoxes[i].addActor(buildingImg);
 			
@@ -116,9 +119,9 @@ public class SidePanel extends BaseActor {
 			this.addActor(buildBoxes[i]);
 		}
 		
-		shipBuildBoxes = new BaseActor[ShipType.values().length];
+		shipBuildBoxes = new Button[ShipType.values().length];
 		for (int i = 0; i < ShipType.values().length; i ++) {
-			shipBuildBoxes[i] = new BaseActor("assets/shipBuildBox.png");
+			shipBuildBoxes[i] = new Button(Images.ShipBuildBox);
 			shipBuildBoxes[i].setPosition(-100, -100);
 			BaseActor shipImg = new BaseActor(GameServerClient.clientPlayer.faction.getShipTypeTexture(ShipType.values()[i]));
 			shipImg.setPosition(1, 1);
@@ -228,7 +231,7 @@ public class SidePanel extends BaseActor {
 
 		uiMouseBlot.setPosition(localMousePos.x , localMousePos.y);
 		
-		this.planetResource.setText("Resource: " + this.planet.resource);
+		this.planetResource.setText("Resource: " + this.planet.resource); //TODO only update when resource updates
 		
 		//update containers
 		for (BuildingContainer bc : this.buildingContainers) {
@@ -239,85 +242,84 @@ public class SidePanel extends BaseActor {
 		
 		
 		//check for clicking on increment/deincrement priority/capacity and increment/deincrement them
-		if (this.incrementCapButton.getBoundingRectangle().overlaps(uiMouseBlot.getBoundingRectangle()) && Gdx.input.justTouched()) {
-			this.planet.resourceCapacity += 1;
-		} else if (this.incrementPriorityButton.getBoundingRectangle().overlaps(uiMouseBlot.getBoundingRectangle()) && Gdx.input.justTouched()) {
-			this.planet.priority += 1;
-		} else if (this.deincrementCapButton.getBoundingRectangle().overlaps(uiMouseBlot.getBoundingRectangle()) && Gdx.input.justTouched()) {
-			this.planet.resourceCapacity -= 1;
-		}  else if (this.deincrementPriorityButton.getBoundingRectangle().overlaps(uiMouseBlot.getBoundingRectangle()) && Gdx.input.justTouched()) {
-			this.planet.priority -= 1;
-		}
-		
-		//check for clicking on a building box
-		for (int i = 0; i < this.buildingContainers.size(); i++) {
-			if (buildingContainers.get(i).isSelected()) {
-				//show possible actions
-				if (this.buildingContainers.get(i).getBuilding() == null) {
-					showBuildBoxes();
-					selectedBuildingSlot = i;
-				} else {
-					showDestroy();
-					selectedBuildingSlot = i;
-				}
-				
-				if (this.buildingContainers.get(i).getBuilding() instanceof Factory) {
-					this.hideBuildBoxes();
-					this.showShipBuildBoxes();
-				} else {
-					this.hideShipBuildBoxes();
-				}
-				
-		
-		
-				
-				
-				
+		if (Gdx.input.justTouched()){
+			Rectangle mouse = uiMouseBlot.getBoundingRectangle(); //make this global and the buttons will be easier
+			
+			if (this.incrementCapButton.Pressed(mouse)) {
+				this.planet.resourceCapacity += 1;
+			} else if (this.incrementPriorityButton.Pressed(mouse)) {
+				this.planet.priority += 1;
+			} else if (this.deincrementCapButton.Pressed(mouse)) {
+				this.planet.resourceCapacity -= 1;
+			}  else if (this.deincrementPriorityButton.Pressed(mouse)) {
+				this.planet.priority -= 1;
 			}
-		}
 		
-		if (shipBuildBoxesShowing) {
-			for (int i = 0; i < this.shipBuildBoxes.length; i++) {
-				if (shipBuildBoxes[i].getBoundingRectangle().contains(uiMouseBlot.center) && Gdx.input.justTouched()) {
-					buildingContainers.get(selectedBuildingSlot).setFactoryShip(ShipType.values()[i]);
-					System.out.println("Factory has shipType: " + ShipType.values()[i].name() );
-					hideShipBuildBoxes();
-				}
-			}	
-		}
-		//check for clicking on buildBox
-		if (buildBoxesShowing) {
-			for (int i = 0; i < this.buildBoxes.length; i++) {
-				if (buildBoxes[i].getBoundingRectangle().contains(uiMouseBlot.center) && Gdx.input.justTouched()) {
-					if (selectedBuildingSlot != -1) {
-						try {
-							Building newBuilding = Building.allBuildings.get(i).getClass().newInstance();
-							//add building to planet
-							this.planet.addBuilding(newBuilding, selectedBuildingSlot);
-							//update building boxes
-							buildingContainers.get(selectedBuildingSlot).setBuilding(newBuilding);
-							GameServerClient.packet.addAction(Action.buildBuilding(planet.id, selectedBuildingSlot, newBuilding.id));
-							hideBuildBoxes();
-							
-						} catch (InstantiationException e) {
-							e.printStackTrace();
-						} catch (IllegalAccessException e) {
-							e.printStackTrace();
-						}
+			//check for clicking on a building box
+			for (int i = 0; i < this.buildingContainers.size(); i++) {
+				if (buildingContainers.get(i).isSelected()) {
+					//show possible actions
+					if (this.buildingContainers.get(i).getBuilding() == null) {
+						showBuildBoxes();
+						selectedBuildingSlot = i;
+					} else {
+						showDestroy();
+						selectedBuildingSlot = i;
 					}
 					
+					if (this.buildingContainers.get(i).getBuilding() instanceof Factory) {
+						this.hideBuildBoxes();
+						this.showShipBuildBoxes();
+					} else {
+						this.hideShipBuildBoxes();
+					}
 				}
 			}
 			
 			
-		}
-		//check for destroying building
-		if (this.destroyBuildingBox.getBoundingRectangle().contains(uiMouseBlot.center) && Gdx.input.justTouched()) {
-			//destroy building
-			this.planet.destroyBuilding(selectedBuildingSlot);
-			//update building boxes
-			buildingContainers.get(selectedBuildingSlot).setBuilding(null);
-			hideDestroy();
+			if (shipBuildBoxesShowing) {
+				for (int i = 0; i < this.shipBuildBoxes.length; i++) {
+					if (shipBuildBoxes[i].getBoundingRectangle().contains(uiMouseBlot.center) && Gdx.input.justTouched()) {
+						buildingContainers.get(selectedBuildingSlot).setFactoryShip(ShipType.values()[i]);
+						System.out.println("Factory has shipType: " + ShipType.values()[i].name() );
+						hideShipBuildBoxes();
+					}
+				}	
+			}
+			//check for clicking on buildBox
+			if (buildBoxesShowing) {
+				for (int i = 0; i < this.buildBoxes.length; i++) {
+					if (buildBoxes[i].getBoundingRectangle().contains(uiMouseBlot.center) && Gdx.input.justTouched()) {
+						if (selectedBuildingSlot != -1) {
+							try {
+								Building newBuilding = Building.allBuildings.get(i).getClass().newInstance();
+								//add building to planet
+								this.planet.addBuilding(newBuilding, selectedBuildingSlot);
+								//update building boxes
+								buildingContainers.get(selectedBuildingSlot).setBuilding(newBuilding);
+								GameServerClient.packet.addAction(Action.buildBuilding(planet.id, selectedBuildingSlot, newBuilding.id));
+								hideBuildBoxes();
+								
+							} catch (InstantiationException e) {
+								e.printStackTrace();
+							} catch (IllegalAccessException e) {
+								e.printStackTrace();
+							}
+						}
+						
+					}
+				}
+				
+				
+			}
+			//check for destroying building
+			if (this.destroyBuildingBox.getBoundingRectangle().contains(uiMouseBlot.center) && Gdx.input.justTouched()) {
+				//destroy building
+				this.planet.destroyBuilding(selectedBuildingSlot);
+				//update building boxes
+				buildingContainers.get(selectedBuildingSlot).setBuilding(null);
+				hideDestroy();
+			}
 		}
 		
 		//update selectedships
