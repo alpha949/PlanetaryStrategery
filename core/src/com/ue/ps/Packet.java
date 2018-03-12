@@ -40,7 +40,9 @@ public class Packet {
 		   try {
 			   actions = (ArrayList<Action>) jsonData.fromJson(ArrayList.class, data);
        	   } catch (SerializationException e) {
+       		   e.printStackTrace();
        		   System.out.println("ERROR: Attempted to parse invalid Json: " + data);
+       		
        	   }
 			
 		}
@@ -60,6 +62,7 @@ public class Packet {
 	
 	public void setData(String data) {
 		this.data = data;
+		this.actions.clear();
 		resolveData();
 	}
 	

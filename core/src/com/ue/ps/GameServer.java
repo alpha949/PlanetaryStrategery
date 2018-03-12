@@ -53,9 +53,11 @@ public class GameServer {
 
         @Override
         public void run() {
+        	System.out.println("Starting server");
+        	
             ServerSocketHints serverSocketHint = new ServerSocketHints();
             // 0 means no timeout.  Probably not the greatest idea in production!
-            serverSocketHint.acceptTimeout = 0;
+            serverSocketHint.acceptTimeout = 4000;
             
             // Create the socket server using TCP protocol and listening on 9021
             // Only one app can listen to a port at a time, keep in mind many ports are reserved
@@ -64,67 +66,81 @@ public class GameServer {
             ServerSocket serverSocket = Gdx.net.newServerSocket(Protocol.TCP, 9021, serverSocketHint);
            
           
-            ArrayList<Player> players = new ArrayList<Player>();
+            ArrayList<User> users = new ArrayList<User>();
             ArrayList<Action> actions = new ArrayList<Action>();
+            ArrayList<Socket> connectedSockets = new ArrayList<Socket>();
             Json jsonHandler = new Json();
           
             // Loop forever
             while(true){
                 // Create a socket
-                Socket socket = serverSocket.accept(null);
-                String returnMessage = "";
-                // Read data from the socket into a BufferedReader
-                BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
-                
-                try {
-                   String jsonData = "";
-                   String recievedData = buffer.readLine(); 
-                   char serverCommand = recievedData.charAt(recievedData.length()-1);
-                   if (recievedData.length() > 1) {
-                	   jsonData = recievedData.substring(0, recievedData.length()-2);
-                        
-                   } else {
-                	   jsonData = "";
-                   }
-                   switch(ServerCommands.getServerCommandById(serverCommand)){
-                   case registerUser:
-                	   if (jsonData.length() < 2) {
-                 		  System.out.println("ERROR: Empty registerUser command"); 
-                 	   }
-                	   players.add(jsonHandler.fromJson(Player.class, jsonData));
-                	   returnMessage = "welcome!";
-                	   System.out.println("succesful connection");
-                	 
-                	   break;
-                   case recieveActions:
-                	   if (jsonData.length() < 2) {
-                		  System.out.println("ERROR: Empty recieveActions command"); 
-                	   }
-                	   try {
-                		   actions.add(jsonHandler.fromJson(Action.class, jsonData));
-                	   } catch (SerializationException e) {
-                		   System.out.println("ERROR: Attempted to parse invalid Json: " + jsonData);
-                	   }
-                	
-                	   returnMessage = "recievedTurnData!";
-                	   break;
-                   case getWorld:
-                	   break;
-                   case initConnect:
-                	   returnMessage = "HELLO MY FRIEND";
-                	   break;
-                	
-                   case getAllActions:
-                	   returnMessage = "here are actions";
-                	   break;
-                   }
-                    System.out.println("Sending back: " + returnMessage);
-                    returnMessage += "\n";
-                   socket.getOutputStream().write(returnMessage.getBytes());
-                	
-                } catch (IOException e) {
-                    e.printStackTrace();
+            	try {
+            		 Socket socket = serverSocket.accept(null);
+                     if (!connectedSockets.contains(socket)) {
+                     	connectedSockets.add(socket);
+                     }
+            	} catch (GdxRuntimeException e) {
+            		System.out.println("Error: tried to connect when already connected");
+            	}
+               
+                for (Socket sock : connectedSockets) {
+                	  String returnMessage = "";
+                      // Read data from the socket into a BufferedReader
+                      BufferedReader buffer = new BufferedReader(new InputStreamReader(sock.getInputStream())); 
+                      
+                      try {
+                         String jsonData = "";
+                         String recievedData = buffer.readLine(); 
+                         char serverCommand = recievedData.charAt(recievedData.length()-1);
+                         if (recievedData.length() > 1) {
+                      	   jsonData = recievedData.substring(0, recievedData.length()-1);
+                              
+                         } else {
+                      	   jsonData = "";
+                         }
+                         System.out.println("parsing: " + jsonData);
+                         switch(ServerCommands.getServerCommandById(serverCommand)){
+                         case registerUser:
+                      	   if (jsonData.length() < 2) {
+                       		  System.out.println("ERROR: Empty registerUser command"); 
+                       	   }
+                      	   users.add(jsonHandler.fromJson(User.class, jsonData));
+                      	   returnMessage = "welcome!";
+                      	   System.out.println("succesful connection");
+                      	 
+                      	   break;
+                         case recieveActions:
+                      	   if (jsonData.length() < 2) {
+                      		  System.out.println("ERROR: Empty recieveActions command"); 
+                      	   }
+                      	   try {
+                      		   actions.addAll(jsonHandler.fromJson(ArrayList.class, jsonData));
+                      	   } catch (SerializationException e) {
+                      		   e.printStackTrace();
+                      		   System.out.println("ERROR: Attempted to parse invalid Json: " + jsonData);
+                      	   }
+                      	
+                      	   returnMessage = "recievedTurnData!";
+                      	   break;
+                         case getWorld:
+                      	   break;
+                         case initConnect:
+                      	   returnMessage = "HELLO MY FRIEND";
+                      	   break;
+                      	
+                         case getAllActions:
+                        	 returnMessage = jsonHandler.toJson(actions) + "r";
+                      	   break;
+                         }
+                          System.out.println("Sending back: " + returnMessage);
+                          returnMessage += "\n";
+                          sock.getOutputStream().write(returnMessage.getBytes());
+                      	
+                      } catch (IOException e) {
+                          e.printStackTrace();
+                      }
                 }
+              
             }
         }
     }); // And, start the thread running

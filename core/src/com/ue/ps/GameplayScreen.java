@@ -367,8 +367,8 @@ public class GameplayScreen implements Screen {
 				server.sendRequest("", GameServer.ServerCommands.getAllActions);
 				hasAskedServer = true;
 			}
-			if (!server.getRecievedData().equals("here are actions")){
-				GameServerClient.packet.setData(server.getRecievedData());
+			if (server.getRecievedData().length() > 4 && server.getRecievedData().charAt(server.getRecievedData().length()-3) == 'r'){
+				GameServerClient.packet.setData(server.getRecievedData().substring(0, server.getRecievedData().length() - 3));
 				for (Action a : GameServerClient.packet.getActions()) {
 					Action.execute(a, mainStage, GameServerClient.clientPlayer);
 				}

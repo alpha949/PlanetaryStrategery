@@ -36,11 +36,12 @@ public class GameServerClient {
 	public static Player clientPlayer;
 	public static User clientUser = new User("");
 	
-	private HttpRequest http = new HttpRequest(HttpMethods.GET);
+
 	
 	private String receivedData = "";
 	private String connectionResult = "";
 	private String ip;
+	private int port;
 
 
 
@@ -60,6 +61,7 @@ public class GameServerClient {
 	}
 	
 	private Socket socket;
+
 	
 	/**
 	 * Creates a severClient connection to the given ip;
@@ -68,12 +70,12 @@ public class GameServerClient {
 	 */
 	public GameServerClient(String ip, int port){
 		this.ip = ip;
+		this.port = port;
 		SocketHints socketHints = new SocketHints();
         // Socket will time our in 4 seconds
         socketHints.connectTimeout = 4000;
         //create the socket and connect to the server entered in the text box ( x.x.x.x format ) on port 9021
         socket = Gdx.net.newClientSocket(Protocol.TCP, ip, port, socketHints);
-        this.sendRequest("", GameServer.ServerCommands.initConnect);
         this.receive.start();
 	        
 	}
@@ -117,8 +119,9 @@ public class GameServerClient {
 		 System.out.println("sending " + com.name() + " request: " + jsonStringToSend);
          try {
              // write our entered message to the stream
+        	 System.out.println(socket.isConnected());
              socket.getOutputStream().write(jsonStringToSend.getBytes());
-         } catch (IOException e) {
+         } catch (Exception e) {
              e.printStackTrace();
          }
 		
@@ -127,28 +130,49 @@ public class GameServerClient {
 	}
 	
 	private Thread receive = new Thread(new Runnable() {
-
+		
 		@Override
 		public void run() {
-			 BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
 
-				try {
-					
-					if (buffer.ready()) {
-						receivedData = buffer.readLine();
+			String data;
+			String prevData = "";
+			while (true) {
+				 BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
+				
+					try {
 						
+						if (buffer.ready()) {
+							data = buffer.readLine();
+							
+							
+						} else {
+							data = "nothing";
+						}
 						
-					} else {
-						receivedData = "nothing";
+					} catch (IOException e) {
+						System.out.println("IO Exception");
+						data = "error";
 					}
 					
-				} catch (IOException e) {
-					System.out.println("IO Exception");
-					receivedData = "error";
-				}
+					final String finalData = data;
+					if (!data.equals(prevData)) {
+						System.out.println("Recieved: " + data);
+					}
+					prevData = data;
+					
+					Gdx.app.postRunnable(new Runnable() {
+				         @Override
+				         public void run() {
+				        	
+				            // process the result, e.g. add it to an Array<Result> field of the ApplicationListener.
+				        	 receivedData = finalData;
+				         }
+				      });
+			}
+			
 			
 		}
-			
+		
 	});
 	
 	/**

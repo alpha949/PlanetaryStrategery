@@ -98,6 +98,9 @@ public class Action {
 		return new Action(id, slot, damage);
 	}
 	
+	public Action() {
+		
+	}
 	
 	
 	public static void execute(Action a, Stage m, Player pla){

@@ -21,11 +21,13 @@ import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Scaling;
@@ -79,12 +81,19 @@ public class MenuScreen implements Screen {
 		viewport = new ScreenViewport(camera);
 
 		mainStage = new Stage(new ScalingViewport(Scaling.fill, PS.viewWidth, PS.viewHeight, camera));
-	
-
-		//Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-		skin = new Skin(Gdx.files.internal("assets/skin/uiskin.json"));
 		
-		ipInput = new TextField("", skin);
+
+	
+		skin = new Skin(Gdx.files.internal("assets/skin/uiskin.json"));
+		TextFieldStyle style = new TextFieldStyle();
+        style.background = skin.getDrawable("textfield");
+        style.selection = skin.getDrawable("selection");
+        style.fontColor = new Color(0.41f, 0.75f, 0.99f, 1f);
+        style.font = PS.theFont;
+        style.disabledFontColor = new Color(0.79f, 0.79f, 0.79f, 0.1f);
+        style.cursor = skin.getDrawable("cursor");
+		
+		ipInput = new TextField("ip here", style);
 		ipInput.setPosition(100, 100);
 		
 		mainStage.addActor(ipInput);
@@ -99,22 +108,25 @@ public class MenuScreen implements Screen {
 		
 		
 		mainStage.addActor(mouseBlot);
-		ipInput.addListener(new ChangeListener() {
-
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				System.out.println(ipInput.getText());		
-			}
-
-		});
 		
 		//ipInput.setMessageText("test");
+		Gdx.input.setInputProcessor(mainStage);
+		ipInput.setTouchable(Touchable.enabled);
+		ipInput.setTextFieldListener(new TextFieldListener() {
+
+			@Override
+			public void keyTyped(TextField textField, char c) {
+				System.out.println(c);
+				
+			}
+			
+		});
 	}
 
 	public void render(float dt) {
-
-		mainStage.act(dt);
 	
+		mainStage.act(dt);
+		
 		
 	
 		
@@ -123,13 +135,6 @@ public class MenuScreen implements Screen {
 	
 		OrthographicCamera cam = (OrthographicCamera) mainStage.getCamera();
 	
-		// cam.position.x = center.x;
-		// cam.position.y = center.y;
-		// cam.position.set(p.getX()+p.getOriginX(),p.getY()+p.getOriginY(),0);
-		// bound camera to layout
-		// cam.position.x=MathUtils.clamp(cam.position.x,PS.viewWidth/2,PS.mapWidth-PS.viewWidth/2);
-		// cam.position.y=MathUtils.clamp(cam.position.y,PS.viewHeight/2,PS.mapHeight-PS.viewHeight/2);
-		// zoomAmount = MathUtils.clamp(zoomAmount ,minZoom,maxZoom);
 
 		cam.update();
 	

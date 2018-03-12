@@ -2,18 +2,22 @@ package com.ue.ps;
 
 public class User {
 	
-	private String userName;
+	private String username;
 	private String token;
 	
 	public User(String userName) {
-		this.userName = userName;
+		this.username = userName;
 	}
 	
 	public String getUserName() {
-		return this.userName;
+		return this.username;
 	}
 	
 	public void setUserName(String name) {
-		this.userName = name;
+		this.username = name;
+	}
+	
+	public User() {
+		this.username = "";
 	}
 }
