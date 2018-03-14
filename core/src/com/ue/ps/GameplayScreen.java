@@ -13,6 +13,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.net.ServerSocket;
@@ -22,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -69,8 +71,10 @@ public class GameplayScreen implements Screen {
 	public static TechTreePanel techTreePanel = new TechTreePanel();
 	private Label multMessage = new Label("HELLO!", PS.font);
 	
-	private BaseActor executeButton = new BaseActor("assets/execute.png");
-	
+
+	private Texture executeTex = Images.getImg("execute");
+	private Texture waitTex = Images.getImg("wait");
+	private BaseActor executeButton = new BaseActor(executeTex);
 	private ShipPointer activePointer;
 	
 
@@ -133,10 +137,41 @@ public class GameplayScreen implements Screen {
 
 		if (PS.useServer){
 				GameServer.Server.start();
-				server = new GameServerClient("192.168.59.1", 9021);
+				server = new GameServerClient("192.168.59.1", 8021);
 				this.server.registerUser(GameServerClient.clientUser);
+				
+				this.server.sendRequest("", GameServer.ServerCommands.genWorld);
+				while (true) {
+					this.server.sendRequest("", GameServer.ServerCommands.getWorld);
+					if (this.server.getRecievedData().length() > 4 && this.server.getRecievedData().charAt(this.server.getRecievedData().length()-1) == 'w') {
+						Json json = new Json();
+						json.fromJson(ArrayList.class, this.server.getRecievedData().substring(0, this.server.getRecievedData().length()-1));
+						
+					}
+				}
+				
 			
+		} else {
+			int plaNum = 0;
+			World.setWorld(WorldGen.generate(2, 0, 0));
+			
+			for (Planet p : World.getWorld()) {
+				mainStage.addActor(p);
+				if (p.isHomePlanet) {
+					//TODO change this to being server side
+					p.owner = PS.allPlayers[plaNum];
+					PS.allPlayers[plaNum].homePlanet = p;
+					plaNum += 1;
+				}
+			}
+			targetPlanet = GameServerClient.clientPlayer.homePlanet;
+			hasFocusedOnHome = true;
+			
+			
+			
+				
 		}
+		
 		
 		
 		
@@ -185,14 +220,7 @@ public class GameplayScreen implements Screen {
 		
 		
 		// mouseBlot.addAction(Actions.scaleTo(zoomAmount, zoomAmount));
-		if (!PS.recordingGeneration) {
-			if (WorldGen.generate(mainStage, 0, 0) && !hasFocusedOnHome) {
-				targetPlanet = GameServerClient.clientPlayer.homePlanet;
-				hasFocusedOnHome = true;
-			};
-		} else if (Gdx.input.isTouched()) {
-			PS.recordingGeneration = false;
-		}
+	
 		//clicking on planets
 		for (Planet p : World.getWorld()) {
 			if (p.getBoundingRectangle().overlaps(stageMouseBlot.getBoundingRectangle())) {
@@ -356,6 +384,8 @@ public class GameplayScreen implements Screen {
 						sp.delete();
 					}
 					p.pointers.clear();
+					
+				
 				}
 			}
 		}
@@ -363,19 +393,35 @@ public class GameplayScreen implements Screen {
 		
 		
 		if (!turnActive){
-			if (!hasAskedServer){
-				server.sendRequest("", GameServer.ServerCommands.getAllActions);
-				hasAskedServer = true;
-			}
-			if (server.getRecievedData().length() > 4 && server.getRecievedData().charAt(server.getRecievedData().length()-3) == 'r'){
-				GameServerClient.packet.setData(server.getRecievedData().substring(0, server.getRecievedData().length() - 3));
+			
+			server.sendRequest("", GameServer.ServerCommands.getAllActions);
+			if (server.getRecievedData().length() > 4 && server.getRecievedData().charAt(server.getRecievedData().length()-1) == 'r'){
+				GameServerClient.packet.setData(server.getRecievedData().substring(0, server.getRecievedData().length()-1));
 				for (Action a : GameServerClient.packet.getActions()) {
 					Action.execute(a, mainStage, GameServerClient.clientPlayer);
 				}
+				for (Planet p : World.getWorld()) {
+					for (Building b : p.buildings) {
+						if (b != null) {
+							b.update(p);
+						}
+						
+					}
+				}
+				
+				
 				turnActive = true;
-				hasAskedServer = true;
+				hasAskedServer = false;
+			}
+			if (executeButton.getTexture() != waitTex) {
+				executeButton.setTexture(waitTex);
 			}
 			
+			
+		} else {
+			if (executeButton.getTexture() != executeTex) {
+				executeButton.setTexture(executeTex);
+			}
 		}
 
 		if (!PS.paused) {

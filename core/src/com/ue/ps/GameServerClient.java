@@ -49,16 +49,7 @@ public class GameServerClient {
 	
 
 	
-	private static class PlanetData{
-		public PlanetType type;
-		public int size;
-		public int x;
-		public int y;
-		public boolean isHomePlanet;
-		private PlanetData() {
-			
-		}
-	}
+	
 	
 	private Socket socket;
 
@@ -119,7 +110,7 @@ public class GameServerClient {
 		 System.out.println("sending " + com.name() + " request: " + jsonStringToSend);
          try {
              // write our entered message to the stream
-        	 System.out.println(socket.isConnected());
+        	
              socket.getOutputStream().write(jsonStringToSend.getBytes());
          } catch (Exception e) {
              e.printStackTrace();
@@ -134,7 +125,7 @@ public class GameServerClient {
 		@Override
 		public void run() {
 
-			String data;
+			String data = "";
 			String prevData = "";
 			while (true) {
 				 BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
@@ -145,10 +136,7 @@ public class GameServerClient {
 							data = buffer.readLine();
 							
 							
-						} else {
-							data = "nothing";
 						}
-						
 					} catch (IOException e) {
 						System.out.println("IO Exception");
 						data = "error";

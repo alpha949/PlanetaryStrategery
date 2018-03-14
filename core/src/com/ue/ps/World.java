@@ -16,8 +16,10 @@ public class World {
 		return null;
 	}
 	
-	public static void setWorld(ArrayList<Planet> planets){
-		allPlanets = planets;
+	public static void setWorld(ArrayList<PlanetData> planets){
+		for (PlanetData pd : planets) {
+			allPlanets.add(PlanetData.fromPlanetData(pd));
+		}
 	}
 	
 	public static ArrayList<Planet> getWorld(){

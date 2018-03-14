@@ -22,7 +22,7 @@ import com.badlogic.gdx.utils.SerializationException;
 public class GameServer {
 	
 	public enum ServerCommands{
-		registerUser, recieveActions, getWorld, initConnect, getAllActions;
+		registerUser, recieveActions, getWorld, initConnect, getAllActions, genWorld;
 		
 		private char id;
 		
@@ -45,6 +45,7 @@ public class GameServer {
 			getWorld.id = 'w';
 			initConnect.id = 'c';
 			getAllActions.id = 'a';
+			genWorld.id = 'g';
 		}
 	}
 	
@@ -63,14 +64,15 @@ public class GameServer {
             // Only one app can listen to a port at a time, keep in mind many ports are reserved
             // especially in the lower numbers ( like 21, 80, etc )
        
-            ServerSocket serverSocket = Gdx.net.newServerSocket(Protocol.TCP, 9021, serverSocketHint);
+            ServerSocket serverSocket = Gdx.net.newServerSocket(Protocol.TCP, 8021, serverSocketHint);
            
           
             ArrayList<User> users = new ArrayList<User>();
             ArrayList<Action> actions = new ArrayList<Action>();
             ArrayList<Socket> connectedSockets = new ArrayList<Socket>();
+            ArrayList<PlanetData> world = new ArrayList<PlanetData>();
             Json jsonHandler = new Json();
-          
+            boolean isGenerating = false;
             // Loop forever
             while(true){
                 // Create a socket
@@ -123,6 +125,9 @@ public class GameServer {
                       	   returnMessage = "recievedTurnData!";
                       	   break;
                          case getWorld:
+                        	if (!world.isEmpty()) {
+                        		returnMessage = jsonHandler.toJson(world) + "w";
+                        	}
                       	   break;
                          case initConnect:
                       	   returnMessage = "HELLO MY FRIEND";
@@ -130,7 +135,13 @@ public class GameServer {
                       	
                          case getAllActions:
                         	 returnMessage = jsonHandler.toJson(actions) + "r";
+                        	 actions.clear();
                       	   break;
+                         case genWorld:
+                        	 if (!isGenerating) {
+                        		world = WorldGen.generate(2, 0, 0);
+                        	 }
+                        	 returnMessage = "working on it";
                          }
                           System.out.println("Sending back: " + returnMessage);
                           returnMessage += "\n";

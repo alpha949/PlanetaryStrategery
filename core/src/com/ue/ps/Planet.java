@@ -45,7 +45,7 @@ public class Planet extends BaseActor{
 	//planet where you can say what it is
 	public Planet(PlanetType type, int size) {
 		super();
-		this.type = type;
+		this.setType(type);
 		this.size = size;
 		this.finish();
 	}
@@ -55,6 +55,7 @@ public class Planet extends BaseActor{
 		super();
 		this.type = PlanetType.values()[MathUtils.random(0, 4)];
 		this.size = MathUtils.random(1, 3);
+		
 		this.finish();
 	}
 	
@@ -66,12 +67,26 @@ public class Planet extends BaseActor{
 		this.setTexture(this.type.tex); //TODO resize the images based on planet size
 		this.setRotation(MathUtils.random(0, 360));
 		this.name = Utils.genName();
+		this.setOrigin(this.getWidth()/2, this.getHeight()/2);
 		
 	}
 	
+	
+	
 	public void setType(PlanetType p){
 		this.type = p;
-		
+		this.setTexture(this.type.tex);
+	}
+	
+	public void setSize(int size) {
+		this.size = size;
+		this.capacity = size * 4;
+		this.setSize(this.getWidth() * size, this.getHeight() * size);
+		this.buildings = new Building[capacity];
+	}
+	
+	public int getSize() {
+		return this.size;
 	}
 	
 	public PlanetType getPlanetType(){
@@ -216,6 +231,9 @@ public class Planet extends BaseActor{
 		
 		
 	}
+	
+	
+	
 	
 	
 	

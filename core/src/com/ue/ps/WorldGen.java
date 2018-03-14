@@ -39,9 +39,10 @@ public class WorldGen {
 
 	}
 
-	public static boolean generate(Stage m, int sizeX, int sizeY) {
-
-		if (!done) {
+	public static ArrayList<PlanetData> generate(int numPlayers, int sizeX, int sizeY) {
+		ArrayList<PlanetData> planetData = new ArrayList<PlanetData>();
+		done = false;
+		while (!done) {
 			canGenerate = true;
 
 			nextDist = MathUtils.random(50 * 8 * 8, 100 * 8 * 8);
@@ -57,7 +58,6 @@ public class WorldGen {
 			if (canGenerate) {
 				Planet p = new Planet();
 				allPlanets.add(p);
-				m.addActor(p);
 				p.setCenter(pos.x, pos.y);
 				
 				p.id = 1 + prevId;
@@ -70,7 +70,6 @@ public class WorldGen {
 				Planet p = new Planet();
 				// allPlanets.add(p);
 				p.setColor(Color.RED);
-				m.addActor(p);
 				p.setCenter(pos.x, pos.y);
 				p.addAction(Actions.fadeOut(1));
 				failedSteps += 1;
@@ -87,18 +86,23 @@ public class WorldGen {
 
 				done = true;
 
-				genHomePlanets(2, m);
-				World.setWorld(allPlanets);
-				return true;
+				genHomePlanets(2);
+				
 
 			}
-			return false;
-		} else {
-			return false;
+		
 		}
+		
+		for (Planet p : allPlanets) {
+			planetData.add(PlanetData.toPlanetData(p));
+		}
+		return planetData;	
 
 	}
+	
+	
 
+	
 	private static Planet getClosestPlanetTo(float x, float y) {
 
 		Planet[] planetMap = new Planet[allPlanets.size()];
@@ -116,7 +120,7 @@ public class WorldGen {
 		return planetMap[0];
 	}
 
-	private static Polygon genHomePlanets(int numHomePlanets, Stage m) {
+	private static Polygon genHomePlanets(int numHomePlanets) {
 		// numHomePlanets *=2;
 		Polygon ring = new Polygon();
 
@@ -132,23 +136,12 @@ public class WorldGen {
 			Planet p = new Planet();
 			// allPlanets.add(p);
 			p.setColor(Color.TEAL);
-			m.addActor(p);
 			p.setCenter(vert.x, vert.y);
-			home.owner = PS.allPlayers[i];
-			PS.allPlayers[i].homePlanet = home;
+		
 
 		}
 		
 		
-		
-		for (Planet p : allPlanets) {
-			if (p.isHomePlanet) {
-				Ship.spawnShip(p.owner, p, ShipType.drone, 10);
-			}
-				
-				
-			
-		}
 	
 		
 		return ring;
