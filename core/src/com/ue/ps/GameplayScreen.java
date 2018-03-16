@@ -136,19 +136,38 @@ public class GameplayScreen implements Screen {
 		
 
 		if (PS.useServer){
+			//start server
 				GameServer.Server.start();
-				server = new GameServerClient("192.168.59.1", 8021);
+				server = new GameServerClient("192.168.59.1", 9021);
 				this.server.registerUser(GameServerClient.clientUser);
 				
 				this.server.sendRequest("", GameServer.ServerCommands.genWorld);
-				while (true) {
+				boolean getWorld = false;
+				while (!getWorld) {
+					//get world
 					this.server.sendRequest("", GameServer.ServerCommands.getWorld);
-					if (this.server.getRecievedData().length() > 4 && this.server.getRecievedData().charAt(this.server.getRecievedData().length()-1) == 'w') {
+					//System.out.println(this.server.getRecievedData().length());
+					if (GameServerClient.isCorrectDataType(this.server.getRecievedData(), GameServerClient.ClientRecieveCommands.world)) {
 						Json json = new Json();
-						json.fromJson(ArrayList.class, this.server.getRecievedData().substring(0, this.server.getRecievedData().length()-1));
+						System.out.println("GOT THE DATA");
 						
+						World.setWorld(json.fromJson(ArrayList.class, this.server.getRecievedData().substring(0, this.server.getRecievedData().length()-1)));
+						getWorld = true;
+						break;
 					}
 				}
+				int plaNum = 0;
+				for (Planet p : World.getWorld()) {
+					mainStage.addActor(p);
+					if (p.isHomePlanet) {
+						
+						p.owner = PS.allPlayers[plaNum];
+						PS.allPlayers[plaNum].homePlanet = p;
+						plaNum += 1;
+					}
+				}
+				targetPlanet = GameServerClient.clientPlayer.homePlanet;
+				hasFocusedOnHome = true;
 				
 			
 		} else {
@@ -158,7 +177,7 @@ public class GameplayScreen implements Screen {
 			for (Planet p : World.getWorld()) {
 				mainStage.addActor(p);
 				if (p.isHomePlanet) {
-					//TODO change this to being server side
+					
 					p.owner = PS.allPlayers[plaNum];
 					PS.allPlayers[plaNum].homePlanet = p;
 					plaNum += 1;

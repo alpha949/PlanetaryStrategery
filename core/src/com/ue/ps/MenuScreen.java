@@ -63,12 +63,12 @@ public class MenuScreen implements Screen {
 	
 	private TextFieldStyle style = new TextFieldStyle(PS.theFont, Color.WHITE, null, null, null);
 	private TextField ipInput;
-	
+	private String text;
 	
 
 	private Skin skin = new Skin();
 	
-	
+	private TextInput textInput = new TextInput();
 
 	
 	public MenuScreen(Game g) {
@@ -80,20 +80,14 @@ public class MenuScreen implements Screen {
 		camera = new OrthographicCamera();
 		viewport = new ScreenViewport(camera);
 
-		mainStage = new Stage(new ScalingViewport(Scaling.fill, PS.viewWidth, PS.viewHeight, camera));
+		mainStage = new Stage();
 		
 
 	
 		skin = new Skin(Gdx.files.internal("assets/skin/uiskin.json"));
-		TextFieldStyle style = new TextFieldStyle();
-        style.background = skin.getDrawable("textfield");
-        style.selection = skin.getDrawable("selection");
-        style.fontColor = new Color(0.41f, 0.75f, 0.99f, 1f);
-        style.font = PS.theFont;
-        style.disabledFontColor = new Color(0.79f, 0.79f, 0.79f, 0.1f);
-        style.cursor = skin.getDrawable("cursor");
+	
 		
-		ipInput = new TextField("ip here", style);
+		ipInput = new TextField("ip here", skin);
 		ipInput.setPosition(100, 100);
 		
 		mainStage.addActor(ipInput);
@@ -101,7 +95,7 @@ public class MenuScreen implements Screen {
 		shapeRender = new ShapeRenderer();
 		
 	
-		Gdx.input.setInputProcessor(new InputProcess());
+	
 		
 		//TODO move to ui
 		String[] config = ConfigReader.readFile("assets/config.json");
@@ -111,51 +105,26 @@ public class MenuScreen implements Screen {
 		
 		//ipInput.setMessageText("test");
 		Gdx.input.setInputProcessor(mainStage);
-		ipInput.setTouchable(Touchable.enabled);
-		ipInput.setTextFieldListener(new TextFieldListener() {
-
-			@Override
-			public void keyTyped(TextField textField, char c) {
-				System.out.println(c);
-				
-			}
-			
-		});
+		Gdx.input.getTextInput(textInput, "Input IP", "", "here");
+	
+		
 	}
 
 	public void render(float dt) {
 	
 		mainStage.act(dt);
-		
-		
-	
-		
-		
-	
-	
-		OrthographicCamera cam = (OrthographicCamera) mainStage.getCamera();
-	
 
-		cam.update();
 	
-	
-
-
 		mouseBlot.setCenter(Gdx.input.getX(), PS.viewHeight - Gdx.input.getY());
 
 		Gdx.gl.glClearColor(0.0F, 0.0F, 0, 1);
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		mainStage.getViewport().apply();
+		
 		mainStage.draw();
 	
 	
-		if (Gdx.input.isKeyPressed(Keys.ESCAPE)) {
-			Gdx.input.setCursorCatched(false);
-		} else {
-			Gdx.input.setCursorCatched(true);
-		}
 		
 		if (Gdx.input.isKeyJustPressed(Keys.SHIFT_LEFT)) {
 			this.game.setScreen(new GameplayScreen(this.game));

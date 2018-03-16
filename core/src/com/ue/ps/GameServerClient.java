@@ -52,6 +52,30 @@ public class GameServerClient {
 	
 	
 	private Socket socket;
+	
+	
+	public enum ClientRecieveCommands{
+		world, actions;
+		
+		private char id;
+		
+		public char getId() {
+			return this.id;
+		}
+		
+		public static ClientRecieveCommands getClientRecieveCommandById(char id) {
+			for (ClientRecieveCommands crc : ClientRecieveCommands.values()) {
+				if (crc.id == id) {
+					return crc;
+				}
+			}
+			return null;
+		}
+		static {
+			world.id = 'w';
+			actions.id = 'a';
+		}
+	}
 
 	
 	/**
@@ -107,7 +131,7 @@ public class GameServerClient {
 		jsonStringToSend += com.getId() + "\n";
 		
 		
-		 System.out.println("sending " + com.name() + " request: " + jsonStringToSend);
+		 //System.out.println("sending " + com.name() + " request: " + jsonStringToSend);
          try {
              // write our entered message to the stream
         	
@@ -142,20 +166,14 @@ public class GameServerClient {
 						data = "error";
 					}
 					
-					final String finalData = data;
+			
 					if (!data.equals(prevData)) {
 						System.out.println("Recieved: " + data);
+						receivedData = data;
 					}
 					prevData = data;
 					
-					Gdx.app.postRunnable(new Runnable() {
-				         @Override
-				         public void run() {
-				        	
-				            // process the result, e.g. add it to an Array<Result> field of the ApplicationListener.
-				        	 receivedData = finalData;
-				         }
-				      });
+				
 			}
 			
 			
@@ -183,6 +201,14 @@ public class GameServerClient {
 	
 	public static void setUpPlayer(Faction f) {
 		clientPlayer = new Player(clientUser, f);
+	}
+	
+	public static boolean isCorrectDataType(String data, ClientRecieveCommands crc) {
+		if (data.length() > 1 && data.charAt(data.length()-1) == crc.id) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 }

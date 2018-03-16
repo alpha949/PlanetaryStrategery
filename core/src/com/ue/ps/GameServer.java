@@ -64,7 +64,7 @@ public class GameServer {
             // Only one app can listen to a port at a time, keep in mind many ports are reserved
             // especially in the lower numbers ( like 21, 80, etc )
        
-            ServerSocket serverSocket = Gdx.net.newServerSocket(Protocol.TCP, 8021, serverSocketHint);
+            ServerSocket serverSocket = Gdx.net.newServerSocket(Protocol.TCP, 9021, serverSocketHint);
            
           
             ArrayList<User> users = new ArrayList<User>();
@@ -125,8 +125,11 @@ public class GameServer {
                       	   returnMessage = "recievedTurnData!";
                       	   break;
                          case getWorld:
+                        	
                         	if (!world.isEmpty()) {
-                        		returnMessage = jsonHandler.toJson(world) + "w";
+                        		returnMessage = formatReturnMessage(jsonHandler.toJson(world), GameServerClient.ClientRecieveCommands.world);
+                        	} else {
+                        		 System.out.println("Gimme a sec");
                         	}
                       	   break;
                          case initConnect:
@@ -138,8 +141,10 @@ public class GameServer {
                         	 actions.clear();
                       	   break;
                          case genWorld:
+                        	 System.out.println("Generating world");
                         	 if (!isGenerating) {
                         		world = WorldGen.generate(2, 0, 0);
+                        		isGenerating = true;
                         	 }
                         	 returnMessage = "working on it";
                          }
@@ -154,6 +159,11 @@ public class GameServer {
               
             }
         }
+        
+        public String formatReturnMessage(String data, GameServerClient.ClientRecieveCommands crc) {
+        	return data + crc.getId();
+        }
+        
     }); // And, start the thread running
 
 
