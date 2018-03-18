@@ -340,17 +340,17 @@ public class GameplayScreen implements Screen {
 		cam.zoom = zoomAmount;
 
 		if (Gdx.input.isKeyPressed(Keys.W)) {
-			cam.position.y += 10 * zoomAmount;
-			cameraOffsetY += 10 * zoomAmount;
+			cam.position.y += Settings.moveSpeed * zoomAmount;
+			cameraOffsetY += Settings.moveSpeed * zoomAmount;
 		} else if (Gdx.input.isKeyPressed(Keys.A)) {
-			cam.position.x -= 10 * zoomAmount;
-			cameraOffsetX -= 10 * zoomAmount;
+			cam.position.x -= Settings.moveSpeed * zoomAmount;
+			cameraOffsetX -= Settings.moveSpeed * zoomAmount;
 		} else if (Gdx.input.isKeyPressed(Keys.D)) {
-			cam.position.x += 10 * zoomAmount;
-			cameraOffsetX += 10 * zoomAmount;
+			cam.position.x += Settings.moveSpeed * zoomAmount;
+			cameraOffsetX += Settings.moveSpeed * zoomAmount;
 		} else if (Gdx.input.isKeyPressed(Keys.S)) {
-			cam.position.y -= 10 * zoomAmount;
-			cameraOffsetY -= 10 * zoomAmount;
+			cam.position.y -= Settings.moveSpeed * zoomAmount;
+			cameraOffsetY -= Settings.moveSpeed * zoomAmount;
 		}
 
 		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
