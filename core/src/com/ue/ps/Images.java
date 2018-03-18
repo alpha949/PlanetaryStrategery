@@ -36,4 +36,9 @@ public class Images {
 			return t;
 		}
 	}
+	
+	//idk
+	public static Texture copy(Texture t) {
+		return new Texture(t.getTextureData());
+	}
 }
