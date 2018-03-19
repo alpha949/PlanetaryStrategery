@@ -24,6 +24,9 @@ public class Images {
 	public static final Texture planetEarly = getImg("planets/Early");
 	public static final Texture planet = getImg("planets/planet");
 	
+	public static Texture panelAdd = getImg("panelAdd");
+	public static Texture panelStats = getImg("buildingStats");
+	
 	
 	public static Texture getImg(String path) {
 		try {
