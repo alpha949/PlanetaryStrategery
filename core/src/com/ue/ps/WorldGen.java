@@ -43,6 +43,7 @@ public class WorldGen {
 		ArrayList<PlanetData> planetData = new ArrayList<PlanetData>();
 		done = false;
 		while (!done) {
+			System.out.println("GENERATING!");
 			canGenerate = true;
 
 			nextDist = MathUtils.random(50 * 8 * 8, 100 * 8 * 8);
@@ -82,11 +83,11 @@ public class WorldGen {
 			}
 
 			failedSteps = Gdx.input.isKeyPressed(Keys.SPACE) ? 100 : failedSteps;
-			if (failedSteps > 100) {
+			if (failedSteps > 1) {
 
 				done = true;
 
-				genHomePlanets(2);
+				genHomePlanets(numPlayers);
 				
 
 			}

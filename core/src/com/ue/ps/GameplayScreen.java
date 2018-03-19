@@ -130,21 +130,36 @@ public class GameplayScreen implements Screen {
 		Gdx.input.setInputProcessor(new InputProcess());
 		
 		//TODO move to ui
-		
-		
-		
-		
-
 		if (PS.useServer){
 			//start server
 				GameServer.Server.start();
-				server = new GameServerClient("192.168.59.1", 9021);
-				this.server.registerUser(GameServerClient.clientUser);
+				server = new GameServerClient("2601:1c2:1b80:1160::e299", 7777);
+				this.server.registerPlayer(GameServerClient.clientPlayer);
+				
+				boolean getPlayers = false;
+				while (!getPlayers){
+					this.server.sendRequest("", GameServer.ServerCommands.getAllPlayers);
+					//System.out.println(this.server.getRecievedData().length());
+					if (GameServerClient.isCorrectDataType(this.server.getRecievedData(), GameServerClient.ClientRecieveCommands.players)) {
+						Json json = new Json();
+						System.out.println("GOT THE DATA");
+						
+						
+						ArrayList<PlayerData> pds = json.fromJson(ArrayList.class, this.server.getRecievedData().substring(0, this.server.getRecievedData().length()-1));
+						for (PlayerData pd : pds){
+							
+							GameServerClient.players.add(Player.fromPlayerData(pd));
+						}
+						getPlayers = true;
+						break;
+					}
+				}
 				
 				this.server.sendRequest("", GameServer.ServerCommands.genWorld);
 				boolean getWorld = false;
 				while (!getWorld) {
 					//get world
+				
 					this.server.sendRequest("", GameServer.ServerCommands.getWorld);
 					//System.out.println(this.server.getRecievedData().length());
 					if (GameServerClient.isCorrectDataType(this.server.getRecievedData(), GameServerClient.ClientRecieveCommands.world)) {
@@ -156,32 +171,23 @@ public class GameplayScreen implements Screen {
 						break;
 					}
 				}
-				int plaNum = 0;
+				
+			
 				for (Planet p : World.getWorld()) {
 					mainStage.addActor(p);
-					if (p.isHomePlanet) {
-						
-						p.owner = PS.allPlayers[plaNum];
-						PS.allPlayers[plaNum].homePlanet = p;
-						plaNum += 1;
-					}
+					
 				}
 				targetPlanet = GameServerClient.clientPlayer.homePlanet;
 				hasFocusedOnHome = true;
 				
 			
 		} else {
-			int plaNum = 0;
+	
 			World.setWorld(WorldGen.generate(2, 0, 0));
 			
 			for (Planet p : World.getWorld()) {
 				mainStage.addActor(p);
-				if (p.isHomePlanet) {
-					
-					p.owner = PS.allPlayers[plaNum];
-					PS.allPlayers[plaNum].homePlanet = p;
-					plaNum += 1;
-				}
+				
 			}
 			targetPlanet = GameServerClient.clientPlayer.homePlanet;
 			hasFocusedOnHome = true;

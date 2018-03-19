@@ -1,7 +1,7 @@
 {
 	"username" : "coo",
-	"server_ip" : "192.168.232.1",
-	"server_port" : "8021",
-	"use_server": false
+	"server_ip" : "2601:1c2:1b80:1160::e299",
+	"server_port" : "9021",
+	"use_server": true
 
 }

@@ -137,9 +137,8 @@ public class Planet extends BaseActor{
 			}
 		}
 		for (Ship s : this.orbitingShips){
-			if (s.getOwnerName() != owner.getUser().getUserName()){
 				shipTargets.add(s);
-			}
+			
 		}
 		for (Ship s : clientShips){
 			s.attack(shipTargets, buildingTargets, this);
@@ -150,9 +149,8 @@ public class Planet extends BaseActor{
 	private ArrayList<Ship> splitShipsByOwner(Player owner){
 		ArrayList<Ship> ownersShips = new ArrayList<Ship>();
 		for (Ship s : this.orbitingShips){
-			if (s.getOwnerName().equals(owner.getUser().getUserName())){
 				ownersShips.add(s);
-			}
+			
 		}
 		return ownersShips;
 		
