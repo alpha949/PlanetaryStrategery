@@ -15,6 +15,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
@@ -23,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -77,7 +80,7 @@ public class GameplayScreen implements Screen {
 	private BaseActor executeButton = new BaseActor(executeTex);
 	private ShipPointer activePointer;
 	
-
+	private Rectangle screenBounds = new Rectangle(0,0, PS.viewWidth, PS.viewHeight);
 	
 	private ResourcePanel resourcePanel;
 	
@@ -132,17 +135,27 @@ public class GameplayScreen implements Screen {
 		//TODO move to ui
 		if (PS.useServer){
 			//start server
+			 try {
+	            	ServerSocket testSocket = Gdx.net.newServerSocket(Protocol.TCP, MenuScreen.port, null);
+	            	testSocket.dispose();
+	            } catch (GdxRuntimeException e) {
+	            	System.out.println("port taken");
+	            	 int i = 10/0;
+	            	
+	            	
+	            }
 				GameServer.Server.start();
-				server = new GameServerClient("2601:1c2:1b80:1160::e299", 7777);
+				server = new GameServerClient(MenuScreen.ip, MenuScreen.port);
 				this.server.registerPlayer(GameServerClient.clientPlayer);
 				
+			
 				boolean getPlayers = false;
 				while (!getPlayers){
 					this.server.sendRequest("", GameServer.ServerCommands.getAllPlayers);
 					//System.out.println(this.server.getRecievedData().length());
 					if (GameServerClient.isCorrectDataType(this.server.getRecievedData(), GameServerClient.ClientRecieveCommands.players)) {
 						Json json = new Json();
-						System.out.println("GOT THE DATA");
+						System.out.println("GOT THE P DATA");
 						
 						
 						ArrayList<PlayerData> pds = json.fromJson(ArrayList.class, this.server.getRecievedData().substring(0, this.server.getRecievedData().length()-1));
@@ -156,15 +169,15 @@ public class GameplayScreen implements Screen {
 				}
 				
 				this.server.sendRequest("", GameServer.ServerCommands.genWorld);
+				
+				this.server.sendRequest("", GameServer.ServerCommands.getWorld);
 				boolean getWorld = false;
 				while (!getWorld) {
-					//get world
-				
-					this.server.sendRequest("", GameServer.ServerCommands.getWorld);
+	
 					//System.out.println(this.server.getRecievedData().length());
 					if (GameServerClient.isCorrectDataType(this.server.getRecievedData(), GameServerClient.ClientRecieveCommands.world)) {
 						Json json = new Json();
-						System.out.println("GOT THE DATA");
+						System.out.println("GOT THE W DATA");
 						
 						World.setWorld(json.fromJson(ArrayList.class, this.server.getRecievedData().substring(0, this.server.getRecievedData().length()-1)));
 						getWorld = true;
@@ -176,6 +189,10 @@ public class GameplayScreen implements Screen {
 				for (Planet p : World.getWorld()) {
 					mainStage.addActor(p);
 					
+					if (p.owner != null && p.owner.getUser().equals(GameServerClient.clientPlayer.getUser())) {
+						System.out.println("ye");
+						GameServerClient.clientPlayer.homePlanet = p;
+					}
 				}
 				targetPlanet = GameServerClient.clientPlayer.homePlanet;
 				hasFocusedOnHome = true;
@@ -183,7 +200,7 @@ public class GameplayScreen implements Screen {
 			
 		} else {
 	
-			World.setWorld(WorldGen.generate(2, 0, 0));
+			World.setWorld(WorldGen.generate(GameServerClient.players, 0, 0));
 			
 			for (Planet p : World.getWorld()) {
 				mainStage.addActor(p);
@@ -233,7 +250,10 @@ public class GameplayScreen implements Screen {
 		cam.update();
 
 		mouseBlot.setPosition(Gdx.input.getX(), PS.viewHeight - Gdx.input.getY());
+		MathUtils.clamp(mouseBlot.center.x, 0, PS.viewWidth);
+		MathUtils.clamp(mouseBlot.center.y, 0, PS.viewHeight);
 		mousePos = mainStage.screenToStageCoordinates(uiStage.stageToScreenCoordinates(mouseBlot.center));
+
 		mouseBlot.setPosition(Gdx.input.getX(), PS.viewHeight - Gdx.input.getY());
 		uiMousePos = uiStage.screenToStageCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 		// these numbers (8 and 13) seem really arbitrary, there's probably some

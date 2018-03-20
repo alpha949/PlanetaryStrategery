@@ -130,14 +130,14 @@ public class GameServerClient {
 			System.out.println("Make me a world plz");
 		}
 		
-		// System.out.println("sending " + com.name() + " request: " + jsonStringToSend);
+		//System.out.println("sending " + com.name() + " request: " + jsonStringToSend);
          try {
              // write our entered message to the stream
         
         	
              socket.getOutputStream().write(jsonStringToSend.getBytes());
          } catch (Exception e) {
-            System.out.println("Socket write error");
+            //System.out.println("Socket write error");
          
          }
 		

@@ -65,7 +65,8 @@ public class MenuScreen implements Screen {
 	private TextField ipInput;
 	private String text;
 	
-
+	public static int port;
+	public static String ip;
 	private Skin skin = new Skin();
 	
 	private TextInput textInput = new TextInput();
@@ -98,7 +99,7 @@ public class MenuScreen implements Screen {
 	
 		
 		//TODO move to ui
-		promptUserCreation = UserConfigHandler.canReadFile("assets/config.json");
+
 		String[] config = UserConfigHandler.readFile("assets/config.json");
 		
 		
@@ -108,7 +109,11 @@ public class MenuScreen implements Screen {
 		Gdx.input.setInputProcessor(mainStage);
 		Gdx.input.getTextInput(textInput, "Enter your user name", "", "here");
 	
-		GameServerClient.user = "Zakiah";
+		GameServerClient.user = config[0];
+		port = Integer.parseInt(config[2]);
+		ip = config[1];
+		System.out.println(ip);
+		System.out.println(port);
 		GameServerClient.setUpPlayer(Faction.Xin);
 		
 	}

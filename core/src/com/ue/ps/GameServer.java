@@ -58,9 +58,7 @@ public class GameServer {
         public void run() {
         	System.out.println("Starting server");
         	handleIncomingMessage.start();
-            ServerSocketHints serverSocketHint = new ServerSocketHints();
-            // 0 means no timeout.  Probably not the greatest idea in production!
-            serverSocketHint.acceptTimeout = 4000;
+    
             
             // Create the socket server using TCP protocol and listening on 9021
             // Only one app can listen to a port at a time, keep in mind many ports are reserved
@@ -78,14 +76,31 @@ public class GameServer {
             // Loop forever
             while(true){
                 // Create a socket
-            
+	           	 for (Socket sock : connectedSockets) {
+					  BufferedReader buffer = new BufferedReader(new InputStreamReader(sock.getInputStream())); 
+			            try {
+			            	
+							if (buffer.ready()){
+								
+								String data = buffer.readLine();
+								System.out.println("got some data");
+								comQueue.add(data);
+								
+								
+							  }
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+				 }
                
                 for (Socket sock : connectedSockets) {
                 	
                 	  String returnMessage = "";
-                      // Read data from the socket into a BufferedReader
-                  
+
+ 
                       for (String com : comQueue){
+                    	  
                     	  try {
    				           String jsonData = "";
    				           
@@ -97,7 +112,7 @@ public class GameServer {
    				           } else {
    				        	   jsonData = "";
    				           }
-   				           System.out.println("parsing: " + jsonData);
+   				         System.out.println("parsing: " + jsonData);
    				           switch(ServerCommands.getServerCommandById(serverCommand)){
    				           case registerUser:
    				        	   if (jsonData.length() < 2) {
@@ -125,8 +140,8 @@ public class GameServer {
    				          	
    				          	if (!world.isEmpty()) {
    				          		returnMessage = formatReturnMessage(jsonHandler.toJson(world), GameServerClient.ClientRecieveCommands.world);
-   				          	} else {
-   				          		 System.out.println("Gimme a sec");
+   				          	}  else {
+   				          		System.out.println("gimme a sec");
    				          	}
    				        	   break;
    				           case initConnect:
@@ -140,7 +155,12 @@ public class GameServer {
    				           case genWorld:
    				          	 System.out.println("Generating world");
    				          	 if (!isGenerating) {
-   				          		world = WorldGen.generate(players.size(), 0, 0);
+   				          		 ArrayList<Player> plas = new ArrayList<Player>();
+   				          		 for (PlayerData pd : players) {
+   				          			 System.out.println("added player: " + pd.username);
+   				          			 plas.add(Player.fromPlayerData(pd));
+   				          		 }
+   				          		world = WorldGen.generate(plas, 0, 0);
    				          		isGenerating = true;
    				          	 }
    				          	 returnMessage = "working on it";
@@ -150,7 +170,7 @@ public class GameServer {
    				          	 break;
    				           }
    				        
-   				            System.out.println("Sending back: " + returnMessage);
+   				           System.out.println("Sending back: " + returnMessage);
    				            returnMessage += "\n";
    				            sock.getOutputStream().write(returnMessage.getBytes());
    				        	
@@ -160,7 +180,7 @@ public class GameServer {
                     	
                       }
                      
-                      comQueue.clear();  
+                      comQueue.clear(); 
                 }
                 
                    
@@ -176,14 +196,24 @@ public class GameServer {
 	
 	public static Thread handleIncomingMessage =  new Thread(new Runnable(){
 		
-		 ArrayList<String> coms = new ArrayList<String>();
+		 
 		 ArrayList<Socket> connSockets = new ArrayList<Socket>();
 		@Override
 		public void run() {
 		    ServerSocketHints serverSocketHint = new ServerSocketHints();
             // 0 means no timeout.  Probably not the greatest idea in production!
-            serverSocketHint.acceptTimeout = 4000;
-			ServerSocket serverSocket = Gdx.net.newServerSocket(Protocol.TCP, 7777, serverSocketHint);
+            serverSocketHint.acceptTimeout = 0;
+            ServerSocket serverSocket = null;
+         
+            try {
+            	serverSocket = Gdx.net.newServerSocket(Protocol.TCP, MenuScreen.port, serverSocketHint);
+            } catch (GdxRuntimeException e) {
+            	System.out.println("port taken");
+            	Gdx.app.exit();
+            	
+            	
+            }
+			
 			while (true){ 
 				try {
 	       		 	Socket socket = serverSocket.accept(null);
@@ -192,31 +222,13 @@ public class GameServer {
 	                	connSockets.add(socket);
 	                }
 		       	} catch (GdxRuntimeException e) {
-		       		System.out.println("Error: tried to connect when already connected");
+		       		e.printStackTrace();
 		       	}
-				 for (Socket sock : connSockets) {
-					  BufferedReader buffer = new BufferedReader(new InputStreamReader(sock.getInputStream())); 
-			            try {
-							if (buffer.ready()){
-								 coms.add(buffer.readLine());
-							  }
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-				 }
+			
 				
 					 
 				 connectedSockets = connSockets;
-				 comQueue = coms;
-					
-					 
-				 
-				
-			
-				
-			
-			
+	
 			 
 			}
 		}

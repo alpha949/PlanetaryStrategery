@@ -83,6 +83,7 @@ public class Planet extends BaseActor{
 		this.capacity = size * 4;
 		this.setSize(this.getWidth() * size, this.getHeight() * size);
 		this.buildings = new Building[capacity];
+		this.setOrigin(this.getWidth()/2, this.getHeight()/2);
 	}
 	
 	public int getSize() {

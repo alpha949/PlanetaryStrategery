@@ -32,7 +32,10 @@ public class PlanetData {
 		pd.isHomePlanet = p.isHomePlanet;
 		pd.type = p.getPlanetType();
 		pd.size = p.getSize();
-		pd.owner = p.owner.getUser();
+		if (p.owner != null) {
+			pd.owner = p.owner.getUser();
+			
+		} 
 		
 		return pd;
 	}
