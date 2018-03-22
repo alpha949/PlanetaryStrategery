@@ -43,11 +43,7 @@ public class PS extends Game {
 		generator.dispose(); // don't forget to dispose to avoid memory leaks!
 		
 		//Read user's data;
-		String[] config = UserConfigHandler.readFile("assets/config.json");
-		
-		useServer = Boolean.parseBoolean(config[3]);
-		GameServerClient.user = config[0];
-		GameServerClient.setUpPlayer(Faction.Xin);
+
 
 		font = new LabelStyle(new BitmapFont(), Color.WHITE);
 	

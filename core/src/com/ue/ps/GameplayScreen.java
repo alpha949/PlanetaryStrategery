@@ -168,12 +168,13 @@ public class GameplayScreen implements Screen {
 					}
 				}
 				
-				this.server.sendRequest("", GameServer.ServerCommands.genWorld);
 				
-				this.server.sendRequest("", GameServer.ServerCommands.getWorld);
+				
+				
 				boolean getWorld = false;
 				while (!getWorld) {
-	
+					this.server.sendRequest("", GameServer.ServerCommands.genWorld);
+					this.server.sendRequest("", GameServer.ServerCommands.getWorld);
 					//System.out.println(this.server.getRecievedData().length());
 					if (GameServerClient.isCorrectDataType(this.server.getRecievedData(), GameServerClient.ClientRecieveCommands.world)) {
 						Json json = new Json();

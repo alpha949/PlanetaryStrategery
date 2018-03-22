@@ -30,9 +30,7 @@ public class UserConfigHandler {
 	
 	public static String[] readFile(String file){
 		String username = "";
-		String serverip = "";
-		String serverport = "";
-		String useServer = "";
+	
 		
 		
 
@@ -73,16 +71,14 @@ public class UserConfigHandler {
 			JsonValue value = reader.parse(json);
 		
 			username = value.getString("username");
-			serverip = value.getString("server_ip");
-			serverport = value.getString("server_port");
-			useServer = value.getString("use_server");
+	
 			
 			
 		} catch(GdxRuntimeException e){
 			System.out.println("Couldn't open: " + file);
 		}
 		
-		String[] output = {username, serverip, serverport, useServer};
+		String[] output = {username};
 		return output;
 	}
 	
@@ -117,7 +113,7 @@ public class UserConfigHandler {
 		//Create the file
 		
 		try {
-			userConfig = Gdx.files.internal("assets/userConfig");
+			userConfig = Gdx.files.local("assets/userConfig.json");
 			
 			StringWriter sw = new StringWriter();
 			jsonHandler.setOutputType(OutputType.json);
