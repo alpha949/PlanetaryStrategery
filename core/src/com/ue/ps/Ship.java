@@ -176,7 +176,7 @@ public class Ship extends BaseActor {
 		newShip.setRotation(newShip.angle - 90);
 		newShip.location = p;
 		newShip.id = genId(pla);
-		newShip.ownerName = pla.getUser().getUserName();
+		newShip.ownerName = pla.getUser();
 		shipCount += 1;
 
 	}
@@ -204,7 +204,7 @@ public class Ship extends BaseActor {
 	
 	
 	private static String genId(Player owner){
-		String id = owner.getUser().getUserName()+ shipCount;
+		String id = owner.getUser()+ shipCount;
 		
 		return id;
 		

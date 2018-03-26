@@ -1,5 +1,7 @@
 package com.ue.ps;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -23,10 +25,10 @@ public class PS extends Game {
 	
 	public static Player p1;
 	public static Player p2;
-	public static Player[] allPlayers = new Player[2];
+	
 	public static BitmapFont theFont;
 	
-
+	
 	
 	public static Boolean useServer;
 	
@@ -41,16 +43,11 @@ public class PS extends Game {
 		generator.dispose(); // don't forget to dispose to avoid memory leaks!
 		
 		//Read user's data;
-		String[] config = ConfigReader.readFile("assets/config.json");
-		
-		useServer = Boolean.parseBoolean(config[3]);
-		GameServerClient.clientUser.setUserName(config[0]);
-		GameServerClient.setUpPlayer(Faction.Xin);
+
 
 		font = new LabelStyle(new BitmapFont(), Color.WHITE);
-		p2 = new Player(new User("siv"), Faction.Efferent);
-		allPlayers[0] = p2;
-		allPlayers[1] = GameServerClient.clientPlayer;
+	
+
 		
 
 		MenuScreen ms = new MenuScreen(this);
@@ -69,4 +66,6 @@ public class PS extends Game {
 
 		return viewWidth;
 	}
+	
+
 }

@@ -83,6 +83,7 @@ public class Planet extends BaseActor{
 		this.capacity = size * 4;
 		this.setSize(this.getWidth() * size, this.getHeight() * size);
 		this.buildings = new Building[capacity];
+		this.setOrigin(this.getWidth()/2, this.getHeight()/2);
 	}
 	
 	public int getSize() {
@@ -137,9 +138,8 @@ public class Planet extends BaseActor{
 			}
 		}
 		for (Ship s : this.orbitingShips){
-			if (s.getOwnerName() != owner.getUser().getUserName()){
 				shipTargets.add(s);
-			}
+			
 		}
 		for (Ship s : clientShips){
 			s.attack(shipTargets, buildingTargets, this);
@@ -150,9 +150,8 @@ public class Planet extends BaseActor{
 	private ArrayList<Ship> splitShipsByOwner(Player owner){
 		ArrayList<Ship> ownersShips = new ArrayList<Ship>();
 		for (Ship s : this.orbitingShips){
-			if (s.getOwnerName().equals(owner.getUser().getUserName())){
 				ownersShips.add(s);
-			}
+			
 		}
 		return ownersShips;
 		

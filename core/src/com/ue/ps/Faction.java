@@ -22,7 +22,7 @@ public class Faction {
 	public Faction(String name, String abv, Color color) {
 		this.name = name;
 		this.color = color;
-
+		this.abv = abv;
 		this.droneImg = Images.getImg("ships/" + abv + "Drone");
 		this.scoutImg = Images.getImg("ships/" + abv + "Scout");
 		this.transportImg = Images.getImg("ships/" + abv + "Transport");
@@ -76,11 +76,20 @@ public class Faction {
 	public static Faction Vilioth = new Faction("Vilioth", "vlt", Color.PURPLE);
 	public static Faction Efferent = new Faction("Efferent", "efr", Color.ORANGE);
 	public static Faction Xin = new Faction("Xin", "xin", Color.GREEN);
-	
+	public static Faction[] allFactions = {Braecious, Reach, Lelouk, Atch, Vilioth, Efferent, Xin};
 	static{
 		Braecious.setShipModifiers(ShipType.cruiser, -5, 4, 0);
 		Reach.setShipModifiers(ShipType.scout, 0, 1, -5);
 		Lelouk.setShipModifiers(ShipType.flagship, 0, 1, 0);
+	}
+	
+	public static Faction getFactionFromAbv(String abv){
+		for (Faction f : allFactions){
+			if (f.abv.equals(abv)){
+				return f;
+			}
+		}
+		return null;
 	}
 
 }

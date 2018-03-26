@@ -39,10 +39,11 @@ public class WorldGen {
 
 	}
 
-	public static ArrayList<PlanetData> generate(int numPlayers, int sizeX, int sizeY) {
+	public static ArrayList<PlanetData> generate(ArrayList<Player> players, int sizeX, int sizeY) {
 		ArrayList<PlanetData> planetData = new ArrayList<PlanetData>();
 		done = false;
 		while (!done) {
+			System.out.println("GENERATING!");
 			canGenerate = true;
 
 			nextDist = MathUtils.random(50 * 8 * 8, 100 * 8 * 8);
@@ -81,12 +82,12 @@ public class WorldGen {
 				pos = allPlanets.get(0).center;
 			}
 
-			failedSteps = Gdx.input.isKeyPressed(Keys.SPACE) ? 100 : failedSteps;
+		
 			if (failedSteps > 100) {
 
 				done = true;
 
-				genHomePlanets(2);
+				genHomePlanets(players);
 				
 
 			}
@@ -120,19 +121,20 @@ public class WorldGen {
 		return planetMap[0];
 	}
 
-	private static Polygon genHomePlanets(int numHomePlanets) {
+	private static Polygon genHomePlanets(ArrayList<Player> plas) {
 		// numHomePlanets *=2;
 		Polygon ring = new Polygon();
 
 		int dist = (int) (planetBorder.width * 2);
 
-		for (int i = 0; i < numHomePlanets; i++) {
-			Vector2 vert = Utils.polarToRect(dist, (360 / numHomePlanets * i) + 45, planetBorder.getCenter(new Vector2()));
+		for (int i = 0; i < plas.size(); i++) {
+			Vector2 vert = Utils.polarToRect(dist, (360 / plas.size() * i) + 45, planetBorder.getCenter(new Vector2()));
 
 			Planet home = getClosestPlanetTo(vert.x, vert.y);
 			home.setColor(Color.BLUE);
 			home.isHomePlanet = true;
 			home.setType(PlanetType.goldilocks);
+			home.owner = plas.get(i);
 			Planet p = new Planet();
 			// allPlanets.add(p);
 			p.setColor(Color.TEAL);

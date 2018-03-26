@@ -34,7 +34,7 @@ public class GameServerClient {
 	
 	
 	public static Player clientPlayer;
-	public static User clientUser = new User("");
+	public static String user;
 	
 
 	
@@ -48,14 +48,14 @@ public class GameServerClient {
 	public static Packet packet = new Packet();
 	
 
-	
+	public static ArrayList<Player> players = new ArrayList<Player>();
 	
 	
 	private Socket socket;
 	
 	
 	public enum ClientRecieveCommands{
-		world, actions;
+		world, actions, players;
 		
 		private char id;
 		
@@ -74,6 +74,7 @@ public class GameServerClient {
 		static {
 			world.id = 'w';
 			actions.id = 'a';
+			players.id = 'p';
 		}
 	}
 
@@ -105,18 +106,14 @@ public class GameServerClient {
 	 * registers a player with the server, should only be called on first connection
 	 * @param p the player to register
 	 */
-	public void registerUser(User p){
+	public void registerPlayer(Player p){
 		Json j = new Json();
 		j.setOutputType(OutputType.json);
 		
-		StringWriter sw = new StringWriter();
-		j.setWriter(sw);
-		j.writeObjectStart();
-		j.writeValue("username", p.getUserName());
-		j.writeObjectEnd();
+		String data = j.toJson(p.toPlayerData());
 		
 		
-		this.sendRequest(sw.toString(), GameServer.ServerCommands.registerUser);
+		this.sendRequest(data, GameServer.ServerCommands.registerUser);
 	
 		
 		
@@ -129,15 +126,19 @@ public class GameServerClient {
 	public void sendRequest(String jsonStringToSend, GameServer.ServerCommands com){
 		
 		jsonStringToSend += com.getId() + "\n";
+		if (com == GameServer.ServerCommands.genWorld){
+			System.out.println("Make me a world plz");
+		}
 		
-		
-		 //System.out.println("sending " + com.name() + " request: " + jsonStringToSend);
+		//System.out.println("sending " + com.name() + " request: " + jsonStringToSend);
          try {
              // write our entered message to the stream
+        
         	
              socket.getOutputStream().write(jsonStringToSend.getBytes());
          } catch (Exception e) {
-             e.printStackTrace();
+            //System.out.println("Socket write error");
+         
          }
 		
 		
@@ -200,7 +201,7 @@ public class GameServerClient {
 	}
 	
 	public static void setUpPlayer(Faction f) {
-		clientPlayer = new Player(clientUser, f);
+		clientPlayer = new Player(user, f);
 	}
 	
 	public static boolean isCorrectDataType(String data, ClientRecieveCommands crc) {
@@ -209,6 +210,15 @@ public class GameServerClient {
 		} else {
 			return false;
 		}
+	}
+	
+	public static Player getPlayerByUserName(String userName){
+		for (Player p : players){
+			if (p.getUser().equals(userName)){
+				return p;
+			}
+		}
+		return null;
 	}
 	
 }

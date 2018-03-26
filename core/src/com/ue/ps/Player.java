@@ -9,12 +9,12 @@ public class Player {
 	public Faction faction;
 
 	
-	private User user;
+	private String userName;
 
 	public Planet homePlanet;
 
-	public Player(User u, Faction f) {
-		this.user = u;
+	public Player(String userName, Faction f) {
+		this.userName = userName;
 		this.resource = 0;
 		this.techPoints = 0;
 		this.people = 0;
@@ -22,9 +22,19 @@ public class Player {
 		
 	}
 	
-	public User getUser() {
-		return this.user;
+	
+	
+	public String getUser() {
+		return this.userName;
 				
+	}
+	
+	
+	public PlayerData toPlayerData(){
+		return new PlayerData(this.userName, this.faction.abv);
+	}
+	public static Player fromPlayerData(PlayerData pd){
+		return new Player(pd.username, Faction.getFactionFromAbv(pd.factionAbv));
 	}
 
 }
