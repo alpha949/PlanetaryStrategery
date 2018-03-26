@@ -20,7 +20,6 @@ public class Button extends BaseActor{
 	Button(Texture texture) {
 		super(texture);
 		this.Hitbox = this.getBoundingRectangle();
-		System.out.println(this.Hitbox);
 	}
 	
 	public boolean Pressed(Rectangle mouse) {
