@@ -23,7 +23,9 @@ public class GameServer {
 	  static ArrayList<Socket> connectedSockets = new ArrayList<Socket>();
 	  static ArrayList<String> comQueue = new ArrayList<String>();
 	public enum ServerCommands{
-		registerUser, recieveActions, getWorld, initConnect, getAllActions, genWorld, getAllPlayers;
+		registerUser, recieveActions, getWorld, initConnect, getAllActions, genWorld, getAllPlayers,
+		beginGame, askBeginGame
+		;
 		
 		private char id;
 		
@@ -48,6 +50,8 @@ public class GameServer {
 			getAllActions.id = 'a';
 			genWorld.id = 'g';
 			getAllPlayers.id = 'p';
+			beginGame.id = 'b';
+			askBeginGame.id = 's';
 		}
 	}
 	
@@ -73,6 +77,7 @@ public class GameServer {
             
             Json jsonHandler = new Json();
             boolean isGenerating = false;
+            boolean gameBegin = false;
             // Loop forever
             while(true){
                 // Create a socket
@@ -168,6 +173,12 @@ public class GameServer {
    				           case getAllPlayers:
    				          	 returnMessage = formatReturnMessage(jsonHandler.toJson(players), GameServerClient.ClientRecieveCommands.players);
    				          	 break;
+   				           case beginGame:
+   				        	   gameBegin = true;
+   				        	   break;
+   				           case askBeginGame:
+   				        	   returnMessage = Boolean.toString(gameBegin);
+   				        	   break;
    				           }
    				        
    				           System.out.println("Sending back: " + returnMessage);

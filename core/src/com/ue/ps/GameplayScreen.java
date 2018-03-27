@@ -68,7 +68,7 @@ public class GameplayScreen implements Screen {
 	
 	private Line planetXLine;
 	
-	private GameServerClient server;
+
 	
 	
 	public static TechTreePanel techTreePanel = new TechTreePanel();
@@ -108,7 +108,7 @@ public class GameplayScreen implements Screen {
 
 		//Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 
-		WorldGen.setup(mainStage);
+		
 
 		shapeRender = new ShapeRenderer();
 		mouseBlot.setPosition(50, 50);
@@ -134,53 +134,16 @@ public class GameplayScreen implements Screen {
 		
 		//TODO move to ui
 		if (PS.useServer){
-			//start server
-			 try {
-	            	ServerSocket testSocket = Gdx.net.newServerSocket(Protocol.TCP, MenuScreen.port, null);
-	            	testSocket.dispose();
-	            } catch (GdxRuntimeException e) {
-	            	System.out.println("port taken");
-	            	 int i = 10/0;
-	            	
-	            	
-	            }
-				GameServer.Server.start();
-				server = new GameServerClient(MenuScreen.ip, MenuScreen.port);
-				this.server.registerPlayer(GameServerClient.clientPlayer);
-				
-			
-				boolean getPlayers = false;
-				while (!getPlayers){
-					this.server.sendRequest("", GameServer.ServerCommands.getAllPlayers);
-					//System.out.println(this.server.getRecievedData().length());
-					if (GameServerClient.isCorrectDataType(this.server.getRecievedData(), GameServerClient.ClientRecieveCommands.players)) {
-						Json json = new Json();
-						System.out.println("GOT THE P DATA");
-						
-						
-						ArrayList<PlayerData> pds = json.fromJson(ArrayList.class, this.server.getRecievedData().substring(0, this.server.getRecievedData().length()-1));
-						for (PlayerData pd : pds){
-							
-							GameServerClient.players.add(Player.fromPlayerData(pd));
-						}
-						getPlayers = true;
-						break;
-					}
-				}
-				
-				
-				
-				
+
 				boolean getWorld = false;
 				while (!getWorld) {
-					this.server.sendRequest("", GameServer.ServerCommands.genWorld);
-					this.server.sendRequest("", GameServer.ServerCommands.getWorld);
-					//System.out.println(this.server.getRecievedData().length());
-					if (GameServerClient.isCorrectDataType(this.server.getRecievedData(), GameServerClient.ClientRecieveCommands.world)) {
+					PS.client.sendRequest("", GameServer.ServerCommands.getWorld);
+					//System.out.println(PS.client.getRecievedData().length());
+					if (GameServerClient.isCorrectDataType(PS.client.getRecievedData(), GameServerClient.ClientRecieveCommands.world)) {
 						Json json = new Json();
 						System.out.println("GOT THE W DATA");
 						
-						World.setWorld(json.fromJson(ArrayList.class, this.server.getRecievedData().substring(0, this.server.getRecievedData().length()-1)));
+						World.setWorld(json.fromJson(ArrayList.class, PS.client.getRecievedData().substring(0, PS.client.getRecievedData().length()-1)));
 						getWorld = true;
 						break;
 					}
@@ -422,7 +385,7 @@ public class GameplayScreen implements Screen {
 				sidePanel.unset();
 			} else {
 				//send actions
-				server.sendRequest(GameServerClient.packet.getCompressedData(), GameServer.ServerCommands.recieveActions);
+				PS.client.sendRequest(GameServerClient.packet.getCompressedData(), GameServer.ServerCommands.recieveActions);
 				turnActive = false;
 				
 				for (Planet p : World.getWorld()) {
@@ -440,9 +403,9 @@ public class GameplayScreen implements Screen {
 		
 		if (!turnActive){
 			
-			server.sendRequest("", GameServer.ServerCommands.getAllActions);
-			if (server.getRecievedData().length() > 4 && server.getRecievedData().charAt(server.getRecievedData().length()-1) == 'r'){
-				GameServerClient.packet.setData(server.getRecievedData().substring(0, server.getRecievedData().length()-1));
+			PS.client.sendRequest("", GameServer.ServerCommands.getAllActions);
+			if (PS.client.getRecievedData().length() > 4 && PS.client.getRecievedData().charAt(PS.client.getRecievedData().length()-1) == 'r'){
+				GameServerClient.packet.setData(PS.client.getRecievedData().substring(0, PS.client.getRecievedData().length()-1));
 				for (Action a : GameServerClient.packet.getActions()) {
 					Action.execute(a, mainStage, GameServerClient.clientPlayer);
 				}

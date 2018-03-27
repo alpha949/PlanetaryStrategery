@@ -28,7 +28,8 @@ public class PS extends Game {
 	
 	public static BitmapFont theFont;
 	
-	
+	public static GameServerClient client;
+	public static boolean isHost;
 	
 	public static Boolean useServer;
 	

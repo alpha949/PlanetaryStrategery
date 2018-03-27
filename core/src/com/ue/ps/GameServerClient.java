@@ -18,6 +18,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
+import com.ue.ps.GameServer.ServerCommands;
 import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
@@ -92,6 +93,7 @@ public class GameServerClient {
         socketHints.connectTimeout = 4000;
         //create the socket and connect to the server entered in the text box ( x.x.x.x format ) on port 9021
         socket = Gdx.net.newClientSocket(Protocol.TCP, ip, port, socketHints);
+        this.sendRequest("", ServerCommands.initConnect);
         this.receive.start();
 	        
 	}
@@ -219,6 +221,10 @@ public class GameServerClient {
 			}
 		}
 		return null;
+	}
+	
+	public void dispose(){
+		socket.dispose();
 	}
 	
 }

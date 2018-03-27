@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Button extends BaseActor{
 	
 	public Rectangle Hitbox;
-	public boolean active;
+	public boolean active = true;
 	public boolean controled = true;
 	
 	Button(Texture texture, int x, int y) {
@@ -23,14 +23,14 @@ public class Button extends BaseActor{
 	}
 	
 	public boolean Pressed(Rectangle mouse) {
-		if (this.isVisible() && Gdx.input.justTouched() && this.controled && this.Hitbox.overlaps(mouse)) {
+		if (this.isVisible() && Gdx.input.justTouched() && this.controled && this.Hitbox.overlaps(mouse) && this.active) {
 			return true;
 		}
 		return false;
 	}
 	
 	public boolean Pressed(Vector2 mouse) {
-		if (this.isVisible() && Gdx.input.justTouched() && this.controled && this.Hitbox.contains(mouse)) {
+		if (this.isVisible() && Gdx.input.justTouched() && this.controled && this.Hitbox.contains(mouse) && this.active) {
 			return true;
 		}
 		return false;

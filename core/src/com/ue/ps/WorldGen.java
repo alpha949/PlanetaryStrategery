@@ -27,19 +27,16 @@ public class WorldGen {
 	
 	private static int prevId;
 
-	public static void setup(Stage m) {
+	public static void setup() {
 
 		planetBorder = new Rectangle(-64 * 50 * 8, -64 * 50 * 8, 64 * 50 * 8 + 64 * 50 * 8, 64 * 50 * 8 + 64 * 50 * 8);
 		pos = planetBorder.getCenter(pos);
-		Planet p = new Planet();
-		m.addActor(p);
-		p.setCenter(pos.x, pos.y);
-		p.setColor(Color.PURPLE);
-		p.setZIndex(10000);
+		
 
 	}
 
 	public static ArrayList<PlanetData> generate(ArrayList<Player> players, int sizeX, int sizeY) {
+		setup();
 		ArrayList<PlanetData> planetData = new ArrayList<PlanetData>();
 		done = false;
 		while (!done) {
