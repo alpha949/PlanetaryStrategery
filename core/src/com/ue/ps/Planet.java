@@ -16,6 +16,8 @@ public class Planet extends BaseActor{
 	public Building[] buildings;
 	private PlanetType type;
 	public boolean isHomePlanet;
+	public int FactoryQuant;
+	public ArrayList<ShipContainer> BuildQueue;
 	
 	public int resourceCapacity;
 	public int priority;
@@ -68,10 +70,18 @@ public class Planet extends BaseActor{
 		this.setRotation(MathUtils.random(0, 360));
 		this.name = Utils.genName();
 		this.setOrigin(this.getWidth()/2, this.getHeight()/2);
-		
+		this.FactoryQuant = 0;
+		this.BuildQueue = new ArrayList<ShipContainer>();
 	}
 	
-	
+	public void buildShip(ShipType s) {
+		if (this.FactoryQuant > 0) {
+			//use BuildQueue
+			//for (Building b : this.buildings){
+			//	((Factory) this.building).buildingShip = s;
+			//}
+		}
+	}
 	
 	public void setType(PlanetType p){
 		this.type = p;
@@ -97,6 +107,8 @@ public class Planet extends BaseActor{
 	public void update(){
 		
 	}
+	
+	//TODO add new shipcontainer to planet when captured
 	
 	@Override
 	public void act(float dt){
@@ -162,6 +174,9 @@ public class Planet extends BaseActor{
 		if (isCombat){
 			this.performCombat(GameServerClient.clientPlayer);
 		}
+		for (ShipContainer s : this.BuildQueue){
+			s.buildUpdate();
+		}
 	}
 	
 	public void addBuilding(Building b, int slot){
@@ -177,6 +192,7 @@ public class Planet extends BaseActor{
 			b.setRotation(angle - 90);
 			
 			builtBuildings += 1;
+			if (b instanceof Factory) {this.FactoryQuant += 1;}
 		}
 	}
 	

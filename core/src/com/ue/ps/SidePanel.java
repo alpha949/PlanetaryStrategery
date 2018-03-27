@@ -49,10 +49,9 @@ public class SidePanel extends BaseActor {
 	public static ArrayList<Ship> selectedShips = new ArrayList<Ship>();
 	
 	
-	private Button[] shipBuildBoxes; //the ships you can build
-	private int selectedBuildingSlot = -1;
 	private boolean buildBoxesShowing; //TODO change to tab showing
 	private boolean shipBuildBoxesShowing;
+	private int selectedBuildingSlot = -1;
 	
 	
 	private Label planetResource = new Label("", PS.font);
@@ -99,16 +98,7 @@ public class SidePanel extends BaseActor {
 		
 		this.addActor(this.uiMouseBlot);
 		
-		
-		shipBuildBoxes = new Button[ShipType.values().length];
-		for (int i = 0; i < ShipType.values().length; i ++) {
-			shipBuildBoxes[i] = new Button(Images.ShipBuildBox);
-			shipBuildBoxes[i].setPosition(-100, -100);
-			BaseActor shipImg = new BaseActor(GameServerClient.clientPlayer.faction.getShipTypeTexture(ShipType.values()[i]));
-			shipImg.setPosition(1, 1);
-			shipBuildBoxes[i].addActor(shipImg);
-			this.addActor(shipBuildBoxes[i]);
-		}
+
 	}
 	/**
 	 * Sets the side panel to display a specific planet's stats.
@@ -138,31 +128,19 @@ public class SidePanel extends BaseActor {
 			this.removeActor(sbox);
 		}
 		
-	
 		this.buildingContainers.clear();
 		this.buildingCost.clear();
-
-		
 		this.shipContainers.clear();
-
-		
 	
-		
+		int localrand = 0;
 		for (int i = 0; i < this.planet.orbitingShips.size(); i++) {
-			ShipContainer sbox = new ShipContainer();
+			ShipContainer sbox = new ShipContainer(this.planet.orbitingShips.get(i));
 			sbox.setPosition(100, PS.viewHeight - 150 - i * 20);
 	
 			this.shipContainers.add(sbox);
 			this.addActor(sbox);
 			
-			
-			
-			if (this.planet.orbitingShips.get(i) != null) {
-				//for some strange reason, getting the ship's texture returns null
-				sbox.setShip(this.planet.orbitingShips.get(i));
-			}
-			
-			for (ShipPointer pointer : this.planet.pointers) {
+			for (ShipPointer pointer : this.planet.pointers) { //makes the container show where the ship is going
 				System.out.println(pointer);
 				for (Ship s : pointer.ships) {
 					System.out.println(s);
@@ -174,7 +152,20 @@ public class SidePanel extends BaseActor {
 					
 				}
 			}
+			localrand = i;
 		}
+		
+		for (ShipContainer s : this.planet.BuildQueue){ //add ships being built
+			localrand++;
+			s.setPosition(100, PS.viewHeight - 150 - localrand * 20);
+			this.shipContainers.add(s);
+			this.addActor(s);
+		}
+		
+		//add final "next build" box
+		ShipContainer sbox = new ShipContainer();
+		this.shipContainers.add(sbox);
+		this.addActor(sbox);
 		
 		//setup building boxes
 		for (int i = 0; i < this.planet.buildings.length; i++) {
@@ -188,10 +179,7 @@ public class SidePanel extends BaseActor {
 			} else {
 				bc.setBuilding(null);
 			}
-
 		}
-		hideShipBuildBoxes();
-
 	}
 
 	
@@ -232,14 +220,7 @@ public class SidePanel extends BaseActor {
 				this.planet.priority -= 1;
 			}
 		
-			if (shipBuildBoxesShowing) {
-				for (int i = 0; i < this.shipBuildBoxes.length; i++) {
-					if (shipBuildBoxes[i].getBoundingRectangle().contains(uiMouseBlot.center) && Gdx.input.justTouched()) {
-						buildingContainers.get(selectedBuildingSlot).setFactoryShip(ShipType.values()[i]);
-						System.out.println("Factory has shipType: " + ShipType.values()[i].name() );
-						hideShipBuildBoxes();
-					}
-				}	
+			if (shipBuildBoxesShowing) {	
 			}
 			
 			//check for clicking on buildBox
@@ -261,54 +242,34 @@ public class SidePanel extends BaseActor {
 		//update selectedships
 		
 		for (ShipContainer sc : this.shipContainers) {
-			if (sc.isSelected()) {
-				if  (!selectedShips.contains(sc.getShip())){
-					selectedShips.add(sc.getShip());
-				}
-				
-			} else {
-				selectedShips.remove(sc.getShip());
-			}
-			ShipPointer deleteThisPointer = null;
-			if (sc.isDestinationUnset) {
-				for (ShipPointer sp : this.planet.pointers) {
-					sp.ships.remove(sc.getShip());
+			if (sc.done){
+				if (sc.isSelected()) {
+					if  (!selectedShips.contains(sc.getShip())){
+						selectedShips.add(sc.getShip());
+					}
 					
-					if (sp.ships.isEmpty()) {
-						sp.delete();
-						deleteThisPointer = sp;
+				} else {
+					selectedShips.remove(sc.getShip());
+				}
+				ShipPointer deleteThisPointer = null;
+				if (sc.isDestinationUnset) {
+					for (ShipPointer sp : this.planet.pointers) {
+						sp.ships.remove(sc.getShip());
+						
+						if (sp.ships.isEmpty()) {
+							sp.delete();
+							deleteThisPointer = sp;
+						}
 					}
 				}
+				this.planet.pointers.remove(deleteThisPointer);
 			}
-			this.planet.pointers.remove(deleteThisPointer);
-		}
-		
-		for (ShipContainer sc : this.shipContainers) {
 			sc.update(uiMouseBlot.center, shipContainers);
 		}
-		
 		
 		//update text fields
 		this.planetCap.setText(Integer.toString(this.planet.resourceCapacity));
 		this.planetPrioirity.setText(Integer.toString(this.planet.priority));
-	}
-	
-	private void showShipBuildBoxes() {
-		for (int i = 0; i < shipBuildBoxes.length; i++) {
-			shipBuildBoxes[i].setPosition(50, PS.viewHeight - 150 - i * 20);
-			
-		}
-		shipBuildBoxesShowing = true;
-	}
-	/**
-	 * hide the buildBoxes
-	 */
-	private void hideShipBuildBoxes() {
-		for (int i = 0; i < shipBuildBoxes.length; i++) {
-			shipBuildBoxes[i].setPosition(-100, -100);
-			
-		}
-		shipBuildBoxesShowing = false;
 	}
 	
 	private ShipContainer getShipContainer(Ship s) {
