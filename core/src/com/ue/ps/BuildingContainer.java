@@ -69,12 +69,6 @@ public class BuildingContainer extends Button{
 		}
 	}
 	
-	public void setFactoryShip(ShipType s) {
-		if (this.building != null && this.building instanceof Factory) {
-			((Factory) this.building).buildingShip = s;
-			
-		}
-	}
 	
 	public Building getBuilding() {
 		return building;
