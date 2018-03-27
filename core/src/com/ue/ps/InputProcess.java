@@ -1,5 +1,6 @@
 package com.ue.ps;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 
 public class InputProcess implements InputProcessor {
@@ -8,7 +9,8 @@ public class InputProcess implements InputProcessor {
 	
 	private static boolean leftMouseDown;
 	private static boolean rightMouseDown;
-
+	
+	public static int sidePanelScrollAmount = 0;
 	
 	@Override
 	public boolean keyDown(int keycode) {
@@ -65,22 +67,29 @@ public class InputProcess implements InputProcessor {
 		//increase speed from 1.2 to 6, a range between viewing a single planet and seeing its surroundings
 		//zoomammount *= 1 + .5 * sensitivity; this makes sure that the multiplier is always increasing or decreasing (compared to 1.05 * sensitivity, which would reverse the scrolling past 1/1.05 sensitivity)
 		
-		if (amount > 0) { //Zoom out
-			if (GameplayScreen.zoomAmount <= 6 && GameplayScreen.zoomAmount > 1.2) {
-				GameplayScreen.zoomAmount *= 1.0 + .1 * Settings.zoomSensitivity;
-			} else {GameplayScreen.zoomAmount *= 1.0 + .05 * Settings.zoomSensitivity;}
+		if (Gdx.input.getX() < 253 && Gdx.input.getY() - PS.viewHeight < 637){
+			sidePanelScrollAmount += amount;
 			
-		} else if (amount < 0) { // Zoom in
-			if (GameplayScreen.zoomAmount <= 6 && GameplayScreen.zoomAmount > 1.2) {
-				GameplayScreen.zoomAmount *= 1 / (1.0 + .1 * Settings.zoomSensitivity);
-			} else {GameplayScreen.zoomAmount *= 1 / (1.0 + .05 * Settings.zoomSensitivity);}
+		} else {
+			if (amount > 0) { //Zoom out
+				if (GameplayScreen.zoomAmount <= 6 && GameplayScreen.zoomAmount > 1.2) {
+					GameplayScreen.zoomAmount *= 1.0 + .1 * Settings.zoomSensitivity;
+				} else {GameplayScreen.zoomAmount *= 1.0 + .05 * Settings.zoomSensitivity;}
+				
+			} else if (amount < 0) { // Zoom in
+				if (GameplayScreen.zoomAmount <= 6 && GameplayScreen.zoomAmount > 1.2) {
+					GameplayScreen.zoomAmount *= 1 / (1.0 + .1 * Settings.zoomSensitivity);
+				} else {GameplayScreen.zoomAmount *= 1 / (1.0 + .05 * Settings.zoomSensitivity);}
+				
+				//Cap on zooming in, prevents inverse view
+				if (GameplayScreen.zoomAmount < 0.2) {GameplayScreen.zoomAmount = (float) 0.2;}
+			}
+			//System.out.println("Current zoom at "+GameplayScreen.zoomAmount +", changed by "+amount);
 			
-			//Cap on zooming in, prevents inverse view
-			if (GameplayScreen.zoomAmount < 0.2) {GameplayScreen.zoomAmount = (float) 0.2;}
+			
 		}
-		//System.out.println("Current zoom at "+GameplayScreen.zoomAmount +", changed by "+amount);
 		
-		return false; //why not make it void instead of a boolean?
+		return false; 
 	}
 	
 	public static boolean leftMouseClicked() {
