@@ -2,6 +2,8 @@ package com.ue.ps;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.ue.ps.ships.ShipType;
+import com.ue.ps.ui.Images;
 
 public class Faction {
 
@@ -51,20 +53,23 @@ public class Faction {
 		}
 
 	}
-	
+
 	public Texture getSymbolTexture() {
 		return this.symbolImg;
 	}
+
 	/**
 	 * Sets the ship modifiers of the faction
-	 * @param mods a list of integers, first is health mod, then damage mod, then cost mod
+	 * 
+	 * @param mods a list of integers, first is health mod, then damage mod,
+	 *            then cost mod
 	 */
-	private void setShipModifiers(ShipType ship, int...mods) {
+	private void setShipModifiers(ShipType ship, int... mods) {
 		for (int i = 0; i < mods.length; i++) {
 			shipModifiers[ship.ordinal()][i] = mods[i];
 		}
 	}
-	
+
 	public int getMod(ShipType ship, int modNum) {
 		return this.shipModifiers[ship.ordinal()][modNum];
 	}
@@ -76,16 +81,16 @@ public class Faction {
 	public static Faction Vilioth = new Faction("Vilioth", "vlt", Color.PURPLE);
 	public static Faction Efferent = new Faction("Efferent", "efr", Color.ORANGE);
 	public static Faction Xin = new Faction("Xin", "xin", Color.GREEN);
-	public static Faction[] allFactions = {Braecious, Reach, Lelouk, Atch, Vilioth, Efferent, Xin};
-	static{
+	public static Faction[] allFactions = { Braecious, Reach, Lelouk, Atch, Vilioth, Efferent, Xin };
+	static {
 		Braecious.setShipModifiers(ShipType.cruiser, -5, 4, 0);
 		Reach.setShipModifiers(ShipType.scout, 0, 1, -5);
 		Lelouk.setShipModifiers(ShipType.flagship, 0, 1, 0);
 	}
-	
-	public static Faction getFactionFromAbv(String abv){
-		for (Faction f : allFactions){
-			if (f.abv.equals(abv)){
+
+	public static Faction getFactionFromAbv(String abv) {
+		for (Faction f : allFactions) {
+			if (f.abv.equals(abv)) {
 				return f;
 			}
 		}

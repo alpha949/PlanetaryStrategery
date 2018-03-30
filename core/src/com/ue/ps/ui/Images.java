@@ -1,36 +1,36 @@
-package com.ue.ps;
+package com.ue.ps.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
 public class Images {
-	
-	//Base textures
+
+	// Base textures
 	public static final Texture na = getImg("missingTex");
 	public static final Texture emptyTexture = getImg("empty");
-	
-	//Button Textures
+
+	// Button Textures
 	public static final Texture Increment = getImg("increment");
 	public static final Texture Deincrement = getImg("deincrement");
-	
+
 	public static Texture BuildBox = getImg("buildBox");
 	public static Texture ShipBuildBox = getImg("shipBuildBox");
 	public static Texture shipcontainer = getImg("shipContainer");
 	public static Texture shipbuildbox = getImg("shipBuildbox");
 	public static Texture TechTreeHolder = getImg("assets/techTreeItemHolder");
-	
-	//Ingame textures
+
+	// Ingame textures
 	public static final Texture planetAsteroids = getImg("planets/asteroids");
 	public static final Texture planetGas = getImg("planets/Gas");
 	public static final Texture planetBarren = getImg("planets/Barren");
 	public static final Texture planetEarly = getImg("planets/Early");
 	public static final Texture planet = getImg("planets/planet");
-	
+
 	public static Texture panelAdd = getImg("panelAdd");
 	public static Texture panelStats = getImg("buildingStats");
-	
+
 	public static Texture factionBoxTexure = getImg("factionBox");
-	
+
 	public static Texture getImg(String path) {
 		try {
 			Texture t = new Texture(Gdx.files.internal("assets/" + path + ".png"));
@@ -42,8 +42,8 @@ public class Images {
 			return t;
 		}
 	}
-	
-	//idk
+
+	// idk
 	public static Texture copy(Texture t) {
 		return new Texture(t.getTextureData());
 	}

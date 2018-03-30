@@ -25,9 +25,9 @@ public class BaseActor extends Group {
 
 	protected float elapsedTime;
 	private String path;
-	
+
 	private Texture texture;
-	
+
 	public BaseActor(String path) {
 		super();
 		region = new TextureRegion();
@@ -40,7 +40,7 @@ public class BaseActor extends Group {
 		this.setOriginX(this.getWidth() / 2);
 		this.setOriginY(this.getHeight() / 2);
 		this.setRectangleBoundary();
-		
+
 	}
 
 	public BaseActor(Texture t) {
@@ -55,9 +55,8 @@ public class BaseActor extends Group {
 		this.setOriginY(this.getHeight() / 2);
 		this.setRectangleBoundary();
 
-
 	}
-	
+
 	public BaseActor() {
 		super();
 		region = new TextureRegion();
@@ -77,7 +76,6 @@ public class BaseActor extends Group {
 		region.setRegion(t);
 		this.setOriginX(this.getWidth() / 2);
 		this.setOriginY(this.getHeight() / 2);
-		
 
 	}
 
@@ -198,12 +196,8 @@ public class BaseActor extends Group {
 			this.addAction(Actions.rotateTo((float) newAngle, speed));
 		}
 		return newAngle;
-		
-
 
 	}
-	
-
 
 	public double distanceTo(double x, double y) {
 
@@ -215,9 +209,9 @@ public class BaseActor extends Group {
 		this.setOriginX(this.getWidth() / 2);
 		this.setOriginY(this.getHeight() / 2);
 		this.center.set(x, y);
-	
+
 	}
-	
+
 	public Texture getTexture() {
 		return this.texture;
 	}

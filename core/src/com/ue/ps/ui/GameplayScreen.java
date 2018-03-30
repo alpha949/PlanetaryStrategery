@@ -1,6 +1,4 @@
-package com.ue.ps;
-
-
+package com.ue.ps.ui;
 
 import java.util.ArrayList;
 
@@ -31,6 +29,21 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.ue.ps.BaseActor;
+import com.ue.ps.PS;
+import com.ue.ps.Planet;
+import com.ue.ps.Utils;
+import com.ue.ps.World;
+import com.ue.ps.WorldGen;
+import com.ue.ps.buildings.Building;
+import com.ue.ps.ships.Line;
+import com.ue.ps.ships.Ship;
+import com.ue.ps.ships.ShipPointer;
+import com.ue.ps.systems.Action;
+import com.ue.ps.systems.GameServer;
+import com.ue.ps.systems.GameServerClient;
+import com.ue.ps.systems.InputProcess;
+import com.ue.ps.systems.Settings;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 
 public class GameplayScreen implements Screen {
@@ -53,7 +66,6 @@ public class GameplayScreen implements Screen {
 	private Planet selectedPlanet = new Planet();
 	private boolean running = false;
 	private boolean hasFocusedOnSelectedPlanet;
-	
 
 	private Camera camera;
 	private Camera uiCamera;
@@ -65,32 +77,28 @@ public class GameplayScreen implements Screen {
 
 	private Planet planetX = new Planet();
 	private SidePanel sidePanel = new SidePanel();
-	
-	private Line planetXLine;
-	
 
-	
-	
+	private Line planetXLine;
+
 	public static TechTreePanel techTreePanel = new TechTreePanel();
 	private Label multMessage = new Label("HELLO!", PS.font);
-	
 
 	private Texture executeTex = Images.getImg("execute");
 	private Texture waitTex = Images.getImg("wait");
 	private BaseActor executeButton = new BaseActor(executeTex);
 	private ShipPointer activePointer;
-	
-	private Rectangle screenBounds = new Rectangle(0,0, PS.viewWidth, PS.viewHeight);
-	
+
+	private Rectangle screenBounds = new Rectangle(0, 0, PS.viewWidth, PS.viewHeight);
+
 	private ResourcePanel resourcePanel;
-	
+
 	private boolean hasFocusedOnHome;
 	private boolean turnActive = true;
-	
+
 	private boolean hasAskedServer = false;
-	
+
 	private Vector2 uiMousePos = new Vector2();
-	
+
 	public GameplayScreen(Game g) {
 		game = g;
 		create();
@@ -106,9 +114,7 @@ public class GameplayScreen implements Screen {
 		mainStage = new Stage(new ScreenViewport(camera));
 		uiStage = new Stage(uiViewport);
 
-		//Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-
-		
+		// Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 
 		shapeRender = new ShapeRenderer();
 		mouseBlot.setPosition(50, 50);
@@ -116,88 +122,74 @@ public class GameplayScreen implements Screen {
 		mainStage.addActor(camPos);
 		mainStage.addActor(stageMouseBlot);
 
-		
 		sidePanel.setPosition(0, PS.viewHeight - sidePanel.getHeight());
 		uiStage.addActor(sidePanel);
-		
 
 		uiStage.addActor(resourcePanel);
 		uiStage.addActor(techTreePanel);
-		
-		uiStage.addActor(multMessage);
-		multMessage.setPosition(PS.viewWidth- 200, 25);
-		
-		uiStage.addActor(executeButton);
-		executeButton.setPosition(PS.viewWidth- 128, 0);
-		
-		Gdx.input.setInputProcessor(new InputProcess());
-		
-		//TODO move to ui
-		if (PS.useServer){
 
-				boolean getWorld = false;
-				while (!getWorld) {
-					PS.client.sendRequest("", GameServer.ServerCommands.getWorld);
-					//System.out.println(PS.client.getRecievedData().length());
-					if (GameServerClient.isCorrectDataType(PS.client.getRecievedData(), GameServerClient.ClientRecieveCommands.world)) {
-						Json json = new Json();
-						System.out.println("GOT THE W DATA");
-						
-						World.setWorld(json.fromJson(ArrayList.class, PS.client.getRecievedData().substring(0, PS.client.getRecievedData().length()-1)));
-						getWorld = true;
-						break;
-					}
+		uiStage.addActor(multMessage);
+		multMessage.setPosition(PS.viewWidth - 200, 25);
+
+		uiStage.addActor(executeButton);
+		executeButton.setPosition(PS.viewWidth - 128, 0);
+
+		Gdx.input.setInputProcessor(new InputProcess());
+
+		// TODO move to ui
+		if (PS.useServer) {
+
+			boolean getWorld = false;
+			while (!getWorld) {
+				PS.client.sendRequest("", GameServer.ServerCommands.getWorld);
+				// System.out.println(PS.client.getRecievedData().length());
+				if (GameServerClient.isCorrectDataType(PS.client.getRecievedData(), GameServerClient.ClientRecieveCommands.world)) {
+					Json json = new Json();
+					System.out.println("GOT THE W DATA");
+
+					World.setWorld(
+							json.fromJson(ArrayList.class, PS.client.getRecievedData().substring(0, PS.client.getRecievedData().length() - 1)));
+					getWorld = true;
+					break;
 				}
-				
-			
-				for (Planet p : World.getWorld()) {
-					mainStage.addActor(p);
-					
-					if (p.owner != null && p.owner.getUser().equals(GameServerClient.clientPlayer.getUser())) {
-						System.out.println("ye");
-						GameServerClient.clientPlayer.homePlanet = p;
-					}
-				}
-				targetPlanet = GameServerClient.clientPlayer.homePlanet;
-				hasFocusedOnHome = true;
-				
-			
-		} else {
-	
-			World.setWorld(WorldGen.generate(GameServerClient.players, 0, 0));
-			
+			}
+
 			for (Planet p : World.getWorld()) {
 				mainStage.addActor(p);
-				
+
+				if (p.owner != null && p.owner.getUser().equals(GameServerClient.clientPlayer.getUser())) {
+					System.out.println("ye");
+					GameServerClient.clientPlayer.homePlanet = p;
+				}
 			}
 			targetPlanet = GameServerClient.clientPlayer.homePlanet;
 			hasFocusedOnHome = true;
-			
-			
-			
-				
+
+		} else {
+
+			World.setWorld(WorldGen.generate(GameServerClient.players, 0, 0));
+
+			for (Planet p : World.getWorld()) {
+				mainStage.addActor(p);
+
+			}
+			targetPlanet = GameServerClient.clientPlayer.homePlanet;
+			hasFocusedOnHome = true;
+
 		}
-		
-		
-		
-		
-		
-		
+
 	}
 
 	public void render(float dt) {
 
 		mainStage.act(dt);
 		uiStage.act();
-		
+
 		sidePanel.update(uiStage);
-	 
-		
-		
-	
+
 		resourcePanel.setPosition(0, PS.viewHeight - resourcePanel.getHeight());
 		resourcePanel.update(uiStage);
-		
+
 		OrthographicCamera cam = (OrthographicCamera) mainStage.getCamera();
 		Vector2 center = new Vector2();
 		camPos.setCenter(cam.position.x, cam.position.y);
@@ -222,75 +214,70 @@ public class GameplayScreen implements Screen {
 		uiMousePos = uiStage.screenToStageCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 		// these numbers (8 and 13) seem really arbitrary, there's probably some
 		// reason for them...
-		stageMouseBlot.setPosition(mousePos.x - 8* zoomAmount, mousePos.y - 8*zoomAmount);
+		stageMouseBlot.setPosition(mousePos.x - 8 * zoomAmount, mousePos.y - 8 * zoomAmount);
 		// stageMouseBlot.setScale(zoomAmount, zoomAmount);
 		stageMouseBlot.setSize(16 * zoomAmount, 16 * zoomAmount);
-		
-		
-		
+
 		// mouseBlot.addAction(Actions.scaleTo(zoomAmount, zoomAmount));
-	
-		//clicking on planets
+
+		// clicking on planets
 		for (Planet p : World.getWorld()) {
 			if (p.getBoundingRectangle().overlaps(stageMouseBlot.getBoundingRectangle())) {
-	
-				if (Gdx.input.justTouched() ) {
-					
-					
+
+				if (Gdx.input.justTouched()) {
+
 					if (!SidePanel.selectedShips.isEmpty()) {
 						this.sidePanel.onDestinationSet(p);
-						if (activePointer !=null){
+						if (activePointer != null) {
 							activePointer.setDestination(p);
 							for (Ship s : SidePanel.selectedShips) {
 								activePointer.ships.add(s);
 							}
-							//-----------------------------------------------------
-							//TODO unset packet actions
-							//-----------------------------------------------------
+							// -----------------------------------------------------
+							// TODO unset packet actions
+							// -----------------------------------------------------
 							activePointer.location.pointers.add(activePointer.clone());
-							GameServerClient.packet.addAction(Action.sendShips(Utils.getShipIds(SidePanel.selectedShips), SidePanel.selectedShips.get(0).location.id, p.id));
+							GameServerClient.packet.addAction(
+									Action.sendShips(Utils.getShipIds(SidePanel.selectedShips), SidePanel.selectedShips.get(0).location.id, p.id));
 							SidePanel.selectedShips.clear();
 							activePointer.delete();
 							activePointer = null;
 						}
-						
+
 					} else {
 						targetPlanet = p;
-						
+
 						this.sidePanel.setPlanet(p);
-						
+
 					}
-				
-					
 
 				}
 
 			}
 		}
-		
 
 		if (!SidePanel.selectedShips.isEmpty()) {
-			if (activePointer == null){
+			if (activePointer == null) {
 				activePointer = new ShipPointer(SidePanel.selectedShips.get(0).location);
 			}
-			if (activePointer !=null){
+			if (activePointer != null) {
 				activePointer.renderShipPointer(stageMouseBlot.center, mainStage);
 			}
 		} else {
-			if (activePointer !=null){
+			if (activePointer != null) {
 				activePointer.delete();
 				activePointer = null;
 				SidePanel.selectedShips.clear();
-				
+
 			}
 		}
-		
-		for (Planet p : World.getWorld()){
+
+		for (Planet p : World.getWorld()) {
 			for (ShipPointer sp : p.pointers) {
 				sp.staticRender(mainStage);
 			}
-			
-		}	
+
+		}
 
 		if (targetPlanet != null && !this.hasFocusedOnSelectedPlanet) {
 
@@ -299,16 +286,6 @@ public class GameplayScreen implements Screen {
 				targetPlanet = null;
 			}
 		}
-		
-		
-
-		
-		
-		
-	
-
-
-	
 
 		Gdx.gl.glClearColor(0.0F, 0.0F, 0, 1);
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -351,61 +328,57 @@ public class GameplayScreen implements Screen {
 			} else {
 				PS.paused = true;
 			}
-			//Gdx.graphics.setWindowedMode(PS.viewWidth, PS.viewHeight);
+			// Gdx.graphics.setWindowedMode(PS.viewWidth, PS.viewHeight);
 		}
-		//this doesn't work
-	
-		if (this.executeButton.getBoundingRectangle().contains(uiMousePos) && Gdx.input.justTouched()){
+		// this doesn't work
+
+		if (this.executeButton.getBoundingRectangle().contains(uiMousePos) && Gdx.input.justTouched()) {
 			if (!PS.useServer) {
 				System.out.println("executing actions...");
-				//temporary
+				// temporary
 				for (Action a : GameServerClient.packet.getActions()) {
 					Action.execute(a, mainStage, GameServerClient.clientPlayer);
 				}
 				GameServerClient.packet.getActions().clear();
-				//clear pointers
+				// clear pointers
 				for (Planet p : World.getWorld()) {
 					for (ShipPointer sp : p.pointers) {
 						sp.delete();
 					}
 					p.pointers.clear();
-					
-					//update buildings
+
+					// update buildings
 					for (Building b : p.buildings) {
 						if (b != null) {
 							b.update(p);
 						}
-						
+
 					}
-					//perform combat
+					// perform combat
 					p.onTurnUpdate();
 				}
-				
-				
+
 				sidePanel.unset();
 			} else {
-				//send actions
+				// send actions
 				PS.client.sendRequest(GameServerClient.packet.getCompressedData(), GameServer.ServerCommands.recieveActions);
 				turnActive = false;
-				
+
 				for (Planet p : World.getWorld()) {
 					for (ShipPointer sp : p.pointers) {
 						sp.delete();
 					}
 					p.pointers.clear();
-					
-				
+
 				}
 			}
 		}
-		
-		
-		
-		if (!turnActive){
-			
+
+		if (!turnActive) {
+
 			PS.client.sendRequest("", GameServer.ServerCommands.getAllActions);
-			if (PS.client.getRecievedData().length() > 4 && PS.client.getRecievedData().charAt(PS.client.getRecievedData().length()-1) == 'r'){
-				GameServerClient.packet.setData(PS.client.getRecievedData().substring(0, PS.client.getRecievedData().length()-1));
+			if (PS.client.getRecievedData().length() > 4 && PS.client.getRecievedData().charAt(PS.client.getRecievedData().length() - 1) == 'r') {
+				GameServerClient.packet.setData(PS.client.getRecievedData().substring(0, PS.client.getRecievedData().length() - 1));
 				for (Action a : GameServerClient.packet.getActions()) {
 					Action.execute(a, mainStage, GameServerClient.clientPlayer);
 				}
@@ -414,19 +387,17 @@ public class GameplayScreen implements Screen {
 						if (b != null) {
 							b.update(p);
 						}
-						
+
 					}
 				}
-				
-				
+
 				turnActive = true;
 				hasAskedServer = false;
 			}
 			if (executeButton.getTexture() != waitTex) {
 				executeButton.setTexture(waitTex);
 			}
-			
-			
+
 		} else {
 			if (executeButton.getTexture() != executeTex) {
 				executeButton.setTexture(executeTex);
@@ -440,8 +411,7 @@ public class GameplayScreen implements Screen {
 		}
 
 	}
-	
-	
+
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
@@ -480,7 +450,6 @@ public class GameplayScreen implements Screen {
 	public void dispose() {
 		// TODO Auto-generated method stub
 
-		
 	}
 
 	public boolean focusCameraOnPlanet(Planet p, OrthographicCamera c) {
@@ -488,9 +457,8 @@ public class GameplayScreen implements Screen {
 			return true;
 		} else {
 			if (zoomAmount > Planet.focusZoomAmount) {
-				zoomAmount = Planet.focusZoomAmount/zoomAmount  + Planet.focusZoomAmount;
+				zoomAmount = Planet.focusZoomAmount / zoomAmount + Planet.focusZoomAmount;
 			}
-			
 
 			return false;
 		}

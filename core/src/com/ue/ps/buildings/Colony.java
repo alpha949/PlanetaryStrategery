@@ -1,6 +1,7 @@
-package com.ue.ps;
+package com.ue.ps.buildings;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.ue.ps.Planet;
 
 public class Colony extends Building {
 
@@ -11,18 +12,14 @@ public class Colony extends Building {
 		this.health = 100;
 		this.resourceCost = 6;
 		this.id = 'c';
-	
-
 
 	}
-
-	
 
 	@Override
 	public void update(Planet p) {
 		p.people += production;
 		owner.techPoints += 1;
-		
+
 	}
 
 }

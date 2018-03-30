@@ -9,12 +9,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.ue.ps.ships.Ship;
+import com.ue.ps.ui.GameplayScreen;
 
 public class Utils {
-	
-	
-	
-	
+
 	public static Vector2 polarToRect(int r, double angle, Vector2 origin) {
 		Vector2 v = new Vector2();
 		v.x = (float) (r * Math.cos(Math.toRadians(angle))) + origin.x;
@@ -36,7 +35,7 @@ public class Utils {
 
 	}
 
-	@Deprecated //PLZ remove?
+	@Deprecated // PLZ remove?
 	public static Texture getImg(String path) {
 		try {
 			Texture t = new Texture(Gdx.files.internal("assets/" + path + ".png"));
@@ -74,7 +73,6 @@ public class Utils {
 		double yDiff = y - y2;
 		double xDiff = x - x2;
 		double newAngle = Math.toDegrees(Math.atan2(yDiff, xDiff)) + 180;
-	
 
 		return newAngle;
 
@@ -97,24 +95,23 @@ public class Utils {
 		for (int i = 0; i < length; i++) {
 			name += nameBits.get(MathUtils.random(0, nameBits.size - 1));
 		}
-		
+
 		return name;
 	}
-	
+
 	public static String genId() {
 		UUID id = UUID.randomUUID();
 		System.out.println(id.toString());
 		return id.toString();
 	}
-	
+
 	public static String[] getShipIds(ArrayList<Ship> ships) {
 		String[] ids = new String[ships.size()];
 		for (int i = 0; i < ids.length; i++) {
 			ids[i] = ships.get(i).id;
-		
-			
+
 		}
-		
+
 		return ids;
 	}
 
@@ -130,13 +127,11 @@ public class Utils {
 		}
 
 	}
-	
-	public static <T> T getRandObjFromArray(ArrayList<T> arr){
-		
-		return arr.get(MathUtils.random(0, arr.size()-1));
-		
+
+	public static <T> T getRandObjFromArray(ArrayList<T> arr) {
+
+		return arr.get(MathUtils.random(0, arr.size() - 1));
+
 	}
-	
-	
 
 }

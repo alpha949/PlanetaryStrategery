@@ -21,17 +21,16 @@ public class WorldGen {
 	private static int angle;
 	private static int numConnects = 2;
 	public static Rectangle planetBorder;
-	private static  ArrayList<Planet> allPlanets = new ArrayList<Planet>();
+	private static ArrayList<Planet> allPlanets = new ArrayList<Planet>();
 	private static int failedSteps = 0;
 	private static boolean done = false;
-	
+
 	private static int prevId;
 
 	public static void setup() {
 
 		planetBorder = new Rectangle(-64 * 50 * 8, -64 * 50 * 8, 64 * 50 * 8 + 64 * 50 * 8, 64 * 50 * 8 + 64 * 50 * 8);
 		pos = planetBorder.getCenter(pos);
-		
 
 	}
 
@@ -57,11 +56,11 @@ public class WorldGen {
 				Planet p = new Planet();
 				allPlanets.add(p);
 				p.setCenter(pos.x, pos.y);
-				
+
 				p.id = 1 + prevId;
 				prevId = p.id;
 				p.owner = null;
-				
+
 				failedSteps = 0;
 
 			} else {
@@ -79,28 +78,23 @@ public class WorldGen {
 				pos = allPlanets.get(0).center;
 			}
 
-		
 			if (failedSteps > 100) {
 
 				done = true;
 
 				genHomePlanets(players);
-				
 
 			}
-		
+
 		}
-		
+
 		for (Planet p : allPlanets) {
 			planetData.add(PlanetData.toPlanetData(p));
 		}
-		return planetData;	
+		return planetData;
 
 	}
-	
-	
 
-	
 	private static Planet getClosestPlanetTo(float x, float y) {
 
 		Planet[] planetMap = new Planet[allPlanets.size()];
@@ -136,13 +130,9 @@ public class WorldGen {
 			// allPlanets.add(p);
 			p.setColor(Color.TEAL);
 			p.setCenter(vert.x, vert.y);
-		
 
 		}
-		
-		
-	
-		
+
 		return ring;
 
 	}

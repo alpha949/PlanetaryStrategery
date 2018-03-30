@@ -1,17 +1,17 @@
-package com.ue.ps;
+package com.ue.ps.buildings;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.ue.ps.Planet;
+import com.ue.ps.ships.ShipType;
 
 public class Factory extends Building {
 
 	private int resourceInput = 3;
 	private int shipProgressOutput = 10;
-	
 
 	public ShipType buildingShip;
-	
+
 	public int buildProgress;
-	
 
 	public Factory() {
 		super("assets/factory.png");
@@ -23,8 +23,7 @@ public class Factory extends Building {
 
 	@Override
 	public void update(Planet p) {
-		
-		
+
 	}
 
 }

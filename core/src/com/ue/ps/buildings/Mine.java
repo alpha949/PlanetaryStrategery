@@ -1,4 +1,6 @@
-package com.ue.ps;
+package com.ue.ps.buildings;
+
+import com.ue.ps.Planet;
 
 public class Mine extends Building {
 
@@ -12,12 +14,10 @@ public class Mine extends Building {
 		// TODO Auto-generated constructor stub
 	}
 
-
-
 	@Override
 	public void update(Planet p) {
 		p.resource += this.production;
 		System.out.println("Planet resource: " + p.resource);
-		
+
 	}
 }

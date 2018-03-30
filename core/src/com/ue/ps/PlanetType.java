@@ -1,6 +1,7 @@
 package com.ue.ps;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.ue.ps.ui.Images;
 
 public enum PlanetType {
 
@@ -11,8 +12,6 @@ public enum PlanetType {
 	public int coloniesCap;
 	public String name;
 	public Texture tex;
-	
-
 
 	static {
 		asteroid.landCap = 1;
