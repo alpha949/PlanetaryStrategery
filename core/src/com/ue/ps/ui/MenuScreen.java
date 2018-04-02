@@ -101,7 +101,7 @@ public class MenuScreen implements Screen {
 
 	private String selectedFaction = "Xin";
 
-	private BaseActor[] factionBoxes = new BaseActor[Faction.allFactions.length];
+	private Button[] factionBoxes = new Button[Faction.allFactions.length];
 
 	private BaseActor activeOverlay = new BaseActor();
 	private BaseActor labelBacking = new BaseActor(Images.emptyTexture);
@@ -176,7 +176,7 @@ public class MenuScreen implements Screen {
 		shapeRender = new ShapeRenderer();
 
 		for (int i = 0; i < factionBoxes.length; i++) {
-			factionBoxes[i] = new BaseActor(Faction.allFactions[i].getSymbolTexture());
+			factionBoxes[i] = new Button(Faction.allFactions[i].getSymbolTexture());
 			waitingRoomOverlay.addActor(factionBoxes[i]);
 			factionBoxes[i].setPosition(25, PS.viewHeight - 25 * i);
 		}
@@ -313,6 +313,7 @@ public class MenuScreen implements Screen {
 				GameServer.Server.start();
 				//set host client
 				try {
+					System.out.println(Inet4Address.getLocalHost().getHostAddress());
 					PS.client = new GameServerClient(Inet4Address.getLocalHost().getHostAddress(), port);
 				} catch (UnknownHostException e) {
 					// TODO Auto-generated catch block
@@ -379,6 +380,13 @@ public class MenuScreen implements Screen {
 				connectedPlayers[i].setText(GameServerClient.players.get(i).getUser() + ": " + GameServerClient.players.get(i).faction.name);
 
 			}
+			//update faction
+			for (int i = 0; i < factionBoxes.length; i++) {
+				if (factionBoxes[i].Pressed(mouseBlot.getBoundingRectangle())) {
+					GameServerClient.setUpPlayer(Faction.allFactions[i]);
+				}
+			}
+			
 
 		}
 
