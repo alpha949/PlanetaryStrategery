@@ -141,6 +141,9 @@ public class GameplayScreen implements Screen {
 
 			boolean getWorld = false;
 			while (!getWorld) {
+				if (PS.isHost) {
+					PS.client.sendRequest("", GameServer.ServerCommands.genWorld);
+				}
 				PS.client.sendRequest("", GameServer.ServerCommands.getWorld);
 				// System.out.println(PS.client.getRecievedData().length());
 				if (GameServerClient.isCorrectDataType(PS.client.getRecievedData(), GameServerClient.ClientRecieveCommands.world)) {

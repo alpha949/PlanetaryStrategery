@@ -46,6 +46,7 @@ import com.ue.ps.PS;
 import com.ue.ps.Player;
 import com.ue.ps.PlayerData;
 import com.ue.ps.systems.GameServer;
+import com.ue.ps.systems.GameServer.ServerCommands;
 import com.ue.ps.systems.GameServerClient;
 import com.ue.ps.systems.UserConfigHandler;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
@@ -109,6 +110,9 @@ public class MenuScreen implements Screen {
 	private Label portLabel = new Label("Port: 0000", PS.font);
 
 	private ArrayList<Label> inRoomUsers = new ArrayList<Label>();
+	private Json jsonHandler = new Json();
+	
+	private Label[] connectedPlayers = new Label[6];
 
 	public MenuScreen(Game g) {
 		game = g;
@@ -179,6 +183,11 @@ public class MenuScreen implements Screen {
 
 		beginButton.setPosition(PS.viewWidth - beginButton.getWidth(), 0);
 		waitingRoomOverlay.addActor(beginButton);
+		for (int i = 0; i < connectedPlayers.length; i++) {
+			connectedPlayers[i] = new Label("nobody", PS.font);
+			connectedPlayers[i].setPosition(100, PS.viewHeight - 100 - 18 * i);
+			waitingRoomOverlay.addActor(connectedPlayers[i]);
+		}
 		waitingRoomOverlay.setVisible(false);
 
 		// TODO move to ui
@@ -219,96 +228,117 @@ public class MenuScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		mainStage.draw();
-
+		//check if edit user pressed
 		if (editUserButton.Pressed(mouseBlot.getBoundingRectangle()) && !editUserOverlay.isVisible()) {
-
+			//set overlay
 			setActiveOverlay(this.editUserOverlay);
+			//move keyboard focus to username input
 			mainStage.setKeyboardFocus(userNameInput);
 		}
-
+		//check if edit user done button pressed
 		else if (doneButton.Pressed(mouseBlot.getBoundingRectangle()) && !userNameInput.getText().isEmpty()) {
+			//set overlay back to main screen
 			setActiveOverlay(this.mainOverlay);
+			//create new user config with inputed data
 			UserConfigHandler.createUserConfig(userNameInput.getText());
-			System.out.println(userNameInput.getText());
-			mainStage.setKeyboardFocus(ipInput);
+			//update client user
 			GameServerClient.user = userNameInput.getText();
 		}
-
+		//check if multiplayer button pressed
 		else if (multiplayerButton.Pressed(mouseBlot.getBoundingRectangle()) && !editUserOverlay.isVisible()) {
-
+			//set overlay
 			setActiveOverlay(this.multChoiceOverlay);
 		} else if (singleplayerButton.Pressed(mouseBlot.getBoundingRectangle())) {
-
+			//change to game screen without server
 			PS.useServer = false;
+			
 			this.game.setScreen(new GameplayScreen(this.game));
+		//check if join button pressed in mult select
 		} else if (this.joinGameButton.Pressed(mouseBlot.getBoundingRectangle())) {
 			boolean proceed = true;
+			//get ip and port
 			String ipText = ipInput.getText();
 			System.out.println(ipText.substring(0, ipText.length() - 5));
 			String ip = ipText.substring(0, ipText.length() - 5);
 			String port = ipText.substring(ipText.length() - 4, ipText.length());
 			System.out.println(port);
+			//update ip and port
 			MenuScreen.ip = ip;
 			MenuScreen.port = Integer.parseInt(port);
+			//test for valid connection
 			try {
 				GameServerClient testServerClient = new GameServerClient(MenuScreen.ip, MenuScreen.port);
 				testServerClient.dispose();
 			} catch (GdxRuntimeException e) {
-
+				//feedback
 				System.out.println("Could not connect to server");
 				setFeedbackLabel("Could not connect to server");
 				proceed = false;
 
 			}
 			if (proceed) {
+				//go to waiting room
 				PS.useServer = true;
 				this.setActiveOverlay(this.waitingRoomOverlay);
-
+				//register client
 				PS.client = new GameServerClient(MenuScreen.ip, MenuScreen.port);
 				PS.client.sendRequest(GameServerClient.user, GameServer.ServerCommands.registerUser);
 
 			}
-
+		//check for host game button pressed in mult select
 		} else if (this.hostGameButton.Pressed(mouseBlot.getBoundingRectangle())) {
 			boolean proceed = true;
+			//get random port
 			int port = MathUtils.random(1025, 9999);
+			//test for port being used
 			try {
 				ServerSocket testSocket = Gdx.net.newServerSocket(Protocol.TCP, port, null);
 				testSocket.dispose();
 			} catch (GdxRuntimeException e) {
+				//feedback
 				setFeedbackLabel("port taken");
 				proceed = false;
 
 			}
 			if (proceed) {
+				//update port
 				MenuScreen.port = port;
-
+				//disp port
 				portLabel.setText("Port: " + port);
+				//go to waiting room
 				PS.useServer = true;
 				this.setActiveOverlay(this.waitingRoomOverlay);
 				PS.isHost = true;
+				//start server
 				GameServer.Server.start();
+				//set host client
 				try {
 					PS.client = new GameServerClient(Inet4Address.getLocalHost().getHostAddress(), port);
 				} catch (UnknownHostException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				//register the host
+				GameServerClient.setUpPlayer(Faction.Xin);
+				PS.client.sendRequest(jsonHandler.toJson(GameServerClient.clientPlayer.toPlayerData()), ServerCommands.registerUser);
+				
 
 			}
-
+		//check if player leaves waiting room
 		} else if (this.waitRoomBackButton.Pressed(mouseBlot.getBoundingRectangle())) {
+			//go back to mult choice
 			this.setActiveOverlay(this.multChoiceOverlay);
 			PS.client = null;
+			//close server
 			if (GameServer.Server.isAlive()) {
 				// WARNING ERROR PRONE
 				GameServer.Server.interrupt();
 			}
-
+		//check if host starts game
 		} else if (this.beginButton.Pressed(mouseBlot.getBoundingRectangle())) {
 			if (PS.isHost) {
 				PS.client.sendRequest("", GameServer.ServerCommands.beginGame);
-				PS.client.sendRequest("", GameServer.ServerCommands.genWorld);
+			
 				this.game.setScreen(new GameplayScreen(this.game));
 
 			}
@@ -319,35 +349,34 @@ public class MenuScreen implements Screen {
 			// get the players connected
 			PS.client.sendRequest("", GameServer.ServerCommands.getAllPlayers);
 			if (GameServerClient.isCorrectDataType(PS.client.getRecievedData(), GameServerClient.ClientRecieveCommands.players)) {
-				Json json = new Json();
-				ArrayList<PlayerData> pds = json.fromJson(ArrayList.class,
+				
+				ArrayList<PlayerData> pds = jsonHandler.fromJson(ArrayList.class,
 						PS.client.getRecievedData().substring(0, PS.client.getRecievedData().length() - 1));
 				for (PlayerData pd : pds) {
-					if (!GameServerClient.players.contains(Player.fromPlayerData(pd))) {
+					boolean canConnect = true;
+					//check for valid player
+					for (Player p : GameServerClient.players) {
+						if (p.getUser().equals(pd.username)) {
+							canConnect = false;
+						}
+					}
+					if (canConnect) {
 						GameServerClient.players.add(Player.fromPlayerData(pd));
+						System.out.println(Player.fromPlayerData(pd).getUser() + " has connected!");
 					}
 
 				}
 
 			}
-
+			//check if game has started
 			PS.client.sendRequest("", GameServer.ServerCommands.askBeginGame);
 			if (Boolean.parseBoolean(PS.client.getRecievedData())) {
 				this.game.setScreen(new GameplayScreen(this.game));
 			}
-
+			//display connected players
+			System.out.println(GameServerClient.players.size());
 			for (int i = 0; i < GameServerClient.players.size(); i++) {
-				for (Actor a : waitingRoomOverlay.getChildren()) {
-					if (a instanceof Label) {
-						String[] strs = (((Label) a).getText() + "").split(":");
-						if (!strs[0].equals(GameServerClient.players.get(i).getUser())) {
-							Label l = new Label(GameServerClient.players.get(i).getUser() + ": " + GameServerClient.players.get(i).faction.name,
-									PS.font);
-							l.setPosition(PS.viewWidth / 2, i * 16);
-							waitingRoomOverlay.addActor(l);
-						}
-					}
-				}
+				connectedPlayers[i].setText(GameServerClient.players.get(i).getUser() + ": " + GameServerClient.players.get(i).faction.name);
 
 			}
 
