@@ -2,6 +2,7 @@ package com.ue.ps;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -16,6 +17,7 @@ import com.ue.ps.ships.Ship;
 import com.ue.ps.ships.ShipPointer;
 import com.ue.ps.ships.ShipType;
 import com.ue.ps.systems.GameServerClient;
+import com.ue.ps.ui.Images;
 import com.ue.ps.ui.ShipContainer;
 
 public class Planet extends BaseActor {
@@ -52,7 +54,8 @@ public class Planet extends BaseActor {
 	private boolean isCombat = false;
 
 	private int builtBuildings = 0;
-
+	
+	private Texture pew = Images.getImg("pew");
 	// planet where you can say what it is
 	public Planet(PlanetType type, int size) {
 		super();
@@ -143,6 +146,10 @@ public class Planet extends BaseActor {
 				}
 			}
 		}
+		
+		if (isCombat) {
+			
+		}
 
 	}
 
@@ -171,7 +178,10 @@ public class Planet extends BaseActor {
 	private ArrayList<Ship> splitShipsByOwner(Player owner) {
 		ArrayList<Ship> ownersShips = new ArrayList<Ship>();
 		for (Ship s : this.orbitingShips) {
-			ownersShips.add(s);
+			if (s.getOwnerName().equals(owner.getUser())) {
+				ownersShips.add(s);
+			}
+		
 
 		}
 		return ownersShips;
@@ -254,5 +264,23 @@ public class Planet extends BaseActor {
 		return newPlanet;
 
 	}
+	
+	private void pew() {
+		ArrayList<Ship> clientShips = splitShipsByOwner(owner);
+		ArrayList<Ship> targetShips  = new ArrayList<Ship>();
+		for (Ship s : this.orbitingShips) {
+			if (!s.getOwnerName().equals(this.owner.getUser())) {
+				targetShips.add(s);
+			}
+		}
+		BaseActor shot = new BaseActor(pew);
+		Vector2 v = clientShips.get(MathUtils.random(0, clientShips.size() -1)).center;
+
+		
+		
+		
+	
+	}
+
 
 }

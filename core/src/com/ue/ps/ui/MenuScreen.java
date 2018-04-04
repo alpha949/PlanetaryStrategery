@@ -84,18 +84,18 @@ public class MenuScreen implements Screen {
 	private boolean promptUserCreation;
 	private Button editUserButton = new Button(Images.getImg("editUserButton"));
 	private Button doneButton = new Button(Images.getImg("done"));
-	private BaseActor editUserOverlay = new BaseActor(Images.getImg("grayBack"));
+	private BaseActor editUserOverlay = new BaseActor(Images.getImg("blackBack"));
 
-	private BaseActor mainOverlay = new BaseActor(Images.getImg("grayBack"));
+	private BaseActor mainOverlay = new BaseActor(Images.getImg("blackBack"));
 
 	private Button joinGameButton = new Button(Images.getImg("joinGameButton"));
 	private Button hostGameButton = new Button(Images.getImg("hostGameButton"));
-	private BaseActor multChoiceOverlay = new BaseActor(Images.getImg("grayBack"));
+	private BaseActor multChoiceOverlay = new BaseActor(Images.getImg("blackBack"));
 
 	private Button multChoiceBackButton = new Button(Images.getImg("backButton"));
 	private Button waitRoomBackButton = new Button(Images.getImg("backButton"));
 
-	private BaseActor waitingRoomOverlay = new BaseActor(Images.getImg("grayBack"));
+	private BaseActor waitingRoomOverlay = new BaseActor(Images.getImg("blackBack"));
 	private TextField userNameInput;
 	private Label userPrompt = new Label("Enter User Name:", PS.font);
 
@@ -155,7 +155,7 @@ public class MenuScreen implements Screen {
 		hostGameButton.setPosition(PS.getViewWidth() / 2, PS.getViewHeight() / 2 - 64 - 32);
 		multChoiceOverlay.addActor(hostGameButton);
 
-		ipInput = new TextField("ip here", skin);
+		ipInput = new TextField("", skin);
 		ipInput.setPosition(PS.viewWidth / 2, PS.getViewHeight() / 2 + 64 + 32);
 		multChoiceOverlay.addActor(ipInput);
 
@@ -194,7 +194,7 @@ public class MenuScreen implements Screen {
 		if (UserConfigHandler.canReadFile("assets/userConfig.json")) {
 			String[] config = UserConfigHandler.readFile("assets/userConfig.json");
 			GameServerClient.user = config[0];
-
+			System.out.println(config[0]);
 			GameServerClient.setUpPlayer(Faction.Xin);
 		} else {
 			promptUserCreation = true;
@@ -213,7 +213,8 @@ public class MenuScreen implements Screen {
 
 		System.out.println(ip);
 		System.out.println(port);
-		GameServerClient.setUpPlayer(Faction.Xin);
+	
+	
 
 	}
 
@@ -258,24 +259,44 @@ public class MenuScreen implements Screen {
 			boolean proceed = true;
 			//get ip and port
 			String ipText = ipInput.getText();
-			System.out.println(ipText.substring(0, ipText.length() - 5));
-			String ip = ipText.substring(0, ipText.length() - 5);
-			String port = ipText.substring(ipText.length() - 4, ipText.length());
-			System.out.println(port);
+			String ip = "";
+			String port = "";
+			if (ipText.length() > 5) {
+				ip = ipText.substring(0, ipText.length() - 5);
+				port = ipText.substring(ipText.length() - 4, ipText.length());
+			} else {
+		
+				setFeedbackLabel("Invalid ip");
+				proceed = false;
+			}
+			
 			//update ip and port
 			MenuScreen.ip = ip;
-			MenuScreen.port = Integer.parseInt(port);
-			//test for valid connection
-			try {
-				GameServerClient testServerClient = new GameServerClient(MenuScreen.ip, MenuScreen.port);
-				testServerClient.dispose();
-			} catch (GdxRuntimeException e) {
-				//feedback
-				System.out.println("Could not connect to server");
-				setFeedbackLabel("Could not connect to server");
-				proceed = false;
-
+			if (proceed) {
+				try {
+					MenuScreen.port = Integer.parseInt(port);
+				} catch (NumberFormatException e) {
+					
+					setFeedbackLabel("Invalid port");
+					proceed = false;
+				}
 			}
+			
+			
+			//test for valid connection
+			if (proceed) {
+				try {
+					GameServerClient testServerClient = new GameServerClient(MenuScreen.ip, MenuScreen.port);
+					testServerClient.dispose();
+				} catch (GdxRuntimeException e) {
+					//feedback
+			
+					setFeedbackLabel("Could not connect to server");
+					proceed = false;
+
+				}
+			}
+			
 			if (proceed) {
 				//go to waiting room
 				PS.useServer = true;
@@ -320,8 +341,8 @@ public class MenuScreen implements Screen {
 					e.printStackTrace();
 				}
 				//register the host
-				GameServerClient.setUpPlayer(Faction.Xin);
-				PS.client.sendRequest(jsonHandler.toJson(GameServerClient.clientPlayer.toPlayerData()), ServerCommands.registerUser);
+			
+				PS.client.registerPlayer(GameServerClient.clientPlayer);
 				
 
 			}
@@ -355,15 +376,30 @@ public class MenuScreen implements Screen {
 						PS.client.getRecievedData().substring(0, PS.client.getRecievedData().length() - 1));
 				for (PlayerData pd : pds) {
 					boolean canConnect = true;
+					boolean update = false;
+					Player updatePlayer = null;
 					//check for valid player
 					for (Player p : GameServerClient.players) {
 						if (p.getUser().equals(pd.username)) {
-							canConnect = false;
+							if (p.faction.abv.equals(pd.factionAbv)) {
+								canConnect = false;
+							} else {
+								update = true;
+								updatePlayer = p;
+								canConnect = false;
+								
+								
+							}
+							
 						}
 					}
 					if (canConnect) {
 						GameServerClient.players.add(Player.fromPlayerData(pd));
 						System.out.println(Player.fromPlayerData(pd).getUser() + " has connected!");
+					}
+					if (update) {
+						GameServerClient.players.remove(updatePlayer);
+						GameServerClient.players.add(Player.fromPlayerData(pd));
 					}
 
 				}
@@ -384,6 +420,7 @@ public class MenuScreen implements Screen {
 			for (int i = 0; i < factionBoxes.length; i++) {
 				if (factionBoxes[i].Pressed(mouseBlot.getBoundingRectangle())) {
 					GameServerClient.setUpPlayer(Faction.allFactions[i]);
+					PS.client.sendRequest(GameServer.formatUpdatePlayer(GameServerClient.clientPlayer.getUser(), Faction.allFactions[i].abv), ServerCommands.updatePlayer);
 				}
 			}
 			

@@ -21,7 +21,7 @@ public class TechTreePanel extends BaseActor {
 	public TechTreePanel() {
 		super("assets/grayBack.png");
 		items.add(TechTreeItem.baseTech);
-		items.get(0).setCenter(PS.viewWidth / 2, PS.viewHeight / 2);
+		items.get(0).setCenter(PS.viewWidth / 2, 64);
 		this.addActor(items.get(0));
 		this.setVisible(false);
 	}
@@ -51,27 +51,45 @@ public class TechTreePanel extends BaseActor {
 	private void placeItem(TechTreeItem tti) {
 		int branch = -10;
 		boolean success = false;
+		if (tti.preReq.center.x < PS.viewWidth/2) {
+			tti.preReq.branches[0] = true;
+			tti.preReq.branches[1] = true;
+			tti.preReq.branches[7] = true;
+		}
+		
+		if (tti.preReq.center.x > PS.viewWidth/2) {
+			tti.preReq.branches[4] = true;
+			tti.preReq.branches[5] = true;
+			tti.preReq.branches[3] = true;
+		}
+		
+		
 		for (int i = 0; i < 8; i++) {
 			for (int l = 0; l < 8; l++) {
+				
+				
+				
+				
+				
 				if (!tti.preReq.branches[i] && !tti.branches[l]) {
 					// find no goes from tii
 					int notBranchTop = i + 3;
 					int notBranchBottom = i - 3;
-					if (notBranchTop > 8) {
-						notBranchTop -= 8;
+					if (notBranchTop > 7) {
+						notBranchTop -= 7;
 					}
 					if (notBranchBottom < 0) {
-						notBranchBottom += 8;
+						notBranchBottom += 7;
 
 					}
 					// find no goes from preReq
-					int noGoBranchTop = i + 1;
-					int noGoBranchBottom = i - 1;
-					if (noGoBranchTop > 8) {
-						noGoBranchTop -= 8;
+					int noGoBranchTop = l + 1;
+					int noGoBranchBottom = l - 1;
+					if (noGoBranchTop > 7) {
+						noGoBranchTop -= 7;
 					}
 					if (noGoBranchBottom < 0) {
-						noGoBranchBottom += 8;
+						noGoBranchBottom += 7;
 					}
 
 					tti.preReq.branches[i] = true;
@@ -87,6 +105,9 @@ public class TechTreePanel extends BaseActor {
 					if (tti.preReq.branches[noGoBranchBottom]) {
 						tti.branches[notBranchBottom] = true;
 					}
+					
+					
+					
 					branch = i;
 
 					success = true;
@@ -106,7 +127,7 @@ public class TechTreePanel extends BaseActor {
 		}
 		if (tti.preReq != null) {
 			if (tti.preReq == TechTreeItem.baseTech) {
-				tti.preReq.center.x = PS.viewWidth / 2;
+				tti.preReq.center.x = 64;
 				tti.preReq.center.y = PS.viewHeight / 2;
 			}
 
@@ -119,6 +140,13 @@ public class TechTreePanel extends BaseActor {
 			techLine.setRotation(angle);
 			techLine.setOrigin(0, 0);
 			this.addActor(techLine);
+			
+
+			for (int i = 0; i < tti.branches.length; i++) {
+				if (tti.branches[i]) {
+					System.out.println(tti.name + ": " + i);
+				}
+			}
 		}
 
 	}

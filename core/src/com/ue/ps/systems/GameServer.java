@@ -3,6 +3,7 @@ package com.ue.ps.systems;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
@@ -12,7 +13,10 @@ import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.SerializationException;
+import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.ue.ps.PlanetData;
 import com.ue.ps.Player;
 import com.ue.ps.PlayerData;
@@ -26,9 +30,14 @@ import com.ue.ps.ui.MenuScreen;
 public class GameServer {
 	static ArrayList<Socket> connectedSockets = new ArrayList<Socket>();
 	static ArrayList<String> comQueue = new ArrayList<String>();
+	
+	static JsonReader reader = new JsonReader();
+	
+	static Json jsonHandler = new Json();
 
 	public enum ServerCommands {
-		registerUser, recieveActions, getWorld, initConnect, getAllActions, genWorld, getAllPlayers, beginGame, askBeginGame;
+		registerUser, recieveActions, getWorld, initConnect, getAllActions, genWorld, getAllPlayers, beginGame, askBeginGame,
+		updatePlayer;
 
 		private char id;
 
@@ -55,6 +64,7 @@ public class GameServer {
 			getAllPlayers.id = 'p';
 			beginGame.id = 'b';
 			askBeginGame.id = 's';
+			updatePlayer.id = 'l';
 		}
 	}
 
@@ -75,7 +85,7 @@ public class GameServer {
 
 			ArrayList<PlanetData> world = new ArrayList<PlanetData>();
 
-			Json jsonHandler = new Json();
+		
 			boolean isGenerating = false;
 			boolean gameBegin = false;
 			// Loop forever
@@ -177,6 +187,21 @@ public class GameServer {
 								case askBeginGame:
 									returnMessage = Boolean.toString(gameBegin);
 									break;
+								case updatePlayer:
+									JsonValue value = reader.parse(jsonData);
+									String username = value.getString("username");
+									String factionAbv = value.getString("factionAbv");
+									
+
+									
+
+								
+									for (PlayerData pd : players) {
+										if (pd.username.equals(username)) {
+											pd.factionAbv = factionAbv;
+										}
+									}
+									break;
 							}
 
 							System.out.println("Sending back: " + returnMessage);
@@ -237,5 +262,17 @@ public class GameServer {
 		}
 
 	});
+	
+	public static String formatUpdatePlayer(String username, String factionAbv) {
+		StringWriter sw = new StringWriter();
+		Json handler = new Json();
+		handler.setOutputType(OutputType.json);
+		handler.setWriter(sw);
+		handler.writeObjectStart();
+		handler.writeValue("username", username);
+		handler.writeValue("factionAbv", factionAbv);
+		handler.writeObjectEnd();
+		return sw.toString();
+	}
 
 }

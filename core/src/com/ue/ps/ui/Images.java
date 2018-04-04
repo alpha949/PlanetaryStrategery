@@ -17,7 +17,7 @@ public class Images {
 	public static Texture ShipBuildBox = getImg("shipBuildBox");
 	public static Texture shipcontainer = getImg("shipContainer");
 	public static Texture shipbuildbox = getImg("shipBuildbox");
-	public static Texture TechTreeHolder = getImg("assets/techTreeItemHolder");
+	public static Texture TechTreeHolder = getImg("techTreeItemHolder");
 
 	// Ingame textures
 	public static final Texture planetAsteroids = getImg("planets/asteroids");
