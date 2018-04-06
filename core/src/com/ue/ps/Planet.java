@@ -265,22 +265,7 @@ public class Planet extends BaseActor {
 
 	}
 	
-	private void pew() {
-		ArrayList<Ship> clientShips = splitShipsByOwner(owner);
-		ArrayList<Ship> targetShips  = new ArrayList<Ship>();
-		for (Ship s : this.orbitingShips) {
-			if (!s.getOwnerName().equals(this.owner.getUser())) {
-				targetShips.add(s);
-			}
-		}
-		BaseActor shot = new BaseActor(pew);
-		Vector2 v = clientShips.get(MathUtils.random(0, clientShips.size() -1)).center;
-
-		
-		
-		
 	
-	}
 
 
 }

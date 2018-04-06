@@ -30,6 +30,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ue.ps.BaseActor;
+import com.ue.ps.Faction;
 import com.ue.ps.PS;
 import com.ue.ps.Planet;
 import com.ue.ps.Utils;
@@ -169,11 +170,16 @@ public class GameplayScreen implements Screen {
 			hasFocusedOnHome = true;
 
 		} else {
-
+			 GameServerClient.setUpPlayer(Faction.Lelouk);
+			 GameServerClient.players.add(GameServerClient.clientPlayer);
 			World.setWorld(WorldGen.generate(GameServerClient.players, 0, 0));
 
 			for (Planet p : World.getWorld()) {
 				mainStage.addActor(p);
+				if (p.owner != null && p.owner.getUser().equals(GameServerClient.clientPlayer.getUser())) {
+					System.out.println("ye");
+					GameServerClient.clientPlayer.homePlanet = p;
+				}
 
 			}
 			targetPlanet = GameServerClient.clientPlayer.homePlanet;
@@ -411,6 +417,10 @@ public class GameplayScreen implements Screen {
 			Gdx.input.setCursorCatched(true);
 		} else {
 			Gdx.input.setCursorCatched(false);
+		}
+		
+		if (techTreePanel.isOpen) {
+			techTreePanel.update(mouseBlot);
 		}
 
 	}

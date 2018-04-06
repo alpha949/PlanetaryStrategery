@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.ue.ps.BaseActor;
 import com.ue.ps.PS;
 import com.ue.ps.Utils;
+import com.ue.ps.systems.GameServerClient;
 
 public class TechTreePanel extends BaseActor {
 
@@ -49,86 +50,75 @@ public class TechTreePanel extends BaseActor {
 	}
 
 	private void placeItem(TechTreeItem tti) {
-		int branch = -10;
+		int branch = 12;
 		boolean success = false;
-		if (tti.preReq.center.x < PS.viewWidth/2) {
-			tti.preReq.branches[0] = true;
-			tti.preReq.branches[1] = true;
-			tti.preReq.branches[7] = true;
-		}
-		
-		if (tti.preReq.center.x > PS.viewWidth/2) {
-			tti.preReq.branches[4] = true;
-			tti.preReq.branches[5] = true;
-			tti.preReq.branches[3] = true;
-		}
 		
 		
 		for (int i = 0; i < 8; i++) {
-			for (int l = 0; l < 8; l++) {
+			
 				
 				
 				
 				
 				
-				if (!tti.preReq.branches[i] && !tti.branches[l]) {
-					// find no goes from tii
-					int notBranchTop = i + 3;
-					int notBranchBottom = i - 3;
-					if (notBranchTop > 7) {
-						notBranchTop -= 7;
-					}
-					if (notBranchBottom < 0) {
-						notBranchBottom += 7;
-
-					}
-					// find no goes from preReq
-					int noGoBranchTop = l + 1;
-					int noGoBranchBottom = l - 1;
-					if (noGoBranchTop > 7) {
-						noGoBranchTop -= 7;
-					}
-					if (noGoBranchBottom < 0) {
-						noGoBranchBottom += 7;
-					}
-
-					tti.preReq.branches[i] = true;
-					int oppositeBranch = l - 4;
-					if (oppositeBranch < 0) {
-						oppositeBranch = l + 4;
-					}
-					tti.branches[oppositeBranch] = true;
-
-					if (tti.preReq.branches[noGoBranchTop]) {
-						tti.branches[notBranchTop] = true;
-					}
-					if (tti.preReq.branches[noGoBranchBottom]) {
-						tti.branches[notBranchBottom] = true;
-					}
-					
-					
-					
-					branch = i;
-
-					success = true;
-					break;
+			if (!tti.preReq.branches[i]) {
+				// find no goes from tii
+				int notBranchTop = i + 3;
+				int notBranchBottom = i - 3;
+				if (notBranchTop > 7) {
+					notBranchTop -= 8;
 				}
-			}
-			if (success) {
+				if (notBranchBottom < 0) {
+					notBranchBottom += 8;
+
+				}
+				// find no goes from preReq
+				int noGoBranchTop = i + 1;
+				int noGoBranchBottom = i - 1;
+				if (noGoBranchTop > 7) {
+					noGoBranchTop -= 8;
+				}
+				if (noGoBranchBottom < 0) {
+					noGoBranchBottom += 8;
+				}
+
+				tti.preReq.branches[i] = true;
+				int oppositeBranch = i - 4;
+				if (oppositeBranch < 0) {
+					oppositeBranch = i + 4;
+				}
+				tti.branches[oppositeBranch] = true;
+
+		
+				tti.branches[notBranchTop] = true;
+			
+		
+				tti.branches[notBranchBottom] = true;
+				
+				tti.preReq.branches[noGoBranchTop] = true;
+				
+				tti.preReq.branches[noGoBranchBottom] = true;
+				
+				
+				
+				branch = i;
+
+				success = true;
 				break;
 			}
+			
 
 		}
 
-		if (branch == -10) {
-
-			branch = -10;
-
-		}
+		
 		if (tti.preReq != null) {
 			if (tti.preReq == TechTreeItem.baseTech) {
-				tti.preReq.center.x = 64;
+				tti.preReq.center.x = PS.viewWidth / 2;
 				tti.preReq.center.y = PS.viewHeight / 2;
+			}
+			
+			if (branch == 12) {
+				System.out.println("Couldn't place: " + tti.name);
 			}
 
 			float angle = 360 / 8 * branch;
@@ -142,10 +132,11 @@ public class TechTreePanel extends BaseActor {
 			this.addActor(techLine);
 			
 
-			for (int i = 0; i < tti.branches.length; i++) {
-				if (tti.branches[i]) {
-					System.out.println(tti.name + ": " + i);
-				}
+			
+		}
+		for (int i = 0; i < tti.branches.length; i++) {
+			if (tti.branches[i]) {
+				System.out.println(tti.name + ": " + i);
 			}
 		}
 
@@ -154,5 +145,20 @@ public class TechTreePanel extends BaseActor {
 	public static void registerTech(TechTreeItem tti) {
 		items.add(tti);
 
+	}
+	
+	public void update(BaseActor mouse) {
+		for (TechTreeItem tti : items) {
+			if (tti.Pressed(mouse.getBoundingRectangle())) {
+				tti.purchase();
+				
+			}
+			if (tti.preReq != null) {
+				tti.unlock();
+			}
+			
+		
+		}
+		
 	}
 }

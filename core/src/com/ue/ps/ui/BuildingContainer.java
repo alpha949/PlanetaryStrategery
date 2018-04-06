@@ -48,9 +48,7 @@ public class BuildingContainer extends Button {
 			buildBoxes[i] = new Button(Images.BuildBox, (i * 80), 0);
 			buildBoxes[i].setVisible(false);
 			BaseActor buildingImg = new BaseActor(Building.allBuildings.get(i).getTexture());
-			// PLZ there has to be a better way to do this, both getting texture
-			// wise and using an entire actor just for an image
-			// maybe its own image class?
+	
 			buildingImg.setPosition(1, 1);
 			buildBoxes[i].addActor(buildingImg);
 
@@ -107,14 +105,14 @@ public class BuildingContainer extends Button {
 				if (!this.done && !this.constructing) { // if clicked on while a
 														// + button
 					this.constructing = true;
-					this.setSize(240, 40);
-					for (int i = 0; i < 3; i++) {
+					//this.setSize(240, 40);
+					for (int i = 0; i < buildBoxes.length; i++) {
 						buildBoxes[i].setVisible(true);
 					}
 				}
 
 				else if (this.constructing && this.isSelected) {
-					for (int i = 0; i < 3; i++) {
+					for (int i = 0; i < buildBoxes.length; i++) {
 						if (buildBoxes[i].Pressed(this.stageToLocalCoordinates(mousePos))) {
 							try {
 								Building newBuilding = Building.allBuildings.get(i).getClass().newInstance();
