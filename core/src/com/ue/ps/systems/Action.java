@@ -1,17 +1,19 @@
 package com.ue.ps.systems;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.ue.ps.Faction;
 import com.ue.ps.Planet;
 import com.ue.ps.Player;
 import com.ue.ps.World;
 import com.ue.ps.buildings.Building;
+import com.ue.ps.ships.Line;
 import com.ue.ps.ships.Ship;
 import com.ue.ps.ships.ShipType;
 
 public class Action {
 
 	private enum ActionType {
-		sendShips, buildBuilding, buildShip, attackShip, attackBuilding;
+		sendShips, buildBuilding, buildShip, attackShip, attackBuilding, buildLine, deleteLine;
 	}
 
 	public ActionType type;
@@ -60,6 +62,14 @@ public class Action {
 		this.buildingSlot = slot;
 		this.damage = damage;
 	}
+	
+	private Action(int p1ID, int p2ID, String fac) {
+		this.type = ActionType.buildLine;
+		this.locactionId = p1ID;
+		this.destinationId = p2ID;
+		this.id = fac;
+	}
+	
 
 	/**
 	 * Tells server to move ships
@@ -113,6 +123,28 @@ public class Action {
 	public static Action attackBuilding(int id, int slot, int damage) {
 		return new Action(id, slot, damage);
 	}
+	
+	/**
+	 * Tells server to make a line
+	 * 
+	 * @param pID1 the id of the origin planet
+	 * @param pID2 the id of the destination planet
+	 * @param fac the faction to which the line belongs
+	 */
+	public static Action buildLine(int pID1, int pID2, String fac) {
+		return new Action(pID1, pID2, fac);
+	}
+	
+	/**
+	 * Tells server to delete a line
+	 * 
+	 * @param pID1 the id of the origin planet
+	 * @param pID2 the id of the destination planet
+	 * @param fac the faction to which the line belongs
+	 */
+	public static Action deleteLine(int pID1, int pID2, String fac) {
+		return new Action(pID1, pID2, fac);
+	}
 
 	public Action() {
 
@@ -157,8 +189,12 @@ public class Action {
 				}
 
 				break;
+				
 			case attackBuilding:
 
+				break;
+			case buildLine:
+				Line.genLine(new Line(World.getPlanetById(a.locactionId), World.getPlanetById(a.destinationId), Faction.getFactionFromAbv(a.id)), m);
 				break;
 
 		}

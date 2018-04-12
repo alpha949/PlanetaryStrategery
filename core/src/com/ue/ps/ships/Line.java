@@ -13,12 +13,14 @@ public class Line {
 
 	public Planet planet1;
 	public Planet planet2;
+	public Faction faction;
 	private BaseActor[] lineSegments;
 	private static Texture lineTexture = Images.getImg("line");
 
 	public Line(Planet p1, Planet p2, Faction f) {
 		planet1 = p1;
 		planet2 = p2;
+		faction = f;
 		int numLineSegments = (int) Utils.distanceTo(p1.center.x, p1.center.y, p2.center.x, p2.center.y) / 32;
 		lineSegments = new BaseActor[numLineSegments];
 		for (int i = 0; i < lineSegments.length; i++) {

@@ -32,6 +32,8 @@ public class Planet extends BaseActor {
 
 	public int resourceCapacity;
 	public int priority;
+	
+	public ArrayList<Line> lines;
 
 	public int id;
 
@@ -248,7 +250,25 @@ public class Planet extends BaseActor {
 		if (this.owner != p) {
 			this.owner = p;
 			this.addBuilding(new Colony(), 0);
+			
+			
+			//update lines
+			//add new line
+			this.lines.add(new Line(P, this, p.faction));
 			Line.genLine(new Line(P, this, p.faction), m);
+			
+			//delete old lines
+			ArrayList<Line> copyLines = new ArrayList<Line>();
+			for (Line l : lines) {
+				if (l.faction != p.faction) {
+					Line.deleteLine(l, m);
+				} else{
+					copyLines.add(l);
+				}
+			}
+		
+			
+			lines = copyLines;
 		}
 
 	}
