@@ -37,6 +37,7 @@ public class Utils {
 
 	@Deprecated // PLZ remove?
 	public static Texture getImg(String path) {
+		System.out.println("Depricated getImg used!");
 		try {
 			Texture t = new Texture(Gdx.files.internal("assets/" + path + ".png"));
 			return t;

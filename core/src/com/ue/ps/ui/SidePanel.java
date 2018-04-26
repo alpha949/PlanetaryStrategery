@@ -22,6 +22,9 @@ public class SidePanel extends BaseActor {
 	private Label planetName = new Label("", PS.font);
 	private Label planetType = new Label("", PS.font);
 
+	private Tab tabBuildings = new Tab(65, 637);
+	private Tab tabShips = new Tab(65+100, 637);
+	
 	private Label planetCap = new Label("5", PS.font);
 	private Label planetPrioirity = new Label("9", PS.font);
 
@@ -92,6 +95,11 @@ public class SidePanel extends BaseActor {
 		deincrementPriorityButton.setPosition(70 + 21 + 21 + 21, this.getHeight() - 75 - 16 - 10 - 16 - 10);
 		this.addActor(deincrementPriorityButton);
 
+		tabBuildings = new Tab(65, 637);
+		tabShips = new Tab(65+100, 637);
+		this.addActor(tabBuildings);
+		this.addActor(tabShips);
+		
 		this.addActor(this.uiMouseBlot);
 
 	}
@@ -129,13 +137,15 @@ public class SidePanel extends BaseActor {
 		this.buildingCost.clear();
 		this.shipContainers.clear();
 
+		//Ship displaying (move)
 		int localrand = 0;
 		for (int i = 0; i < this.planet.orbitingShips.size(); i++) {
 			ShipContainer sbox = new ShipContainer(this.planet.orbitingShips.get(i));
-			sbox.setPosition(100, PS.viewHeight - 150 - i * 20);
+			//sbox.setPosition(100, PS.viewHeight - 150 - i * 20);
+			sbox.setPosition(100, PS.viewHeight - 150 - i * 20); //TODO change
 
 			this.shipContainers.add(sbox);
-			this.addActor(sbox);
+			tabShips.addActor(sbox);
 
 			for (ShipPointer pointer : this.planet.pointers) { // makes the
 																// container
@@ -159,9 +169,10 @@ public class SidePanel extends BaseActor {
 		for (ShipContainer s : this.planet.BuildQueue) { // add ships being
 															// built
 			localrand++;
-			s.setPosition(100, PS.viewHeight - 150 - localrand * 20);
+			s.setPosition(100, Tab.maxHeight - 10 - localrand * 20);
 			this.shipContainers.add(s);
-			this.addActor(s);
+			tabShips.addActor(s);
+			tabShips.internalHeight += 20; //add the height of this object (and buffer beneath) to the net height of the tab
 		}
 
 		// add final "next build" box
@@ -169,12 +180,14 @@ public class SidePanel extends BaseActor {
 		this.shipContainers.add(sbox);
 		this.addActor(sbox);
 
+		//BUILDINGS TAB
 		// setup building boxes
 		for (int i = 0; i < this.planet.buildings.length; i++) {
-			BuildingContainer bc = new BuildingContainer(i, 10, PS.viewHeight - 150 - i * 50);
+			BuildingContainer bc = new BuildingContainer(i, 10, Tab.maxHeight - 10 - i * 50);
 			bc.planet = p;
 			this.buildingContainers.add(bc);
-			this.addActor(bc);
+			tabBuildings.addActor(bc);
+			tabBuildings.internalHeight += 50; //add the height of this object (and buffer beneath) to the net height of the tab
 
 			if (this.planet.buildings[i] != null) {
 				bc.setBuilding(this.planet.buildings[i]);
@@ -195,8 +208,9 @@ public class SidePanel extends BaseActor {
 		copiedMousePos.y = PS.viewHeight - GameplayScreen.mouseBlot.getY();
 
 		localMousePos = this.stageToLocalCoordinates(uiStage.screenToStageCoordinates(copiedMousePos));
-
+		
 		uiMouseBlot.setPosition(localMousePos.x, localMousePos.y);
+		//System.out.println(localMousePos);
 
 		this.planetResource.setText("Resource: " + this.planet.resource); // TODO
 																			// only
@@ -205,10 +219,13 @@ public class SidePanel extends BaseActor {
 																			// resource
 																			// updates
 
+		this.tabBuildings.update(uiMouseBlot.center);
+		this.tabShips.update(uiMouseBlot.center);
+		
 		// update containers
-		for (BuildingContainer bc : this.buildingContainers) {
-			bc.update(uiMouseBlot.center);
-		}
+		//for (BuildingContainer bc : this.buildingContainers) {
+		//	bc.update(uiMouseBlot.center);
+		//}
 
 		// check for clicking on increment/deincrement priority/capacity and
 		// increment/deincrement them
@@ -230,13 +247,6 @@ public class SidePanel extends BaseActor {
 				this.planet.priority -= 1;
 			}
 
-			if (shipBuildBoxesShowing) {
-			}
-
-			// check for clicking on buildBox
-			if (buildBoxesShowing) {
-
-			}
 			// check for destroying building
 			/*
 			 * if (this.destroyBuildingBox.getBoundingRectangle().contains(
