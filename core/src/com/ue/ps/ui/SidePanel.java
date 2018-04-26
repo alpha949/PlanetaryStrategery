@@ -136,13 +136,15 @@ public class SidePanel extends BaseActor {
 		this.buildingContainers.clear();
 		this.buildingCost.clear();
 		this.shipContainers.clear();
+		tabBuildings.reset();
+		tabShips.reset();
 
 		//Ship displaying (move)
 		int localrand = 0;
 		for (int i = 0; i < this.planet.orbitingShips.size(); i++) {
 			ShipContainer sbox = new ShipContainer(this.planet.orbitingShips.get(i));
 			//sbox.setPosition(100, PS.viewHeight - 150 - i * 20);
-			sbox.setPosition(100, PS.viewHeight - 150 - i * 20); //TODO change
+			sbox.setPosition(100, PS.viewHeight - 150 - i * 20); //TODO change?
 
 			this.shipContainers.add(sbox);
 			tabShips.addActor(sbox);
@@ -183,7 +185,8 @@ public class SidePanel extends BaseActor {
 		//BUILDINGS TAB
 		// setup building boxes
 		for (int i = 0; i < this.planet.buildings.length; i++) {
-			BuildingContainer bc = new BuildingContainer(i, 10, Tab.maxHeight - 10 - i * 50);
+			BuildingContainer bc = new BuildingContainer(i, 10, Tab.maxHeight - (i) * 50); //from bottom left
+			//BuildingContainer bc = new BuildingContainer(i, 10, -10 - (i+1) * 50); //from top left
 			bc.planet = p;
 			this.buildingContainers.add(bc);
 			tabBuildings.addActor(bc);
