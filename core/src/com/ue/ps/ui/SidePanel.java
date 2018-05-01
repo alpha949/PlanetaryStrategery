@@ -49,7 +49,7 @@ public class SidePanel extends BaseActor {
 																									// buildings
 	private ArrayList<Label> buildingCost = new ArrayList<Label>();
 
-	private ArrayList<ShipContainer> shipContainers = new ArrayList<ShipContainer>();
+	public static ArrayList<ShipContainer> shipContainers = new ArrayList<ShipContainer>();
 
 	public static ArrayList<Ship> selectedShips = new ArrayList<Ship>();
 
@@ -135,7 +135,7 @@ public class SidePanel extends BaseActor {
 
 		this.buildingContainers.clear();
 		this.buildingCost.clear();
-		this.shipContainers.clear();
+		shipContainers.clear();
 		tabBuildings.reset();
 		tabShips.reset();
 
@@ -146,7 +146,7 @@ public class SidePanel extends BaseActor {
 			//sbox.setPosition(100, PS.viewHeight - 150 - i * 20);
 			sbox.setPosition(100, PS.viewHeight - 150 - i * 20); //TODO change?
 
-			this.shipContainers.add(sbox);
+			shipContainers.add(sbox);
 			tabShips.addActor(sbox);
 
 			for (ShipPointer pointer : this.planet.pointers) { // makes the
@@ -172,14 +172,14 @@ public class SidePanel extends BaseActor {
 															// built
 			localrand++;
 			s.setPosition(100, Tab.maxHeight - 10 - localrand * 20);
-			this.shipContainers.add(s);
+			shipContainers.add(s);
 			tabShips.addActor(s);
 			tabShips.internalHeight += 20; //add the height of this object (and buffer beneath) to the net height of the tab
 		}
 
 		// add final "next build" box
 		ShipContainer sbox = new ShipContainer();
-		this.shipContainers.add(sbox);
+		shipContainers.add(sbox);
 		this.addActor(sbox);
 
 		//BUILDINGS TAB
@@ -263,7 +263,7 @@ public class SidePanel extends BaseActor {
 
 		// update selectedships
 
-		for (ShipContainer sc : this.shipContainers) {
+		for (ShipContainer sc : shipContainers) {
 			if (sc.done) {
 				if (sc.isSelected()) {
 					if (!selectedShips.contains(sc.getShip())) {
@@ -286,7 +286,7 @@ public class SidePanel extends BaseActor {
 				}
 				this.planet.pointers.remove(deleteThisPointer);
 			}
-			sc.update(uiMouseBlot.center, shipContainers);
+			sc.update(uiMouseBlot.center);
 		}
 
 		// update text fields

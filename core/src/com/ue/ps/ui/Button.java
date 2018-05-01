@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.ue.ps.BaseActor;
 
-public class Button extends BaseActor {
+public class Button extends BaseActor{
 
 	public Rectangle Hitbox;
 	public boolean active = true;

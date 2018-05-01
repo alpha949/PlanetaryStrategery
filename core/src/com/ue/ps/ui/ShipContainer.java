@@ -14,7 +14,7 @@ import com.ue.ps.ships.ShipType;
 import com.ue.ps.systems.Action;
 import com.ue.ps.systems.GameServerClient;
 
-public class ShipContainer extends BaseActor {
+public class ShipContainer extends BaseActor implements UIElement{
 	public static final int resourceInput = 3;
 	public int shipProgressOutput;
 	public int buildProgress;
@@ -116,14 +116,14 @@ public class ShipContainer extends BaseActor {
 		}
 	}
 
-	public void update(Vector2 mousePos, ArrayList<ShipContainer> otherShipContainers) {
+	public void update(Vector2 mousePos) {
 		int numNotHovering = 0;
-		for (ShipContainer sc : otherShipContainers) {
+		for (ShipContainer sc : SidePanel.shipContainers) {
 			if (!sc.getBoundingRectangle().contains(mousePos)) {
 				numNotHovering += 1;
 			}
 		}
-		if (numNotHovering == otherShipContainers.size() && Gdx.input.justTouched() && this.getColor() != Color.GREEN) {
+		if (numNotHovering == SidePanel.shipContainers.size() && Gdx.input.justTouched() && this.getColor() != Color.GREEN) {
 			this.isSelected = false;
 			this.setColor(Color.WHITE);
 		}

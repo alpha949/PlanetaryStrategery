@@ -13,7 +13,7 @@ import com.ue.ps.buildings.Factory;
 import com.ue.ps.systems.Action;
 import com.ue.ps.systems.GameServerClient;
 
-public class BuildingContainer extends Button {
+public class BuildingContainer extends Button implements UIElement{
 	private Building building;
 	private BaseActor buildingImg = new BaseActor();
 	private boolean isSelected;
@@ -90,6 +90,7 @@ public class BuildingContainer extends Button {
 	public void update(Vector2 mousePos) {
 		if (Gdx.input.justTouched()) {
 			if (this.Pressed(mousePos)) {
+				Vector2 localMouseCoords = this.parentToLocalCoordinates(mousePos);
 				this.isSelected = true;
 				this.setColor(Color.LIGHT_GRAY);
 
@@ -105,7 +106,7 @@ public class BuildingContainer extends Button {
 				if (!this.done && !this.constructing) { // if clicked on while a
 														// + button
 					this.constructing = true;
-					//this.setSize(240, 40);
+					this.setSize(240, 40);
 					for (int i = 0; i < buildBoxes.length; i++) {
 						buildBoxes[i].setVisible(true);
 					}
@@ -113,7 +114,7 @@ public class BuildingContainer extends Button {
 
 				else if (this.constructing && this.isSelected) {
 					for (int i = 0; i < buildBoxes.length; i++) {
-						if (buildBoxes[i].Pressed(this.stageToLocalCoordinates(mousePos))) {
+						if (buildBoxes[i].Pressed(localMouseCoords)) {
 							try {
 								Building newBuilding = Building.allBuildings.get(i).getClass().newInstance();
 								// add building to planet

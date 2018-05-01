@@ -15,6 +15,7 @@ import com.ue.ps.PS;
 import com.ue.ps.ships.ShipType;
 import com.ue.ps.systems.InputProcess;
 
+//Valid contents require implementation of UIElement
 public class Tab extends BaseActor {
 
 	public static ArrayList<Tab> tabs = new ArrayList<Tab>();
@@ -25,6 +26,7 @@ public class Tab extends BaseActor {
 	public Texture FullImg;
 	public boolean selected = false;
 	public float scrollOffset;
+	public double scrollVel;
 	//Tab interior height, change with the screen. Static for now, change if more tab locations.
 	public static int maxHeight = PS.viewHeight - 162; //should be 130 - 32 extra pixels where?
 	//net size of all internal parts that take up space.
@@ -42,21 +44,33 @@ public class Tab extends BaseActor {
 		//this.setCullingArea(this.Hitbox); // culling broke
 		this.internalHeight = 10; //buffer
 		
-		Tab.tabs.add(this); //Currently only one list of tabs. Make more and an input method to chose to add more.
+		Tab.tabs.add(this); //Currently only one list of tabs. Make more and an input method to choose which to add more.
 	}
 
 	public void update(Vector2 mousePos) {
 		if (this.selected && Hitbox.contains(mousePos)){
-			//Scroll check
+
+			Vector2 localMousePos = this.parentToLocalCoordinates(mousePos);
+			localMousePos = new Vector2(localMousePos.x, localMousePos.y+this.scrollOffset);
+			//Scroll check + scroll mod
 
 			//Update contents
-			//for ()
+			for (Actor i : this.getChildren()){
+				((UIElement) i).update(localMousePos);
+			}
 		}
 		
 		//time to select it
 		if (!this.selected && tabHitbox.contains(mousePos) && Gdx.input.justTouched()) { //Add other button stuff like controlled, visible...
 			System.out.println("Tab Selected");
 			this.BringUp();
+		}
+		
+		if (this.scrollVel != 0){
+			if (Math.abs(this.scrollVel) < .2) {this.scrollVel = 0;}
+			else {
+				this.scrollVel = (this.scrollVel > 0) ? this.scrollVel - .2 : this.scrollVel + .2;
+			}
 		}
 	}
 	
@@ -67,12 +81,11 @@ public class Tab extends BaseActor {
 		batch.setColor(c.r, c.g, c.b, c.a); //I want to get rid of this but I'm scared
 
 		if (this.selected){
-			System.out.println("selected display");
 			this.drawChildren(batch, parentAlpha);
 		}
 		
 		if (isVisible()) {
-			batch.draw(this.getTexture(), tabHitbox.x, tabHitbox.y);
+			batch.draw(this.getTexture(), tabHitbox.x, tabHitbox.y-this.scrollOffset);
 		}
 		super.draw(batch, parentAlpha);
 	}
