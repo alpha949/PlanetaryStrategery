@@ -40,6 +40,7 @@ import com.ue.ps.buildings.Building;
 import com.ue.ps.ships.Line;
 import com.ue.ps.ships.Ship;
 import com.ue.ps.ships.ShipPointer;
+import com.ue.ps.ships.ShipType;
 import com.ue.ps.systems.Action;
 import com.ue.ps.systems.GameServer;
 import com.ue.ps.systems.GameServerClient;
@@ -186,6 +187,15 @@ public class GameplayScreen implements Screen {
 			hasFocusedOnHome = true;
 
 		}
+		
+		for (Planet p : World.getWorld()) {
+			if (p.isHomePlanet) {
+				Ship.spawnShip(GameServerClient.clientPlayer, p, ShipType.dread, 10);
+			} else {
+				Ship.spawnShip(GameServerClient.clientPlayer, p, ShipType.scout, 10);
+			}
+			
+		}
 
 	}
 
@@ -245,6 +255,7 @@ public class GameplayScreen implements Screen {
 							// -----------------------------------------------------
 							// TODO unset packet actions
 							// -----------------------------------------------------
+							System.out.println("selectedPlanetID: " + p.id);
 							activePointer.location.pointers.add(activePointer.clone());
 							GameServerClient.packet.addAction(
 									Action.sendShips(Utils.getShipIds(SidePanel.selectedShips), SidePanel.selectedShips.get(0).location.id, p.id));

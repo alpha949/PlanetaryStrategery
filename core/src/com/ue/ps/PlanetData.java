@@ -8,6 +8,7 @@ public class PlanetData {
 	public int x;
 	public int y;
 	public boolean isHomePlanet;
+	public int id;
 	public String owner;
 
 	public PlanetData() {
@@ -20,6 +21,7 @@ public class PlanetData {
 		p.isHomePlanet = pd.isHomePlanet;
 		p.setType(pd.type);
 		p.setSize(pd.size);
+		p.id = pd.id;
 		p.owner = GameServerClient.getPlayerByUserName(pd.owner);
 
 		return p;
@@ -32,6 +34,7 @@ public class PlanetData {
 		pd.isHomePlanet = p.isHomePlanet;
 		pd.type = p.getPlanetType();
 		pd.size = p.getSize();
+		pd.id = p.id;
 		if (p.owner != null) {
 			pd.owner = p.owner.getUser();
 

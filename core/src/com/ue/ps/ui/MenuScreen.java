@@ -196,6 +196,7 @@ public class MenuScreen implements Screen {
 			GameServerClient.user = config[0];
 			System.out.println(config[0]);
 			GameServerClient.setUpPlayer(Faction.Xin);
+			System.out.println("set up player from existing data");
 		} else {
 			promptUserCreation = true;
 		}

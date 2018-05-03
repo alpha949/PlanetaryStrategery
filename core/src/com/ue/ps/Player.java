@@ -19,6 +19,11 @@ public class Player {
 	private ArrayList<TechTreeItem> techs = new ArrayList<TechTreeItem>();
 
 	public Player(String userName, Faction f) {
+		if (userName == null) {
+			System.out.println("error: Null Player name");
+		} else {
+			System.out.println("Player user name: " + userName);
+		}
 		this.userName = userName;
 		this.resource = 0;
 		this.techPoints = 1000000;

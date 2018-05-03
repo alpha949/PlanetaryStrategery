@@ -12,6 +12,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.ue.ps.ships.Ship;
+import com.ue.ps.ships.ShipType;
 
 public class WorldGen {
 	private static boolean canPlacePlanets = true;
@@ -38,8 +40,9 @@ public class WorldGen {
 		setup();
 		ArrayList<PlanetData> planetData = new ArrayList<PlanetData>();
 		done = false;
+		System.out.print("Generating");
 		while (!done) {
-			System.out.println("GENERATING!");
+			System.out.print(".");
 			canGenerate = true;
 
 			nextDist = MathUtils.random(50 * 8 * 8, 100 * 8 * 8);
@@ -58,6 +61,7 @@ public class WorldGen {
 				p.setCenter(pos.x, pos.y);
 
 				p.id = 1 + prevId;
+				System.out.println("genning planet #" + p.id);
 				prevId = p.id;
 				p.owner = null;
 
@@ -126,12 +130,15 @@ public class WorldGen {
 			home.isHomePlanet = true;
 			home.setType(PlanetType.goldilocks);
 			home.owner = plas.get(i);
+			
 			Planet p = new Planet();
 			// allPlanets.add(p);
 			p.setColor(Color.TEAL);
 			p.setCenter(vert.x, vert.y);
 
 		}
+		
+	
 
 		return ring;
 

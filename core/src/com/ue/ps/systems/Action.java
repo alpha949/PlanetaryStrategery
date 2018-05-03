@@ -155,10 +155,10 @@ public class Action {
 			case sendShips:
 				Ship[] ships = new Ship[a.shipIds.length];
 				for (int i = 0; i < World.getWorld().size(); i++) {
-					for (int l = 0; l < World.getWorld().get(i).orbitingShips.size(); l++) {
+					for (int l = 0; l < World.getWorld().get(i).getAllOrbitingShips().size(); l++) {
 						for (int j = 0; j < a.shipIds.length; j++) {
-							if (World.getWorld().get(i).orbitingShips.get(l).id.equals(a.shipIds[j])) {
-								ships[j] = World.getWorld().get(i).orbitingShips.get(l);
+							if (World.getWorld().get(i).getAllOrbitingShips().get(l).id.equals(a.shipIds[j])) {
+								ships[j] = World.getWorld().get(i).getAllOrbitingShips().get(l);
 							}
 						}
 					}
@@ -181,7 +181,7 @@ public class Action {
 			case attackShip:
 
 				for (Planet p : World.getWorld()) {
-					for (Ship s : p.orbitingShips) {
+					for (Ship s : p.getAllOrbitingShips()) {
 						if (s.id.equals(a.id)) {
 							s.health -= a.damage;
 						}
@@ -195,6 +195,9 @@ public class Action {
 				break;
 			case buildLine:
 				Line.genLine(new Line(World.getPlanetById(a.locactionId), World.getPlanetById(a.destinationId), Faction.getFactionFromAbv(a.id)), m);
+				break;
+			case deleteLine:
+				Line.deleteLine(World.getPlanetById(a.locactionId).getLineTo(World.getPlanetById(a.destinationId)), m);
 				break;
 
 		}

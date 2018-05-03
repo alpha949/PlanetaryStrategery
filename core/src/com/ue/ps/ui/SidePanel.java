@@ -141,8 +141,8 @@ public class SidePanel extends BaseActor {
 
 		//Ship displaying (move)
 		int localrand = 0;
-		for (int i = 0; i < this.planet.orbitingShips.size(); i++) {
-			ShipContainer sbox = new ShipContainer(this.planet.orbitingShips.get(i));
+		for (int i = 0; i < this.planet.getAlliedShips().size(); i++) {
+			ShipContainer sbox = new ShipContainer(this.planet.getAlliedShips().get(i));
 			//sbox.setPosition(100, PS.viewHeight - 150 - i * 20);
 			sbox.setPosition(100, PS.viewHeight - 150 - i * 20); //TODO change?
 
