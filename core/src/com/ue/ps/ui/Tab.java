@@ -9,11 +9,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.SnapshotArray;
 import com.ue.ps.BaseActor;
 import com.ue.ps.PS;
-import com.ue.ps.ships.ShipType;
-import com.ue.ps.systems.InputProcess;
 
 //Valid contents require implementation of UIElement
 public class Tab extends BaseActor {

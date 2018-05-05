@@ -1,13 +1,10 @@
 package com.ue.ps.systems;
 
-import java.io.File;
-import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
 public class DebugLog {
 	

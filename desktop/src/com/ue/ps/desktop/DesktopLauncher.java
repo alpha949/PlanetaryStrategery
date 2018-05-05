@@ -28,6 +28,7 @@ public class DesktopLauncher {
 			}
 		}
 	
+		@SuppressWarnings("unused")
 		LwjglApplication launcher = new LwjglApplication(theGame, cfg);
 	}
 }

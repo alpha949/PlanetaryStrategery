@@ -1,0 +1,14 @@
+.LOG
+#please leave the above line
+
+6:21 PM 5/4/2018
+WorldGen.java - what is canPlacePlanets for? numConnects?
+PS.java - why use a boolean and a Boolean? Is there some overly important distinction?
+Planet.java - what is the Texture pew used for? (line 59)
+HoverPanel.java - what are the background and top variables used for?
+BaseActor.java - what's the animation for? (line 103)
+SidePanel.java - why does it need a uiMouseBlot Actor added?
+MenuScreen.java - WHY ARE THERE SO MANY UNUSED VARS?
+GamePlayScreen.java - see above.
+
+Wait, we still haven't implemented ship cost yet...?

@@ -11,6 +11,8 @@ public class PlayerData {
 	}
 
 	private PlayerData() {
-	};
+		this.username = "starman";
+		this.factionAbv = null;
+	}
 
 }

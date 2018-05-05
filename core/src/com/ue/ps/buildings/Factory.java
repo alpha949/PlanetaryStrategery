@@ -1,13 +1,11 @@
 package com.ue.ps.buildings;
 
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.ue.ps.Planet;
 import com.ue.ps.ships.ShipType;
 
 public class Factory extends Building {
 
-	private int resourceInput = 3;
-	private int shipProgressOutput = 10;
+	private int resourceInput = 3, shipProgressOutput = 10;
 
 	public ShipType buildingShip;
 

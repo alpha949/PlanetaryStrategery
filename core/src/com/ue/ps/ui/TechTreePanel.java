@@ -4,11 +4,9 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.ue.ps.BaseActor;
 import com.ue.ps.PS;
 import com.ue.ps.Utils;
-import com.ue.ps.systems.GameServerClient;
 
 public class TechTreePanel extends BaseActor {
 
@@ -51,7 +49,6 @@ public class TechTreePanel extends BaseActor {
 
 	private void placeItem(TechTreeItem tti) {
 		int branch = 12;
-		boolean success = false;
 		
 		
 		for (int i = 0; i < 8; i++) {
@@ -103,7 +100,6 @@ public class TechTreePanel extends BaseActor {
 				
 				branch = i;
 
-				success = true;
 				break;
 			}
 			

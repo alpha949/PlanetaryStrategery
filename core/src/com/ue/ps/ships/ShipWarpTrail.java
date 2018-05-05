@@ -1,8 +1,6 @@
 package com.ue.ps.ships;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.ue.ps.BaseActor;
 import com.ue.ps.ui.Images;
 
