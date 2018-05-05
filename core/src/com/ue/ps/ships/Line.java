@@ -29,7 +29,10 @@ public class Line {
 
 			lineSegments[i] = b;
 		}
-
+		
+		p1.lineLinkedPlanets.add(p2);
+		p2.lineLinkedPlanets.add(p1);
+		p1.linkNetwork.updateNetwork();
 	}
 
 	public static void genLine(Line l, Stage m) {
@@ -57,6 +60,25 @@ public class Line {
 			m.getRoot().removeActor(l.lineSegments[i]);
 
 		}
+	}
+	
+	public void kill(Stage s){
+		deleteLine(this, s);
+		if(planet1.lineLinkedPlanets.contains(planet2)){
+			planet1.lineLinkedPlanets.remove(planet2);
+			System.out.println("Planet " + planet2.name + " was unlinked from Planet " + planet1.name +"!");
+		} else {
+			throw new Error("Planet " + planet1.name + " does not contain planet " + planet2.name + " in its link list.");
+		}
+		
+		if(planet2.lineLinkedPlanets.contains(planet1)){
+			planet2.lineLinkedPlanets.remove(planet1);
+			System.out.println("Planet " + planet1.name + " was unlinked from Planet " + planet2.name +"!");
+		} else {
+			throw new Error("Planet " + planet2.name + " does not contain planet " + planet1.name + " in its link list.");
+		}
+		
+		planet1.linkNetwork.updateNetwork();
 	}
 
 }

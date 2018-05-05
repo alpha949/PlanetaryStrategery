@@ -15,6 +15,7 @@ import com.ue.ps.ships.ShipPointer;
 import com.ue.ps.ships.ShipType;
 import com.ue.ps.systems.Action;
 import com.ue.ps.systems.GameServerClient;
+import com.ue.ps.systems.PlanetNetwork;
 import com.ue.ps.ui.Images;
 import com.ue.ps.ui.ShipContainer;
 
@@ -27,10 +28,11 @@ public class Planet extends BaseActor {
 	public boolean isHomePlanet;
 	public int FactoryQuant;
 	public ArrayList<ShipContainer> BuildQueue;
+	public ArrayList<Planet> lineLinkedPlanets;
 
 	public int resourceCapacity;
 	public int priority;
-	
+
 	public ArrayList<Line> lines;
 
 	public int id;
@@ -55,11 +57,16 @@ public class Planet extends BaseActor {
 	private boolean isCombat = false;
 
 	private int builtBuildings = 0;
-	
+
 	private Texture pew = Images.getImg("pew");
+
+	public PlanetNetwork linkNetwork;
+
 	// planet where you can say what it is
 	public Planet(PlanetType type, int size) {
 		super();
+		this.lineLinkedPlanets = new ArrayList<Planet>();
+		this.linkNetwork = null;
 		this.setType(type);
 		this.size = size;
 		this.finish();
@@ -68,6 +75,8 @@ public class Planet extends BaseActor {
 	// planet without specific given info
 	public Planet() {
 		super();
+		this.lineLinkedPlanets = new ArrayList<Planet>();
+		this.linkNetwork = null;
 		this.type = PlanetType.values()[MathUtils.random(0, 4)];
 		this.size = MathUtils.random(1, 3);
 
@@ -121,7 +130,7 @@ public class Planet extends BaseActor {
 	private void updateShips(ArrayList<Ship> ships, int orbitDist) {
 		for (Ship s : ships) {
 			s.angle -= 0.5f;
-			
+
 			s.setRotation(s.angle);
 			s.setCenter(this.getWidth() / 2, this.getHeight() / 2);
 			Vector2 pos = Utils.polarToRect((int) (this.getWidth() / 2 + s.getWidth() / 2) + orbitDist + 16, s.angle,
@@ -144,9 +153,9 @@ public class Planet extends BaseActor {
 		if (!this.enemyOrbitingShips.isEmpty() && this.owner != null) {
 			isCombat = true;
 		}
-		
+
 		if (isCombat) {
-			
+
 		}
 
 	}
@@ -168,8 +177,7 @@ public class Planet extends BaseActor {
 			for (Ship s : enemyOrbitingShips) {
 				clientShips.add(s);
 			}
-			
-			
+
 		} else {
 			for (Ship s : enemyOrbitingShips) {
 				shipTargets.add(s);
@@ -178,13 +186,12 @@ public class Planet extends BaseActor {
 				clientShips.add(s);
 			}
 		}
-		
+
 		for (Ship s : clientShips) {
 			s.attack(shipTargets, buildingTargets, this);
 		}
 
 	}
-
 
 	public void onTurnUpdate() {
 		if (isCombat) {
@@ -246,27 +253,24 @@ public class Planet extends BaseActor {
 		if (this.owner != p) {
 			this.owner = p;
 			this.addBuilding(new Colony(), 0);
-			
-			
-			//update lines
-			//add new line
+
+			// update lines
+			// add new line
 			this.lines.add(new Line(P, this, p.faction));
 			Line.genLine(new Line(P, this, p.faction), m);
 			GameServerClient.packet.addAction(Action.buildLine(P.id, this.id, p.faction.abv));
-			
-			
-			//delete old lines
+
+			// delete old lines
 			ArrayList<Line> copyLines = new ArrayList<Line>();
 			for (Line l : lines) {
 				if (l.faction != p.faction) {
 					Line.deleteLine(l, m);
 					GameServerClient.packet.addAction(Action.deleteLine(l.planet1.id, l.planet2.id, l.faction.abv));
-				} else{
+				} else {
 					copyLines.add(l);
 				}
 			}
-		
-			
+
 			lines = copyLines;
 		}
 
@@ -283,17 +287,18 @@ public class Planet extends BaseActor {
 		return newPlanet;
 
 	}
-	
+
 	public Line getLineTo(Planet other) {
 		for (Line l : this.lines) {
-			//if the planet has a line that goes to the given planet
+			// if the planet has a line that goes to the given planet
 			if (l.planet1 == other || l.planet2 == other) {
 				return l;
 			}
-		} 
+		}
 		return null;
-		
+
 	}
+
 	/**
 	 * adds a ship to the planet
 	 */
@@ -303,12 +308,12 @@ public class Planet extends BaseActor {
 		} else {
 			this.enemyOrbitingShips.add(s);
 		}
-		
+
 		this.addActor(s);
 		System.out.println("Docked Ship");
 
 		int orbitDist = 25 + 16;
-		
+
 		s.setCenter(this.getWidth() / 2, this.getHeight() / 2);
 		Vector2 pos = Utils.polarToRect((int) (this.getWidth() / 2 + s.getWidth() / 2) + orbitDist, s.angle,
 				new Vector2(this.getWidth() / 2 - 16, this.getHeight() / 2 - 16));
@@ -316,6 +321,7 @@ public class Planet extends BaseActor {
 		s.setRotation(s.angle - 90);
 		s.location = this;
 	}
+
 	public void embarkShip(Ship s) {
 		System.out.println("Emarked Ship");
 		this.removeActor(s);
@@ -325,12 +331,12 @@ public class Planet extends BaseActor {
 			this.enemyOrbitingShips.remove(s);
 		}
 	}
-	
-	public ArrayList<Ship> getAlliedShips(){
+
+	public ArrayList<Ship> getAlliedShips() {
 		return this.alliedOrbitingShips;
 	}
-	
-	public ArrayList<Ship> getAllOrbitingShips(){
+
+	public ArrayList<Ship> getAllOrbitingShips() {
 		ArrayList<Ship> allShips = new ArrayList<Ship>();
 		for (Ship s : this.alliedOrbitingShips) {
 			allShips.add(s);
@@ -339,10 +345,7 @@ public class Planet extends BaseActor {
 			allShips.add(s);
 		}
 		return allShips;
-	
-	}
-	
-	
 
+	}
 
 }
