@@ -10,12 +10,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 public class WorldGen {
-	private static boolean canPlacePlanets = true;
+	
 	private static boolean canGenerate = true;
 	private static Vector2 pos = new Vector2();
 	private static int nextDist;
 	private static int angle;
-	private static int numConnects = 2;
+	
 	public static Rectangle planetBorder;
 	private static ArrayList<Planet> allPlanets = new ArrayList<Planet>();
 	private static int failedSteps = 0;

@@ -43,21 +43,17 @@ public class GameplayScreen implements Screen {
 
 	public Stage mainStage;
 	public Stage uiStage;
-	private int slowdown;
 	public static BaseActor mouseBlot = new BaseActor("assets/mouseBlot.png");
 	private BaseActor stageMouseBlot = new BaseActor("assets/stageMouseBlot.png");
 	private BaseActor camPos = new BaseActor("");
 
-	private float maxZoom = 2;
-	private float minZoom = 0.1f;
 	public Game game;
 	private ShapeRenderer shapeRender;
 	public static float zoomAmount = 5;
 	public static Vector2 mousePos = new Vector2();
 
 	private Planet targetPlanet;
-	private Planet selectedPlanet = new Planet();
-	private boolean running = false;
+
 	private boolean hasFocusedOnSelectedPlanet;
 
 	private Camera camera;
@@ -68,10 +64,10 @@ public class GameplayScreen implements Screen {
 	public static int cameraOffsetX;
 	public static int cameraOffsetY;
 
-	private Planet planetX = new Planet();
+	
 	private SidePanel sidePanel = new SidePanel();
 
-	private Line planetXLine;
+
 
 	public static TechTreePanel techTreePanel = new TechTreePanel();
 	private Label multMessage = new Label("HELLO!", PS.font);
@@ -81,7 +77,7 @@ public class GameplayScreen implements Screen {
 	private BaseActor executeButton = new BaseActor(executeTex);
 	private ShipPointer activePointer;
 
-	private Rectangle screenBounds = new Rectangle(0, 0, PS.viewWidth, PS.viewHeight);
+
 
 	private ResourcePanel resourcePanel;
 

@@ -17,8 +17,7 @@ public class HoverPanel extends BaseActor {
 	public static String[] factoryInfo = { "Type", "Health", "Ship", "Progress" };
 
 	private ArrayList<Label> info = new ArrayList<Label>();
-	private ArrayList<BaseActor> background = new ArrayList<BaseActor>();
-	private BaseActor top;
+
 	private BaseActor bottom;
 
 	public HoverPanel(String[] info, String... data) {
@@ -28,7 +27,7 @@ public class HoverPanel extends BaseActor {
 			BaseActor background;
 			if (i == 0) {
 				background = new BaseActor(chunkTopTexture);
-				top = background;
+				
 			} else if (i == info.length - 1) {
 				background = new BaseActor(chunkBottomTexture);
 				bottom = background;
