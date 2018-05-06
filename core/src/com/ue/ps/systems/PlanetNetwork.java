@@ -34,6 +34,8 @@ public class PlanetNetwork implements Destroyable {
 		this.netSeed = p;
 		this.linkedPlanets = new ArrayList<Planet>();
 		this.linkedPlanets.add(netSeed);
+		this.updateNetwork();
+
 		activeNetworks.add(this);
 	}
 
@@ -61,10 +63,8 @@ public class PlanetNetwork implements Destroyable {
 	 */
 	public void updateNetwork() {
 		ArrayList<Integer> proven = new ArrayList<Integer>(), checked = new ArrayList<Integer>();
-		int netSeedIndex;
 		for (int i = 0; i < linkedPlanets.size(); i++) {
 			if (linkedPlanets.get(i).equals(netSeed)) {
-				netSeedIndex = i;
 				proven.add(i);
 				break;
 			}
@@ -107,7 +107,43 @@ public class PlanetNetwork implements Destroyable {
 
 		new PlanetNetwork(newSet.get(0), newSet);
 
-		if (this.linkedPlanets.size() == 1) {
+		boolean flag = false;
+		for (Planet p : this.linkedPlanets) {
+			if (!p.linkNetwork.equals(this)) {
+				p.linkNetwork = this;
+				flag = true;
+			}
+		}
+		if (flag) {
+			PlanetNetwork.checkAllNetworks();
+		}
+
+		this.testTerminate();
+
+	}
+
+	/**
+	 * Joins one or more PlanetNetworks to the invoking PlanetNetwork. The seedWorld will remain the same for the invoking PlanetNetwork.
+	 * PlanetNetworks passed in will be have their planets copied, then be destroyed. The consolidated PlanetNetwork will then be updated.
+	 * 
+	 * @param nets
+	 */
+	public void mergeWith(PlanetNetwork ... nets) {
+		for (PlanetNetwork n : nets) {
+			for (Planet p : n.linkedPlanets) {
+				this.linkedPlanets.add(p);
+				n.linkedPlanets.remove(p);
+			}
+			this.updateNetwork();
+			n.testTerminate();
+		}
+	}
+
+	/**
+	 * Destroys the network if there is one (or less) planets contained in it
+	 */
+	public void testTerminate() {
+		if (this.linkedPlanets.size() <= 1) {
 			try {
 				activeNetworks.remove(this);
 				this.destroy();
@@ -122,6 +158,28 @@ public class PlanetNetwork implements Destroyable {
 	 */
 	public static ArrayList<PlanetNetwork> getActiveNetworks() {
 		return activeNetworks;
+	}
+
+	public static void checkAllNetworks() {
+		boolean flag = false;
+		ArrayList<Planet> networkedPlanets = new ArrayList<Planet>();
+		ArrayList<PlanetNetwork[]> dupes = new ArrayList<PlanetNetwork[]>();
+		for (PlanetNetwork pn : activeNetworks) {
+			// TODO: check all networks for overlap and merge overlapping networks.
+			for (Planet p : pn.linkedPlanets) {
+				if (!p.linkNetwork.equals(pn)) {
+					flag = true;
+					PlanetNetwork[] dupe = { pn, p.linkNetwork };
+					dupes.add(dupe);
+				}
+			}
+		}
+		for (PlanetNetwork[] d : dupes) {
+			d[0].mergeWith(d[1]);
+		}
+		if (flag) {
+			checkAllNetworks();
+		}
 	}
 
 }
