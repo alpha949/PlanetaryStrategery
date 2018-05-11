@@ -69,13 +69,13 @@ public class Utils {
 
 	}
 
-	public static double pointAt(float x, float y, float x2, float y2) {
+	public static float pointAt(float x, float y, float x2, float y2) {
 
 		double yDiff = y - y2;
 		double xDiff = x - x2;
 		double newAngle = Math.toDegrees(Math.atan2(yDiff, xDiff)) + 180;
 
-		return newAngle;
+		return (float) newAngle;
 
 	}
 

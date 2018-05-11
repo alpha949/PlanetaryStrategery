@@ -24,7 +24,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ue.ps.BaseActor;
 import com.ue.ps.Faction;
 import com.ue.ps.PS;
+import com.ue.ps.Particle;
 import com.ue.ps.Planet;
+import com.ue.ps.Player;
 import com.ue.ps.Utils;
 import com.ue.ps.World;
 import com.ue.ps.WorldGen;
@@ -178,8 +180,8 @@ public class GameplayScreen implements Screen {
 		for (Planet p : World.getWorld()) {
 			if (p.isHomePlanet) {
 				Ship.spawnShip(GameServerClient.clientPlayer, p, ShipType.dread, 10);
-			} else {
-				Ship.spawnShip(GameServerClient.clientPlayer, p, ShipType.scout, 10);
+				Ship.spawnShip(new Player("EVIL PERSON", Faction.Braecious), p, ShipType.dread, 100);
+				
 			}
 			
 		}
@@ -338,7 +340,10 @@ public class GameplayScreen implements Screen {
 			// Gdx.graphics.setWindowedMode(PS.viewWidth, PS.viewHeight);
 		}
 		// this doesn't work
-
+		
+		
+	
+		
 		if (this.executeButton.getBoundingRectangle().contains(uiMousePos) && Gdx.input.justTouched()) {
 			if (!PS.useServer) {
 				System.out.println("executing actions...");

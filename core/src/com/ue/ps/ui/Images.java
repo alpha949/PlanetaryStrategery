@@ -30,6 +30,7 @@ public class Images {
 	public static Texture panelStats = getImg("buildingStats");
 
 	public static Texture factionBoxTexure = getImg("factionBox");
+	public static Texture pew = getImg("pew");
 
 	public static Texture getImg(String path) {
 		try {

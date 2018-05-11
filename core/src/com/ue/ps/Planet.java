@@ -145,18 +145,30 @@ public class Planet extends BaseActor {
 	@Override
 	public void act(float dt) {
 		super.act(dt);
+
+		
 		updateShips(alliedOrbitingShips, 25);
 		updateShips(enemyOrbitingShips, 50);
 
-		this.rotateBy(0.2f * rotateDirection);
+		//this.rotateBy(0.2f * rotateDirection);
 		isCombat = false;
 		if (!this.enemyOrbitingShips.isEmpty() && this.owner != null) {
 			isCombat = true;
 		}
-
-		if (isCombat) {
-
+		if (!this.getAllOrbitingShips().isEmpty()) {
+			isCombat = true;
 		}
+		
+		if (isCombat && MathUtils.random(1,10) == 1) {
+		
+			Ship s1 = this.alliedOrbitingShips.get(MathUtils.random(0,this.alliedOrbitingShips.size()-1));
+			Ship s2 = this.enemyOrbitingShips.get(MathUtils.random(0,this.enemyOrbitingShips.size()-1));
+
+			Particle.spawnParticle(this, s1.center.x, s1.center.y, 10, 0, Utils.pointAt(s1.center.x, s1.center.y, s2.center.x, s2.center.y),  Images.pew);
+		}
+	
+	
+
 
 	}
 
