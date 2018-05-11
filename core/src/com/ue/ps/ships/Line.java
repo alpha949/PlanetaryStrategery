@@ -60,25 +60,24 @@ public class Line {
 			m.getRoot().removeActor(l.lineSegments[i]);
 
 		}
+		
+		if(l.planet1.lineLinkedPlanets.contains(l.planet2)){
+			l.planet1.lineLinkedPlanets.remove(l.planet2);
+			System.out.println("Planet " + l.planet2.name + " was unlinked from Planet " + l.planet1.name +"!");
+		} else {
+			throw new Error("Planet " + l.planet1.name + " does not contain planet " + l.planet2.name + " in its link list.");
+		}
+		
+		if(l.planet2.lineLinkedPlanets.contains(l.planet1)){
+			l.planet2.lineLinkedPlanets.remove(l.planet1);
+			System.out.println("Planet " + l.planet1.name + " was unlinked from Planet " + l.planet2.name +"!");
+		} else {
+			throw new Error("Planet " + l.planet2.name + " does not contain planet " + l.planet1.name + " in its link list.");
+		}
+		
+		l.planet1.linkNetwork.updateNetwork();
 	}
 	
-	public void kill(Stage s){
-		deleteLine(this, s);
-		if(planet1.lineLinkedPlanets.contains(planet2)){
-			planet1.lineLinkedPlanets.remove(planet2);
-			System.out.println("Planet " + planet2.name + " was unlinked from Planet " + planet1.name +"!");
-		} else {
-			throw new Error("Planet " + planet1.name + " does not contain planet " + planet2.name + " in its link list.");
-		}
-		
-		if(planet2.lineLinkedPlanets.contains(planet1)){
-			planet2.lineLinkedPlanets.remove(planet1);
-			System.out.println("Planet " + planet1.name + " was unlinked from Planet " + planet2.name +"!");
-		} else {
-			throw new Error("Planet " + planet2.name + " does not contain planet " + planet1.name + " in its link list.");
-		}
-		
-		planet1.linkNetwork.updateNetwork();
-	}
+	
 
 }

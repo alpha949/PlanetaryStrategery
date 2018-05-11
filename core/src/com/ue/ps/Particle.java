@@ -37,19 +37,21 @@ public class Particle extends BaseActor{
 	}
 	
 	
-	public static void spawnParticle(Stage m, float x, float y, float vel, float accel, float angle, Texture t) {
+	public static Particle spawnParticle(Stage m, float x, float y, float vel, float accel, float angle, Texture t) {
 		Particle p = new Particle(t, angle, vel, accel);
 		p.x = x;
 		p.y = y;
 		p.setCenter(x, y);
 		m.addActor(p);
+		return p;
 	}
-	public static void spawnParticle(BaseActor m, float x, float y, float vel, float accel, float angle, Texture t) {
+	public static Particle spawnParticle(BaseActor m, float x, float y, float vel, float accel, float angle, Texture t) {
 		Particle p = new Particle(t, angle, vel, accel);
 		p.x = x;
 		p.y = y;
 		p.setCenter(x, y);
 		m.addActor(p);
+		return p;
 	}
 	
 	
