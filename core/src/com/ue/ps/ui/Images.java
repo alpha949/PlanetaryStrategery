@@ -31,6 +31,7 @@ public class Images {
 
 	public static Texture factionBoxTexure = getImg("factionBox");
 	public static Texture pew = getImg("pew");
+	public static Texture planetGlow = getImg("planetGlow");
 
 	public static Texture getImg(String path) {
 		try {

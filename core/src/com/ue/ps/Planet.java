@@ -61,6 +61,8 @@ public class Planet extends BaseActor {
 	private int builtBuildings = 0;
 
 	private Texture pew = Images.getImg("pew");
+	
+	public BaseActor glow;
 
 	public PlanetNetwork linkNetwork;
 
@@ -92,7 +94,7 @@ public class Planet extends BaseActor {
 		this.buildings = new Building[capacity];
 		this.setTexture(this.type.tex); // TODO resize the images based on
 										// planet size
-		this.setRotation(MathUtils.random(0, 360));
+		//this.setRotation(MathUtils.random(0, 360));
 		this.name = Utils.genName();
 		this.setOrigin(this.getWidth() / 2, this.getHeight() / 2);
 		this.FactoryQuant = 0;
@@ -161,7 +163,7 @@ public class Planet extends BaseActor {
 			isCombat = true;
 		}
 		
-		if (isCombat && MathUtils.random(1,10) == 1) {
+		if (isCombat && MathUtils.random(1,10) == 1 && !this.alliedOrbitingShips.isEmpty() && !this.enemyOrbitingShips.isEmpty()) {
 		
 			Ship s1 = this.alliedOrbitingShips.get(MathUtils.random(0,this.alliedOrbitingShips.size()-1));
 			Ship s2 = this.enemyOrbitingShips.get(MathUtils.random(0,this.enemyOrbitingShips.size()-1));
@@ -351,7 +353,7 @@ public class Planet extends BaseActor {
 	public void embarkShip(Ship s) {
 		System.out.println("Emarked Ship");
 		this.removeActor(s);
-		if (s.getOwnerName().equals(this.owner.getUser())) {
+		if (this.owner != null && s.getOwnerName().equals(this.owner.getUser())) {
 			this.alliedOrbitingShips.remove(s);
 		} else {
 			this.enemyOrbitingShips.remove(s);

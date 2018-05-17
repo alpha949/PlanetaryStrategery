@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -183,6 +184,14 @@ public class GameplayScreen implements Screen {
 				Ship.spawnShip(new Player("EVIL PERSON", Faction.Braecious), p, ShipType.dread, 100);
 				
 			}
+			BaseActor glow = new BaseActor(Images.planetGlow);
+			
+			glow.setSize(p.getWidth() * p.getSize(), p.getHeight() * p.getSize());
+			//position is off by a little when the planet is scaled
+			glow.setCenter(p.center.x, p.center.y);
+			mainStage.addActor(glow);
+			glow.setZIndex(0);
+			p.glow = glow;
 			
 		}
 
@@ -264,8 +273,19 @@ public class GameplayScreen implements Screen {
 
 			}
 		}
-
+		
+		for (Planet p : World.getWorld()) {
+			if (p.glow.getColor() != Color.BLACK) {
+				p.glow.setColor(Color.BLACK);
+			}
+		}
+		
 		if (!SidePanel.selectedShips.isEmpty()) {
+			for (Planet p : World.getWorld()) {
+				if (SidePanel.selectedShips.get(0).location.distanceTo(p.center.x, p.center.y) < 15000) {
+					p.glow.setColor(GameServerClient.clientPlayer.faction.color);
+				}
+			}
 			if (activePointer == null) {
 				activePointer = new ShipPointer(SidePanel.selectedShips.get(0).location);
 			}
@@ -274,6 +294,7 @@ public class GameplayScreen implements Screen {
 			}
 		} else {
 			if (activePointer != null) {
+				
 				activePointer.delete();
 				activePointer = null;
 				SidePanel.selectedShips.clear();

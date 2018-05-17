@@ -12,6 +12,7 @@ import com.ue.ps.PS;
 import com.ue.ps.Planet;
 import com.ue.ps.ships.Ship;
 import com.ue.ps.ships.ShipPointer;
+import com.ue.ps.systems.GameServerClient;
 
 public class SidePanel extends BaseActor {
 
@@ -139,31 +140,35 @@ public class SidePanel extends BaseActor {
 
 		//Ship displaying (move)
 		int localrand = 0;
-		for (int i = 0; i < this.planet.getAlliedShips().size(); i++) {
-			ShipContainer sbox = new ShipContainer(this.planet.getAlliedShips().get(i));
-			//sbox.setPosition(100, PS.viewHeight - 150 - i * 20);
-			sbox.setPosition(100, PS.viewHeight - 150 - i * 20); //TODO change?
+		
+		for (int i = 0; i < this.planet.getAllOrbitingShips().size(); i++) {
+			if (this.planet.getAllOrbitingShips().get(i).getOwnerName().equals(GameServerClient.user)) {
+				ShipContainer sbox = new ShipContainer(this.planet.getAllOrbitingShips().get(i));
+				//sbox.setPosition(100, PS.viewHeight - 150 - i * 20);
+				sbox.setPosition(100, PS.viewHeight - 150 - i * 20); //TODO change?
 
-			shipContainers.add(sbox);
-			tabShips.addActor(sbox);
+				shipContainers.add(sbox);
+				tabShips.addActor(sbox);
 
-			for (ShipPointer pointer : this.planet.pointers) { // makes the
-																// container
-																// show where
-																// the ship is
-																// going
-				System.out.println(pointer);
-				for (Ship s : pointer.ships) {
-					System.out.println(s);
-					if (s != null && getShipContainer(s) != null) {
-						getShipContainer(s).setDestinationInfo(pointer.destination);
-					} else {
-						System.out.println("Missing ship container!");
+				for (ShipPointer pointer : this.planet.pointers) { // makes the
+																	// container
+																	// show where
+																	// the ship is
+																	// going
+					System.out.println(pointer);
+					for (Ship s : pointer.ships) {
+						System.out.println(s);
+						if (s != null && getShipContainer(s) != null) {
+							getShipContainer(s).setDestinationInfo(pointer.destination);
+						} else {
+							System.out.println("Missing ship container!");
+						}
+
 					}
-
 				}
+				localrand = i;
 			}
-			localrand = i;
+			
 		}
 
 		for (ShipContainer s : this.planet.BuildQueue) { // add ships being
