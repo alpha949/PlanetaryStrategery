@@ -141,12 +141,12 @@ public class SidePanel extends BaseActor {
 		//Ship displaying (move)
 		int localrand = 0;
 		
+		int f = 0;
 		for (int i = 0; i < this.planet.getAllOrbitingShips().size(); i++) {
 			if (this.planet.getAllOrbitingShips().get(i).getOwnerName().equals(GameServerClient.user)) {
 				ShipContainer sbox = new ShipContainer(this.planet.getAllOrbitingShips().get(i));
 				//sbox.setPosition(100, PS.viewHeight - 150 - i * 20);
-				sbox.setPosition(100, PS.viewHeight - 150 - i * 20); //TODO change?
-
+				sbox.setPosition(10, Tab.maxHeight - (f) * 50); //TODO change? YES
 				shipContainers.add(sbox);
 				tabShips.addActor(sbox);
 
@@ -167,14 +167,14 @@ public class SidePanel extends BaseActor {
 					}
 				}
 				localrand = i;
+				f++;
 			}
-			
 		}
 
 		for (ShipContainer s : this.planet.BuildQueue) { // add ships being
 															// built
 			localrand++;
-			s.setPosition(100, Tab.maxHeight - 10 - localrand * 20);
+			s.setPosition(10, Tab.maxHeight - 10 - localrand * 20);
 			shipContainers.add(s);
 			tabShips.addActor(s);
 			tabShips.internalHeight += 20; //add the height of this object (and buffer beneath) to the net height of the tab
@@ -201,6 +201,9 @@ public class SidePanel extends BaseActor {
 				bc.setBuilding(null);
 			}
 		}
+		
+		//UI must be final thing here
+		tabBuildings.BringUp();
 	}
 
 	/**

@@ -83,8 +83,9 @@ public class Tab extends BaseActor {
 		
 		if (isVisible()) {
 			batch.draw(this.getTexture(), tabHitbox.x, tabHitbox.y-this.scrollOffset);
+			
 		}
-		super.draw(batch, parentAlpha);
+		super.draw(batch, parentAlpha); //commenting it out gets rid of the unwanted corner thing, but also makes all the build options go up a bit in visuals only because WHO KNOWS
 	}
 	
 	//Will be used to "select a ship, shows up on the side menu" (may change to take in object, may not be used at all)

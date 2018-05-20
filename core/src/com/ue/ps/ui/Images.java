@@ -28,6 +28,7 @@ public class Images {
 
 	public static Texture panelAdd = getImg("panelAdd");
 	public static Texture panelStats = getImg("buildingStats");
+	public static Texture shipStats = getImg("shipStats");
 
 	public static Texture factionBoxTexure = getImg("factionBox");
 	public static Texture pew = getImg("pew");

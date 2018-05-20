@@ -3,9 +3,14 @@ package com.ue.ps.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.ue.ps.BaseActor;
 import com.ue.ps.HoverPanel;
+import com.ue.ps.PS;
 import com.ue.ps.Planet;
 import com.ue.ps.ships.Ship;
 import com.ue.ps.ships.ShipType;
@@ -28,38 +33,36 @@ public class ShipContainer extends BaseActor implements UIElement{
 	public Planet planet;
 
 	private HoverPanel hoverPanel;
+	private Label descriptor;
+	private Label nameShow;
+	
+	//because fuck you not drawing once
+	private ShapeRenderer shapeRenderer;
+	private float hpratio;
+	private int hpSize;
+	private Color hpColor;
+	
 
 	public boolean done = false; // if there is a finished, built, ship
 	public boolean constructing = false; // if it is displaying the build menu
 											// (only true if top) (pre-build)
-	public boolean building = false; // if the ship shown is in the prosess of
+	public boolean building = false; // if the ship shown is in the process of
 										// being built
 
 	private Button[] shipBuildBoxes; // the ships you can build
 
 	public ShipContainer(Ship ship) { // a finished ship
-		super(Images.shipcontainer);
-		this.texture = Images.shipcontainer;
-		shipImg.setPosition(1, 1);
+		super(Images.shipStats);
+		shipImg.setPosition(1, 18);
 		this.addActor(shipImg);
 		this.done = true;
 		this.constructing = false;
 		this.building = false;
 		this.setShip(ship);
-	}
-
-	public void setShip(Ship s) {
-		ship = s;
-		if (s != null) {
-
-			shipImg.setTexture(s.getTexture());
-			this.hoverPanel = new HoverPanel(HoverPanel.shipInfo, ship.type.name(), Integer.toString(ship.health), "N/A");
-			this.hoverPanel.setPosition(this.getWidth(), this.getHeight() / 2);
-			this.addActor(this.hoverPanel);
-		} else {
-			shipImg.setTexture(Images.emptyTexture);
-		}
-
+	    shapeRenderer = new ShapeRenderer();
+		this.makeDisp();
+		this.addActor(this.descriptor);
+		this.addActor(this.nameShow);
 	}
 
 	public ShipContainer() {
@@ -71,13 +74,71 @@ public class ShipContainer extends BaseActor implements UIElement{
 		this.buildProgress = 0;
 		shipBuildBoxes = new Button[ShipType.values().length];
 
-		for (int i = 0; i < ShipType.values().length; i++) {
+		for (int i = 0; i < ShipType.values().length; i++) { //make a big set of "next buildable" ships
 			shipBuildBoxes[i] = new Button(Images.ShipBuildBox);
 			BaseActor shipImg = new BaseActor(GameServerClient.clientPlayer.faction.getShipTypeTexture(ShipType.values()[i]));
 			shipImg.setPosition(1, 1);
 			shipBuildBoxes[i].addActor(shipImg);
 			this.addActor(shipBuildBoxes[i]);
 		}
+	    shapeRenderer = new ShapeRenderer();
+		this.makeDisp();
+		this.addActor(this.descriptor);
+		this.addActor(this.nameShow);
+	}
+	
+	public void makeDisp(){
+		if (this.descriptor == null){this.descriptor = new Label("", PS.font);}
+		if (this.nameShow == null){this.nameShow = new Label("", PS.font);}
+		
+		
+		if (this.done){
+			//health bar
+			if (this.ship.maxhp > 0){
+				this.hpratio = this.ship.health / this.ship.maxhp;
+				this.hpColor = new Color(Math.max(225- Math.round(225*this.hpratio), 0), Math.max(Math.round(225*this.hpratio), 0), 0, 1);
+				this.hpSize = Math.round(this.hpratio*40);
+			} else {
+				this.hpratio = 1;
+				this.hpColor = new Color(200, 200, 200, 1);
+				this.hpSize = 40;
+			}
+			
+			this.descriptor.setPosition(2, 2);
+			this.nameShow.setPosition(46, 18);
+		}
+		if (this.building){
+			//health bar
+			if (this.shiptype.getStat(2) > 0){
+				this.hpratio = this.buildProgress / this.shiptype.getStat(2);
+				this.hpColor = new Color(128, 128, 128, 1);
+				this.hpSize = -Math.round(this.hpratio*40);
+			} else {
+				this.hpratio = 1;
+				this.hpColor = new Color(200, 200, 200, 1);
+				this.hpSize = 40;
+			}
+			
+			this.descriptor.setPosition(2, 2);
+			this.nameShow.setPosition(46, 18);
+		}
+	}
+	
+	public void setShip(Ship s) {
+		ship = s;
+		if (s != null) {
+			this.shiptype = s.type;
+			shipImg.setTexture(s.getTexture());
+			this.nameShow = new Label(s.type.name(), PS.font);
+			
+			this.hoverPanel = new HoverPanel(HoverPanel.shipInfo, ship.type.name(), Integer.toString(ship.health), "N/A");
+			this.hoverPanel.setPosition(this.getWidth(), this.getHeight() / 2);
+			this.addActor(this.hoverPanel);
+			
+		} else {
+			shipImg.setTexture(Images.emptyTexture);
+		}
+
 	}
 
 	public Ship getShip() {
@@ -164,10 +225,32 @@ public class ShipContainer extends BaseActor implements UIElement{
 				}
 
 			}
-
 		}
 	}
 
+	public void draw(Batch batch, float parentAlpha){
+		Color c = getColor();
+		batch.setColor(c.r, c.g, c.b, c.a); //I want to get rid of this but I'm scared
+		
+		if (isVisible()) {
+			this.drawChildren(batch, parentAlpha);
+			
+			//i hate this
+			if (!this.constructing){
+				shapeRenderer.begin(ShapeType.Filled);
+				shapeRenderer.setColor(this.hpColor);
+				if (this.hpSize >= 0){
+					shapeRenderer.rect(46, 18, this.hpSize, 18);
+				} else {
+					shapeRenderer.rect(40, 18, 40+this.hpSize, 18);
+				}
+				shapeRenderer.end();
+			}
+			batch.draw(this.getTexture(), this.getX(), this.getY());
+		}
+		super.draw(batch, parentAlpha);
+	}
+	
 	public boolean isSelected() {
 		return isSelected;
 	}
