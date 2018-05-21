@@ -2,7 +2,6 @@ package com.ue.ps.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -22,7 +21,7 @@ public class ShipContainer extends BaseActor implements UIElement{
 	public int shipProgressOutput;
 	public int buildProgress;
 
-	private Texture texture = Images.shipcontainer;
+	
 	private Ship ship;
 	private ShipType shiptype;
 	private BaseActor shipImg = new BaseActor();
@@ -68,7 +67,7 @@ public class ShipContainer extends BaseActor implements UIElement{
 	public ShipContainer() {
 		super(Images.shipbuildbox);
 		this.building = false;
-		this.texture = Images.shipbuildbox;
+		
 		this.done = false;
 		this.constructing = true;
 		this.buildProgress = 0;

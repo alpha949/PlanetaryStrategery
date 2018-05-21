@@ -153,13 +153,6 @@ public class BuildingContainer extends Button implements UIElement{
 		return isSelected;
 	}
 
-	/*
-	 * Unused but useful
-	 * 
-	 * 
-	 * 
-	 * 
-	 *
-	 */
+	
 
 }
