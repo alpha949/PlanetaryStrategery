@@ -97,7 +97,7 @@ public class SidePanel extends BaseActor {
 		this.addActor(tabBuildings);
 		this.addActor(tabShips);
 		
-		this.addActor(this.uiMouseBlot);
+		this.addActor(uiMouseBlot);
 
 	}
 

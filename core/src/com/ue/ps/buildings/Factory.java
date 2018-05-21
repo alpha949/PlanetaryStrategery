@@ -5,7 +5,7 @@ import com.ue.ps.ships.ShipType;
 
 public class Factory extends Building {
 
-	private int resourceInput = 3, shipProgressOutput = 10;
+	
 
 	public ShipType buildingShip;
 

@@ -11,8 +11,6 @@ import com.ue.ps.Player;
 
 public class ResourcePanel extends BaseActor {
 
-	private Faction faction;
-	private Player player;
 
 	private Label peopleCounter = new Label("3", PS.font);
 	private Label resourceCounter = new Label("6", PS.font);
@@ -26,8 +24,7 @@ public class ResourcePanel extends BaseActor {
 
 	public ResourcePanel(Faction f, Player p) {
 		super("assets/resourcePanel.png");
-		this.faction = f;
-		this.player = p;
+
 		BaseActor factionIcon = new BaseActor("assets/Red.png");
 		factionIcon.setPosition(1, 1);
 		this.addActor(factionIcon);
