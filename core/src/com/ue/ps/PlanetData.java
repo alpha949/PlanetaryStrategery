@@ -17,10 +17,12 @@ public class PlanetData {
 
 	public static Planet fromPlanetData(PlanetData pd) {
 		Planet p = new Planet();
-		p.setCenter(pd.x, pd.y);
+		
 		p.isHomePlanet = pd.isHomePlanet;
 		p.setType(pd.type);
 		p.setSize(pd.size);
+		p.setOrigin(p.getWidth() / 2, p.getHeight() / 2);
+		p.setCenter(pd.x, pd.y);
 		p.id = pd.id;
 		p.owner = GameServerClient.getPlayerByUserName(pd.owner);
 

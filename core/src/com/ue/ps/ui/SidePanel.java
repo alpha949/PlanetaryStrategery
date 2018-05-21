@@ -94,8 +94,6 @@ public class SidePanel extends BaseActor {
 		deincrementPriorityButton.setPosition(70 + 21 + 21 + 21, this.getHeight() - 75 - 16 - 10 - 16 - 10);
 		this.addActor(deincrementPriorityButton);
 
-		tabBuildings = new Tab(65, 637);
-		tabShips = new Tab(65+100, 637);
 		this.addActor(tabBuildings);
 		this.addActor(tabShips);
 		
@@ -128,7 +126,7 @@ public class SidePanel extends BaseActor {
 			this.removeActor(bbox);
 		}
 
-		for (BaseActor sbox : this.shipContainers) {
+		for (BaseActor sbox : shipContainers) {
 			this.removeActor(sbox);
 		}
 
@@ -155,7 +153,7 @@ public class SidePanel extends BaseActor {
 																	// show where
 																	// the ship is
 																	// going
-					System.out.println(pointer);
+					
 					for (Ship s : pointer.ships) {
 						System.out.println(s);
 						if (s != null && getShipContainer(s) != null) {
@@ -183,7 +181,7 @@ public class SidePanel extends BaseActor {
 		// add final "next build" box
 		ShipContainer sbox = new ShipContainer();
 		shipContainers.add(sbox);
-		this.addActor(sbox);
+		tabShips.addActor(sbox);
 
 		//BUILDINGS TAB
 		// setup building boxes

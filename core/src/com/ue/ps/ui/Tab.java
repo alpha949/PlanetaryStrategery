@@ -33,6 +33,7 @@ public class Tab extends BaseActor {
 		super(Images.BuildBox); //temporary image
 		this.setPosition(0, 0);
 		
+		
 		//Selector hitbox
 		this.tabHitbox = new Rectangle(tabx, taby, this.getTexture().getWidth(), this.getTexture().getHeight());
 		
@@ -53,7 +54,10 @@ public class Tab extends BaseActor {
 
 			//Update contents
 			for (Actor i : this.getChildren()){
-				((UIElement) i).update(localMousePos);
+				if (i instanceof UIElement) {
+					((UIElement) i).update(localMousePos);
+				}
+				
 			}
 		}
 		
@@ -69,8 +73,9 @@ public class Tab extends BaseActor {
 				this.scrollVel = (this.scrollVel > 0) ? this.scrollVel - .2 : this.scrollVel + .2;
 			}
 		}
+		
 	}
-	
+
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		// region.setRegion(anim.getKeyFrame(elapsedTime));
@@ -95,13 +100,20 @@ public class Tab extends BaseActor {
 			if (Tab.tabs.get(t) != this){
 				Tab.tabs.get(t).selected = false;
 				for (Actor b : Tab.tabs.get(t).getChildren()){
-					b.setVisible(false);
+					if (b instanceof BaseActor) {
+						((BaseActor)b).setVisible(false);
+					}
+				
 				}
 			}
 		}
 		this.selected = true;
+		
 		for (Actor b : this.getChildren()){
-			b.setVisible(true);
+			if (b instanceof BaseActor) {
+				((BaseActor)b).setVisible(true);  // <--- Commenting this out fixes the everything disappears bug, which is strange, because it makes things visible
+			}
+			
 		}
 		
 		//Include offset, take scrolling weirdness into account
