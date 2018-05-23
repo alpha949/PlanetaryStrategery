@@ -15,6 +15,7 @@ import com.ue.ps.Faction;
 import com.ue.ps.Planet;
 import com.ue.ps.PlanetData;
 import com.ue.ps.Player;
+import com.ue.ps.ships.Ship;
 import com.ue.ps.systems.GameServer.ServerCommands;
 
 public class GameServerClient {
@@ -33,7 +34,7 @@ public class GameServerClient {
 
 	public static ArrayList<Player> players = new ArrayList<Player>();
 
-	private Socket socket;
+	private Socket socket; 
 
 	public enum ClientRecieveCommands {
 		world, actions, players;
@@ -197,6 +198,21 @@ public class GameServerClient {
 
 	public void dispose() {
 		socket.dispose();
+	}
+	
+	public static boolean isOwnedBy(Player p, Planet P) {
+		if (P.owner == p) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public static boolean isOwnedBy(Player p, Ship s) {
+		if (s.getOwnerName().equals(p.getUser())) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

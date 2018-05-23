@@ -96,6 +96,8 @@ public class SidePanel extends BaseActor {
 
 		this.addActor(tabBuildings);
 		this.addActor(tabShips);
+		tabShips.setName("tab Ships");
+		tabBuildings.setName("tab buildings");
 		
 		this.addActor(uiMouseBlot);
 
@@ -141,13 +143,15 @@ public class SidePanel extends BaseActor {
 		
 		int f = 0;
 		for (int i = 0; i < this.planet.getAllOrbitingShips().size(); i++) {
-			if (this.planet.getAllOrbitingShips().get(i).getOwnerName().equals(GameServerClient.user)) {
+			
+		
 				ShipContainer sbox = new ShipContainer(this.planet.getAllOrbitingShips().get(i));
+				sbox.setShip(this.planet.getAllOrbitingShips().get(i));
 				//sbox.setPosition(100, PS.viewHeight - 150 - i * 20);
 				sbox.setPosition(10, Tab.maxHeight - (f) * 50); //TODO change? YES
 				shipContainers.add(sbox);
 				tabShips.addActor(sbox);
-
+			if (this.planet.getAllOrbitingShips().get(i).getOwnerName().equals(GameServerClient.user)) {
 				for (ShipPointer pointer : this.planet.pointers) { // makes the
 																	// container
 																	// show where
@@ -179,9 +183,9 @@ public class SidePanel extends BaseActor {
 		}
 
 		// add final "next build" box
-		ShipContainer sbox = new ShipContainer();
-		shipContainers.add(sbox);
-		tabShips.addActor(sbox);
+		//ShipContainer sbox = new ShipContainer();
+		//shipContainers.add(sbox);
+		//tabShips.addActor(sbox); 
 
 		//BUILDINGS TAB
 		// setup building boxes
@@ -289,6 +293,10 @@ public class SidePanel extends BaseActor {
 					}
 				}
 				this.planet.pointers.remove(deleteThisPointer);
+				if (sc.getShip() != null && sc.getShip().health <= 0) {
+				
+					
+				}
 			}
 			sc.update(uiMouseBlot.center);
 		}

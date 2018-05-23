@@ -44,7 +44,7 @@ public class Planet extends BaseActor {
 	private ArrayList<Ship> alliedOrbitingShips = new ArrayList<Ship>();
 	private ArrayList<Ship> enemyOrbitingShips = new ArrayList<Ship>();
 
-	// Storage info
+	// Storage info 
 	public int resource;
 	public int people;
 
@@ -159,9 +159,7 @@ public class Planet extends BaseActor {
 		if (!this.enemyOrbitingShips.isEmpty() && this.owner != null) {
 			isCombat = true;
 		}
-		if (!this.getAllOrbitingShips().isEmpty()) {
-			isCombat = true;
-		}
+	
 		
 		if (isCombat && MathUtils.random(1,10) == 1 && !this.alliedOrbitingShips.isEmpty() && !this.enemyOrbitingShips.isEmpty()) {
 		
@@ -182,7 +180,17 @@ public class Planet extends BaseActor {
 			}
 			
 		}
-	
+		 
+		for (int i = 0; i < this.enemyOrbitingShips.size(); i++) {
+			if (this.enemyOrbitingShips.get(i).health <= 0) {
+				this.enemyOrbitingShips.remove(i);
+			}
+		}
+		for (int i = 0; i < this.alliedOrbitingShips.size(); i++) {
+			if (this.alliedOrbitingShips.get(i).health <= 0) {
+				this.alliedOrbitingShips.remove(i);
+			}
+		}
 	
 
 
@@ -217,6 +225,11 @@ public class Planet extends BaseActor {
 
 		for (Ship s : clientShips) {
 			s.attack(shipTargets, buildingTargets, this);
+		}
+		if (!PS.useServer) {
+			for (Ship s : shipTargets) {
+				s.attack(clientShips, buildingTargets, this);
+			}
 		}
 
 	}

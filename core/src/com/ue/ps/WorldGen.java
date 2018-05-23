@@ -34,7 +34,7 @@ public class WorldGen {
 		setup();
 		ArrayList<PlanetData> planetData = new ArrayList<PlanetData>();
 		done = false;
-		System.out.print("Generating");
+		System.out.print("Generating"); 
 		while (!done) {
 			System.out.print(".");
 			canGenerate = true;

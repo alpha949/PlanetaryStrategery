@@ -46,8 +46,8 @@ public class Tab extends BaseActor {
 	}
 
 	public void update(Vector2 mousePos) {
-		if (this.selected && Hitbox.contains(mousePos)){
-
+		if (this.selected){
+			
 			Vector2 localMousePos = this.parentToLocalCoordinates(mousePos);
 			localMousePos = new Vector2(localMousePos.x, localMousePos.y+this.scrollOffset);
 			//Scroll check + scroll mod
@@ -97,21 +97,22 @@ public class Tab extends BaseActor {
 	public void BringUp(int offset){
 		//Set tab focus
 		for (int t = 0; t < Tab.tabs.size(); t++){
-			if (Tab.tabs.get(t) != this){
+			
 				Tab.tabs.get(t).selected = false;
 				for (Actor b : Tab.tabs.get(t).getChildren()){
-					if (b instanceof BaseActor) {
-						((BaseActor)b).setVisible(false);
-					}
+					
+						b.setVisible(false);
+					
 				
 				}
-			}
+				
+			
 		}
 		this.selected = true;
 		
 		for (Actor b : this.getChildren()){
 			if (b instanceof BaseActor) {
-				((BaseActor)b).setVisible(true);  // <--- Commenting this out fixes the everything disappears bug, which is strange, because it makes things visible
+				((BaseActor)b).setVisible(true);  
 			}
 			
 		}

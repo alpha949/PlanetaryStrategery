@@ -1,8 +1,10 @@
 package com.ue.ps.ui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
@@ -39,8 +41,8 @@ public class ShipContainer extends BaseActor implements UIElement{
 	private ShapeRenderer shapeRenderer;
 	private float hpratio;
 	private int hpSize;
-	private Color hpColor;
-	
+	private Color hpColor = new Color(Color.GREEN);
+	private BaseActor healthBar = new BaseActor(Images.shipHealthBar);
 
 	public boolean done = false; // if there is a finished, built, ship
 	public boolean constructing = false; // if it is displaying the build menu
@@ -62,6 +64,9 @@ public class ShipContainer extends BaseActor implements UIElement{
 		this.makeDisp();
 		this.addActor(this.descriptor);
 		this.addActor(this.nameShow);
+		//colton you can change this
+		healthBar.setPosition(1, 3);
+		this.addActor(healthBar);
 	}
 
 	public ShipContainer() {
@@ -84,6 +89,7 @@ public class ShipContainer extends BaseActor implements UIElement{
 		this.makeDisp();
 		this.addActor(this.descriptor);
 		this.addActor(this.nameShow);
+		
 	}
 	
 	public void makeDisp(){
@@ -93,10 +99,12 @@ public class ShipContainer extends BaseActor implements UIElement{
 		
 		if (this.done){
 			//health bar
+			this.ship.maxhp = 80;
 			if (this.ship.maxhp > 0){
 				this.hpratio = this.ship.health / this.ship.maxhp;
 				this.hpColor = new Color(Math.max(225- Math.round(225*this.hpratio), 0), Math.max(Math.round(225*this.hpratio), 0), 0, 1);
 				this.hpSize = Math.round(this.hpratio*40);
+			
 			} else {
 				this.hpratio = 1;
 				this.hpColor = new Color(200, 200, 200, 1);
@@ -124,15 +132,17 @@ public class ShipContainer extends BaseActor implements UIElement{
 	}
 	
 	public void setShip(Ship s) {
-		ship = s;
+		this.ship = s;
 		if (s != null) {
 			this.shiptype = s.type;
 			shipImg.setTexture(s.getTexture());
 			this.nameShow = new Label(s.type.name(), PS.font);
+			 this.nameShow.setColor(GameServerClient.getPlayerByUserName(ship.getOwnerName()).faction.color);
 			
 			this.hoverPanel = new HoverPanel(HoverPanel.shipInfo, ship.type.name(), Integer.toString(ship.health), "N/A");
 			this.hoverPanel.setPosition(this.getWidth(), this.getHeight() / 2);
 			this.addActor(this.hoverPanel);
+			this.done = true;
 			
 		} else {
 			shipImg.setTexture(Images.emptyTexture);
@@ -175,6 +185,16 @@ public class ShipContainer extends BaseActor implements UIElement{
 	}
 
 	public void update(Vector2 mousePos) {
+		//shapeRenderer.rect(46, 18, this.hpSize, 18);
+	
+	
+		healthBar.setRegion(0,0, this.ship.health, 18);
+	
+		healthBar.setColor(hpColor);
+		
+		
+	
+		
 		int numNotHovering = 0;
 		for (ShipContainer sc : SidePanel.shipContainers) {
 			if (!sc.getBoundingRectangle().contains(mousePos)) {
@@ -194,7 +214,7 @@ public class ShipContainer extends BaseActor implements UIElement{
 
 			if (Gdx.input.justTouched()) {
 
-				if (this.ship.getOwnerName().equals(GameServerClient.clientPlayer.getUser())) {
+				if (GameServerClient.isOwnedBy(GameServerClient.clientPlayer, this.ship)) {
 
 					if (this.constructing) {
 						for (int i = 0; i < this.shipBuildBoxes.length; i++) {
@@ -227,28 +247,7 @@ public class ShipContainer extends BaseActor implements UIElement{
 		}
 	}
 
-	public void draw(Batch batch, float parentAlpha){
-		Color c = getColor();
-		batch.setColor(c.r, c.g, c.b, c.a); //I want to get rid of this but I'm scared
-		
-		if (isVisible()) {
-			this.drawChildren(batch, parentAlpha);
-			
-			//i hate this
-			if (!this.constructing){
-				shapeRenderer.begin(ShapeType.Filled);
-				shapeRenderer.setColor(this.hpColor);
-				if (this.hpSize >= 0){
-					shapeRenderer.rect(46, 18, this.hpSize, 18);
-				} else {
-					shapeRenderer.rect(40, 18, 40+this.hpSize, 18);
-				}
-				shapeRenderer.end();
-			}
-			batch.draw(this.getTexture(), this.getX(), this.getY());
-		}
-		super.draw(batch, parentAlpha);
-	}
+	
 	
 	public boolean isSelected() {
 		return isSelected;

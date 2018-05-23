@@ -63,6 +63,8 @@ public class GameplayScreen implements Screen {
 	private Camera uiCamera;
 	private Viewport viewport;
 	private Viewport uiViewport;
+	
+	private Player evilPerson = new Player("EVIL PERSON", Faction.Braecious);
 
 	public static int cameraOffsetX;
 	public static int cameraOffsetY;
@@ -163,6 +165,7 @@ public class GameplayScreen implements Screen {
 		} else {
 			 GameServerClient.setUpPlayer(Faction.Lelouk);
 			 GameServerClient.players.add(GameServerClient.clientPlayer);
+				GameServerClient.players.add(evilPerson);
 			World.setWorld(WorldGen.generate(GameServerClient.players, 0, 0));
 
 			for (Planet p : World.getWorld()) {
@@ -181,7 +184,8 @@ public class GameplayScreen implements Screen {
 		for (Planet p : World.getWorld()) {
 			if (p.isHomePlanet) {
 				Ship.spawnShip(GameServerClient.clientPlayer, p, ShipType.dread, 10);
-				Ship.spawnShip(new Player("EVIL PERSON", Faction.Braecious), p, ShipType.dread, 100);
+			
+				Ship.spawnShip(evilPerson, p, ShipType.dread, 100);
 				
 			}
 			BaseActor glow = new BaseActor(Images.planetGlow);
@@ -230,7 +234,7 @@ public class GameplayScreen implements Screen {
 		mouseBlot.setPosition(Gdx.input.getX(), PS.viewHeight - Gdx.input.getY());
 		uiMousePos = uiStage.screenToStageCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 		// these numbers (8 and 13) seem really arbitrary, there's probably some
-		// reason for them...
+		// reason for them... 
 		stageMouseBlot.setPosition(mousePos.x - 8 * zoomAmount, mousePos.y - 8 * zoomAmount);
 		// stageMouseBlot.setScale(zoomAmount, zoomAmount);
 		stageMouseBlot.setSize(16 * zoomAmount, 16 * zoomAmount);
@@ -391,7 +395,7 @@ public class GameplayScreen implements Screen {
 					p.onTurnUpdate();
 				}
 
-				sidePanel.unset();
+				//sidePanel.unset();
 			} else {
 				// send actions
 				PS.client.sendRequest(GameServerClient.packet.getCompressedData(), GameServer.ServerCommands.recieveActions);
