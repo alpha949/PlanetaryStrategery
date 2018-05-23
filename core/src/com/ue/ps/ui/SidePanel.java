@@ -189,7 +189,7 @@ public class SidePanel extends BaseActor {
 
 		//BUILDINGS TAB
 		// setup building boxes
-		for (int i = 0; i < this.planet.buildings.length; i++) {
+		for (int i = 0; i < this.planet.landBuildings.length; i++) {
 			BuildingContainer bc = new BuildingContainer(i, 10, Tab.maxHeight - (i) * 50); //from bottom left
 			//BuildingContainer bc = new BuildingContainer(i, 10, -10 - (i+1) * 50); //from top left
 			bc.planet = p;
@@ -197,8 +197,8 @@ public class SidePanel extends BaseActor {
 			tabBuildings.addActor(bc);
 			tabBuildings.internalHeight += 50; //add the height of this object (and buffer beneath) to the net height of the tab
 
-			if (this.planet.buildings[i] != null) {
-				bc.setBuilding(this.planet.buildings[i]);
+			if (this.planet.landBuildings[i] != null) {
+				bc.setBuilding(this.planet.landBuildings[i]);
 			} else {
 				bc.setBuilding(null);
 			}
@@ -271,20 +271,21 @@ public class SidePanel extends BaseActor {
 
 		// update selectedships
 
-		for (ShipContainer sc : shipContainers) {
-			if (sc.done) {
-				if (sc.isSelected()) {
-					if (!selectedShips.contains(sc.getShip())) {
-						selectedShips.add(sc.getShip());
+		for (int i = 0; i < shipContainers.size(); i++) {
+			shipContainers.get(i).update(uiMouseBlot.center);
+			if (shipContainers.get(i).done) {
+				if (shipContainers.get(i).isSelected()) {
+					if (!selectedShips.contains(shipContainers.get(i).getShip())) {
+						selectedShips.add(shipContainers.get(i).getShip());
 					}
 
 				} else {
-					selectedShips.remove(sc.getShip());
+					selectedShips.remove(shipContainers.get(i).getShip());
 				}
 				ShipPointer deleteThisPointer = null;
-				if (sc.isDestinationUnset) {
+				if (shipContainers.get(i).isDestinationUnset) {
 					for (ShipPointer sp : this.planet.pointers) {
-						sp.ships.remove(sc.getShip());
+						sp.ships.remove(shipContainers.get(i).getShip());
 
 						if (sp.ships.isEmpty()) {
 							sp.delete();
@@ -293,12 +294,14 @@ public class SidePanel extends BaseActor {
 					}
 				}
 				this.planet.pointers.remove(deleteThisPointer);
-				if (sc.getShip() != null && sc.getShip().health <= 0) {
-				
+				if (shipContainers.get(i).getShip() != null && shipContainers.get(i).getShip().health <= 0) {
+					shipContainers.get(i).remove();
+					shipContainers.remove(i);
+					//i--;
 					
 				}
 			}
-			sc.update(uiMouseBlot.center);
+			
 		}
 
 		// update text fields

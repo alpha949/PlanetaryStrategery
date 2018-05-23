@@ -23,7 +23,8 @@ public class Planet extends BaseActor {
 	public boolean hasBranched;
 	private int size;
 	public int capacity;
-	public Building[] buildings;
+	public Building[] landBuildings;
+	public Building[] spaceBuildings;
 	private PlanetType type;
 	public boolean isHomePlanet;
 	public int FactoryQuant;
@@ -58,7 +59,8 @@ public class Planet extends BaseActor {
 
 	private boolean isCombat = false;
 
-	private int builtBuildings = 0;
+	private int builtLandBuildings = 0;
+	private int builtSpaceBuildings = 0;
 
 
 	
@@ -91,7 +93,8 @@ public class Planet extends BaseActor {
 	private void finish() {
 		this.capacity = size * 4;
 		this.setSize(this.getWidth() * size, this.getHeight() * size);
-		this.buildings = new Building[capacity];
+		this.landBuildings = new Building[this.type.landCap * 4];
+		this.spaceBuildings = new Building[this.type.spaceCap * 4];
 		this.setTexture(this.type.tex); // TODO resize the images based on
 										// planet size
 		//this.setRotation(MathUtils.random(0, 360));
@@ -119,7 +122,7 @@ public class Planet extends BaseActor {
 		this.size = size;
 		this.capacity = size * 4;
 		this.setSize(this.getWidth() * size, this.getHeight() * size);
-		this.buildings = new Building[capacity];
+		this.landBuildings = new Building[capacity];
 		this.setOrigin(this.getWidth() / 2, this.getHeight() / 2);
 	}
 
@@ -143,6 +146,23 @@ public class Planet extends BaseActor {
 			s.setRotation(s.angle - 90);
 		}
 	}
+	
+	private void updateSpaceBuildings(Building[] buildings, int orbitDist) {
+		
+		for (Building b : buildings) {
+			if (b != null) {
+				b.angle -= 0.5f;
+
+				b.setRotation(b.angle);
+				b.setCenter(this.getWidth() / 2, this.getHeight() / 2);
+				Vector2 pos = Utils.polarToRect((int) (this.getWidth() / 2 + b.getWidth() / 2) + orbitDist + 16, b.angle,
+						new Vector2(this.getWidth() / 2 - 16, this.getHeight() / 2 - 16));
+				b.setCenter(pos.x, pos.y);
+				b.setRotation(b.angle - 90);
+			}
+			
+		}
+	}
 
 	// TODO add new shipcontainer to planet when captured
 
@@ -151,8 +171,9 @@ public class Planet extends BaseActor {
 		super.act(dt);
 
 		
-		updateShips(alliedOrbitingShips, 25);
-		updateShips(enemyOrbitingShips, 50);
+		updateShips(alliedOrbitingShips, 50);
+		updateShips(enemyOrbitingShips, 75);
+		updateSpaceBuildings(spaceBuildings, 25);
 
 //		/this.rotateBy(0.2f * rotateDirection);
 		isCombat = false;
@@ -201,7 +222,7 @@ public class Planet extends BaseActor {
 		ArrayList<Building> buildingTargets = new ArrayList<Building>();
 		ArrayList<Ship> shipTargets = new ArrayList<Ship>();
 		if (this.owner != owner) {
-			for (Building b : this.buildings) {
+			for (Building b : this.landBuildings) {
 				if (b != null) {
 					buildingTargets.add(b);
 				}
@@ -224,9 +245,12 @@ public class Planet extends BaseActor {
 		}
 
 		for (Ship s : clientShips) {
+			if (!shipTargets.isEmpty() && !buildingTargets.isEmpty()) {
+				
+			}
 			s.attack(shipTargets, buildingTargets, this);
 		}
-		if (!PS.useServer) {
+		if (!PS.useServer && !clientShips.isEmpty()) {
 			for (Ship s : shipTargets) {
 				s.attack(clientShips, buildingTargets, this);
 			}
@@ -244,34 +268,47 @@ public class Planet extends BaseActor {
 	}
 
 	public void addBuilding(Building b, int slot) {
-		if (builtBuildings < capacity && slot < capacity) {
-			this.addActor(b);
-			buildings[slot] = b;
-			b.owner = this.owner;
-			int angle = 360 / capacity * slot;
-			b.setRotation(angle);
-			b.setCenter(this.getWidth() / 2, this.getHeight() / 2);
-			Vector2 pos = Utils.polarToRect((int) (this.getWidth() / 2 + b.getWidth() / 2), 360 / capacity * slot,
-					new Vector2(this.getWidth() / 2, this.getHeight() / 2));
-			b.setCenter(pos.x, pos.y);
-			b.setRotation(angle - 90);
+			System.out.println("adding building: " + b.id);
+			if (b.isSpaceBuilding()) {
+				if (builtSpaceBuildings < spaceBuildings.length && slot < spaceBuildings.length) {
+					spaceBuildings[slot] = b;
+					b.owner = this.owner;
+					this.addActor(b);
+					builtSpaceBuildings += 1;
+				}
+			}else {
+				if (builtLandBuildings < landBuildings.length && slot < landBuildings.length) {
+					this.addActor(b);
+					landBuildings[slot] = b;
+					b.owner = this.owner;
+					int angle = 360 / capacity * slot;
+					b.setRotation(angle);
+					b.setCenter(this.getWidth() / 2, this.getHeight() / 2);
+					Vector2 pos = Utils.polarToRect((int) (this.getWidth() / 2 + b.getWidth() / 2), 360 / capacity * slot,
+							new Vector2(this.getWidth() / 2, this.getHeight() / 2));
+					b.setCenter(pos.x, pos.y);
+					b.setRotation(angle - 90);
 
-			builtBuildings += 1;
-			if (b instanceof Factory) {
-				this.FactoryQuant += 1;
+					builtLandBuildings += 1;
+					if (b instanceof Factory) {
+						this.FactoryQuant += 1;
+					}
+				}
 			}
-		}
+				
+			
+		
 	}
 
 	public void destroyBuilding(int slot) {
-		this.removeActor(buildings[slot]);
-		buildings[slot] = null;
-		builtBuildings -= 1;
+		this.removeActor(landBuildings[slot]);
+		landBuildings[slot] = null;
+		builtLandBuildings -= 1;
 	}
 
 	public int getBuildingSlot(Building b) {
-		for (int i = 0; i < buildings.length; i++) {
-			if (buildings[i].equals(b)) {
+		for (int i = 0; i < landBuildings.length; i++) {
+			if (landBuildings[i].equals(b)) {
 				return i;
 			}
 		}
@@ -319,8 +356,8 @@ public class Planet extends BaseActor {
 
 	public Planet copy() {
 		Planet newPlanet = new Planet(this.type, this.size);
-		newPlanet.buildings = this.buildings;
-		newPlanet.builtBuildings = this.builtBuildings;
+		newPlanet.landBuildings = this.landBuildings;
+		newPlanet.builtLandBuildings = this.builtLandBuildings;
 		newPlanet.capacity = this.capacity;
 		newPlanet.isHomePlanet = this.isHomePlanet;
 		newPlanet.name = this.name;

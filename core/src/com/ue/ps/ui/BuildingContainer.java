@@ -63,7 +63,7 @@ public class BuildingContainer extends Button implements UIElement{
 		building = b;
 
 		if (b != null) {
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < Building.allBuildings.size(); i++) {
 				buildBoxes[i].setVisible(false);
 			}
 			this.done = true;
@@ -116,6 +116,7 @@ public class BuildingContainer extends Button implements UIElement{
 					for (int i = 0; i < buildBoxes.length; i++) {
 						if (buildBoxes[i].Pressed(localMouseCoords)) {
 							try {
+								
 								Building newBuilding = Building.allBuildings.get(i).getClass().newInstance();
 								// add building to planet
 								this.planet.addBuilding(newBuilding, this.id);
@@ -135,7 +136,7 @@ public class BuildingContainer extends Button implements UIElement{
 
 			} else {
 				this.isSelected = false;
-				for (int i = 0; i < 3; i++) {
+				for (int i = 0; i < Building.allBuildings.size(); i++) {
 					buildBoxes[i].setVisible(false);
 				}
 				this.constructing = false;

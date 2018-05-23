@@ -385,7 +385,7 @@ public class GameplayScreen implements Screen {
 					p.pointers.clear();
 
 					// update buildings
-					for (Building b : p.buildings) {
+					for (Building b : p.landBuildings) {
 						if (b != null) {
 							b.update(p);
 						}
@@ -420,7 +420,7 @@ public class GameplayScreen implements Screen {
 					Action.execute(a, mainStage, GameServerClient.clientPlayer);
 				}
 				for (Planet p : World.getWorld()) {
-					for (Building b : p.buildings) {
+					for (Building b : p.landBuildings) {
 						if (b != null) {
 							b.update(p);
 						}
