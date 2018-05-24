@@ -41,7 +41,7 @@ public class ShipContainer extends BaseActor implements UIElement{
 	private ShapeRenderer shapeRenderer;
 	private float hpratio;
 	private int hpSize;
-	private Color hpColor = new Color(Color.GREEN);
+	private Color hpColor;
 	private BaseActor healthBar = new BaseActor(Images.shipHealthBar);
 
 	public boolean done = false; // if there is a finished, built, ship
@@ -99,9 +99,9 @@ public class ShipContainer extends BaseActor implements UIElement{
 		
 		if (this.done){
 			//health bar
-			this.ship.maxhp = 80;
 			if (this.ship.maxhp > 0){
-				this.hpratio = this.ship.health / this.ship.maxhp;
+				this.hpratio = (float) this.ship.health / this.ship.maxhp;
+				System.out.println(this.hpratio);
 				this.hpColor = new Color(Math.max(225- Math.round(225*this.hpratio), 0), Math.max(Math.round(225*this.hpratio), 0), 0, 1);
 				this.hpSize = Math.round(this.hpratio*40);
 			
@@ -115,9 +115,10 @@ public class ShipContainer extends BaseActor implements UIElement{
 			this.nameShow.setPosition(46, 18);
 		}
 		if (this.building){
-			//health bar
+			//build progress bar
 			if (this.shiptype.getStat(2) > 0){
-				this.hpratio = this.buildProgress / this.shiptype.getStat(2);
+				this.hpratio = (float) this.buildProgress / this.shiptype.getStat(2);
+				System.out.println(this.hpratio);
 				this.hpColor = new Color(128, 128, 128, 1);
 				this.hpSize = -Math.round(this.hpratio*40);
 			} else {
@@ -137,7 +138,7 @@ public class ShipContainer extends BaseActor implements UIElement{
 			this.shiptype = s.type;
 			shipImg.setTexture(s.getTexture());
 			this.nameShow = new Label(s.type.name(), PS.font);
-			 this.nameShow.setColor(GameServerClient.getPlayerByUserName(ship.getOwnerName()).faction.color);
+			//this.nameShow.setColor(GameServerClient.getPlayerByUserName(ship.getOwnerName()).faction.color); //no, the color will be on the ships.
 			
 			this.hoverPanel = new HoverPanel(HoverPanel.shipInfo, ship.type.name(), Integer.toString(ship.health), "N/A");
 			this.hoverPanel.setPosition(this.getWidth(), this.getHeight() / 2);

@@ -93,8 +93,8 @@ public class Planet extends BaseActor {
 	private void finish() {
 		this.capacity = size * 4;
 		this.setSize(this.getWidth() * size, this.getHeight() * size);
-		this.landBuildings = new Building[this.type.landCap * 4];
-		this.spaceBuildings = new Building[this.type.spaceCap * 4];
+		this.landBuildings = new Building[this.type.landCap * this.capacity];
+		this.spaceBuildings = new Building[this.type.spaceCap * this.capacity];
 		this.setTexture(this.type.tex); // TODO resize the images based on
 										// planet size
 		//this.setRotation(MathUtils.random(0, 360));

@@ -13,17 +13,18 @@ public abstract class Building extends BaseActor {
 	public int resourceCost;
 	public static ArrayList<Building> allBuildings = new ArrayList<Building>();
 	public char id;
+	public BuildingType type;
 	public Player owner;
 	protected boolean isSpace;
 	public float angle;
 
-	public Building(String path) {
-		super(path);
-
-	}
-	public Building(Texture t) {
-		super(t);
-
+	public Building(BuildingType t) {
+		super(t.texture);
+		this.health = t.health;
+		this.id = t.id;
+		this.isSpace = t.isSpace;
+		this.resourceCost = t.resourceCost;
+		this.type = t;
 	}
 
 	public abstract void update(Planet p);
@@ -34,6 +35,14 @@ public abstract class Building extends BaseActor {
 	public static Building getBuildingFromId(char id) {
 		for (Building b : allBuildings) {
 			if (b.id == id) {
+				return b;
+			}
+		}
+		return null;
+	}
+	public static Building getBuildingFromId(BuildingType id) {
+		for (Building b : allBuildings) {
+			if (b.type == id) {
 				return b;
 			}
 		}

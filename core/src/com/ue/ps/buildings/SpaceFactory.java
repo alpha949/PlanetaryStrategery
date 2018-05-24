@@ -6,7 +6,7 @@ import com.ue.ps.ui.Images;
 public class SpaceFactory extends Building{
 
 	public SpaceFactory() {
-		super(Images.Deincrement);
+		super(BuildingType.spacefactory);
 		this.health = 50;
 		this.resourceCost = 5;
 		this.isSpace = true;

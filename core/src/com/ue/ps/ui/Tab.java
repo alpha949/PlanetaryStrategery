@@ -54,10 +54,7 @@ public class Tab extends BaseActor {
 
 			//Update contents
 			for (Actor i : this.getChildren()){
-				if (i instanceof UIElement) {
-					((UIElement) i).update(localMousePos);
-				}
-				
+				((UIElement) i).update(localMousePos);
 			}
 		}
 		
@@ -97,24 +94,17 @@ public class Tab extends BaseActor {
 	public void BringUp(int offset){
 		//Set tab focus
 		for (int t = 0; t < Tab.tabs.size(); t++){
-			
+			if (Tab.tabs.get(t) != this){
 				Tab.tabs.get(t).selected = false;
 				for (Actor b : Tab.tabs.get(t).getChildren()){
-					
 						b.setVisible(false);
-					
-				
 				}
-				
-			
+			}
 		}
 		this.selected = true;
 		
 		for (Actor b : this.getChildren()){
-			if (b instanceof BaseActor) {
-				((BaseActor)b).setVisible(true);  
-			}
-			
+			b.setVisible(true);
 		}
 		
 		//Include offset, take scrolling weirdness into account

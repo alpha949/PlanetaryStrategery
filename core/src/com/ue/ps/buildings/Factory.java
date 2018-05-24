@@ -12,7 +12,7 @@ public class Factory extends Building {
 	public int buildProgress;
 
 	public Factory() {
-		super("assets/factory.png");
+		super(BuildingType.factory);
 		this.health = 50;
 		this.resourceCost = 5;
 		this.id = 'f';
