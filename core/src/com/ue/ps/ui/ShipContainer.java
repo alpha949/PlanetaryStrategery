@@ -29,8 +29,8 @@ public class ShipContainer extends BaseActor implements UIElement{
 	private BaseActor shipImg = new BaseActor();
 	private boolean isSelected;
 	private String distinationName;
-	private boolean isDestinationSet;
-	public boolean isDestinationUnset;
+	public boolean isDestinationSet;
+
 	public Planet planet;
 
 	private HoverPanel hoverPanel;
@@ -40,8 +40,8 @@ public class ShipContainer extends BaseActor implements UIElement{
 	//because fuck you not drawing once
 	private ShapeRenderer shapeRenderer;
 	private float hpratio;
-	private int hpSize;
-	private Color hpColor;
+
+	private Color hpColor = new Color(Color.GREEN);
 	private BaseActor healthBar = new BaseActor(Images.shipHealthBar);
 
 	public boolean done = false; // if there is a finished, built, ship
@@ -99,16 +99,18 @@ public class ShipContainer extends BaseActor implements UIElement{
 		
 		if (this.done){
 			//health bar
-			if (this.ship.maxhp > 0){
+			if (this.ship.health > 0){
+			
 				this.hpratio = (float) this.ship.health / this.ship.maxhp;
-				System.out.println(this.hpratio);
-				this.hpColor = new Color(Math.max(225- Math.round(225*this.hpratio), 0), Math.max(Math.round(225*this.hpratio), 0), 0, 1);
-				this.hpSize = Math.round(this.hpratio*40);
+		
+				this.hpColor = new Color(1- this.hpratio, this.hpratio, 0, 1);
+			
 			
 			} else {
+			
 				this.hpratio = 1;
-				this.hpColor = new Color(200, 200, 200, 1);
-				this.hpSize = 40;
+				this.hpColor = new Color(0, 1, 0, 1);
+			
 			}
 			
 			this.descriptor.setPosition(2, 2);
@@ -118,13 +120,13 @@ public class ShipContainer extends BaseActor implements UIElement{
 			//build progress bar
 			if (this.shiptype.getStat(2) > 0){
 				this.hpratio = (float) this.buildProgress / this.shiptype.getStat(2);
-				System.out.println(this.hpratio);
-				this.hpColor = new Color(128, 128, 128, 1);
-				this.hpSize = -Math.round(this.hpratio*40);
+				
+				this.hpColor = new Color(hpratio, hpratio, hpratio, 1);
+			
 			} else {
 				this.hpratio = 1;
-				this.hpColor = new Color(200, 200, 200, 1);
-				this.hpSize = 40;
+				this.hpColor = new Color(1, 1, 1, 1);
+		
 			}
 			
 			this.descriptor.setPosition(2, 2);
@@ -138,7 +140,7 @@ public class ShipContainer extends BaseActor implements UIElement{
 			this.shiptype = s.type;
 			shipImg.setTexture(s.getTexture());
 			this.nameShow = new Label(s.type.name(), PS.font);
-			this.nameShow.setColor(GameServerClient.getPlayerByUserName(ship.getOwnerName()).faction.color); //no, the color will be on the ships. BUT WHY?
+			this.nameShow.setColor(GameServerClient.getPlayerByUserName(ship.getOwnerName()).faction.color); 
 			
 			this.hoverPanel = new HoverPanel(HoverPanel.shipInfo, ship.type.name(), Integer.toString(ship.health), "N/A");
 			this.hoverPanel.setPosition(this.getWidth(), this.getHeight() / 2);
@@ -189,7 +191,7 @@ public class ShipContainer extends BaseActor implements UIElement{
 		//shapeRenderer.rect(46, 18, this.hpSize, 18);
 	
 	
-		healthBar.setRegion(0,0, this.ship.health, 18);
+		healthBar.setRegion(0,0, (int) (240 * hpratio), 18);
 	
 		healthBar.setColor(hpColor);
 		
@@ -267,7 +269,7 @@ public class ShipContainer extends BaseActor implements UIElement{
 	}
 
 	public void unsetDestination() {
-		this.isDestinationUnset = true;
+
 		distinationName = "";
 		this.isDestinationSet = false;
 		this.hoverPanel.getInfo().get(2).setText("Heading: N/A");

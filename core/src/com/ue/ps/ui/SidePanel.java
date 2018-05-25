@@ -55,6 +55,8 @@ public class SidePanel extends BaseActor {
 	private boolean buildBoxesShowing; // TODO change to tab showing
 	private boolean shipBuildBoxesShowing;
 	private int selectedBuildingSlot = -1;
+	
+	private static Tab activeTab;
 
 	private Label planetResource = new Label("", PS.font);
 
@@ -219,7 +221,7 @@ public class SidePanel extends BaseActor {
 		}
 		
 		//UI must be final thing here
-		tabBuildings.BringUp();
+		setActiveTab(tabBuildings);
 	}
 
 	/**
@@ -239,13 +241,15 @@ public class SidePanel extends BaseActor {
 
 		this.planetResource.setText("Resource: " + this.planet.resource); // TODO
 																			// only
-																			// update
+		tabBuildings.update(uiMouseBlot.center);			
+		tabShips.update(uiMouseBlot.center);// update
 																			// when
-																			// resource
-																			// updates
-
-		this.tabBuildings.update(uiMouseBlot.center);
-		this.tabShips.update(uiMouseBlot.center);
+		//this works even though it shouldn't																	// resource
+		if (activeTab != null && activeTab.selected) {														// updates
+			activeTab.updateChildren(uiMouseBlot.center);
+		}
+		
+	
 
 		// check for clicking on increment/deincrement priority/capacity and
 		// increment/deincrement them
@@ -281,9 +285,11 @@ public class SidePanel extends BaseActor {
 
 		
 		for (int i = 0; i < shipContainers.size(); i++) {
-			shipContainers.get(i).update(uiMouseBlot.center);
+			//update Ship containers
+		
 			if (shipContainers.get(i).done) {
 				if (shipContainers.get(i).isSelected()) {
+					//add ships to selectedShips, unless the ship is already in selectedShips
 					if (!selectedShips.contains(shipContainers.get(i).getShip())) {
 						selectedShips.add(shipContainers.get(i).getShip());
 						System.out.println("adding SHIP");
@@ -295,18 +301,26 @@ public class SidePanel extends BaseActor {
 					
 					
 				}
-				ShipPointer deleteThisPointer = null;
-				if (shipContainers.get(i).isDestinationUnset) {
+				//remove old pointers
+				ArrayList<ShipPointer> deleteThisPointer = new ArrayList<ShipPointer>();
+				//if ship doesn't have a destination
+				if (!shipContainers.get(i).isDestinationSet) {
 					for (ShipPointer sp : this.planet.pointers) {
+						//remove it from it's pointer
 						sp.ships.remove(shipContainers.get(i).getShip());
-
+						//if the pointer is empty, flag the pointer
 						if (sp.ships.isEmpty()) {
 							sp.delete();
-							deleteThisPointer = sp;
+							deleteThisPointer.add(sp);
+							System.out.println(sp);
 						}
 					}
 				}
-				this.planet.pointers.remove(deleteThisPointer);
+				//deleting flagged pointers
+				for (ShipPointer sp : deleteThisPointer) {
+					this.planet.pointers.remove(sp);
+				}
+				//destroy dead ships
 				if (shipContainers.get(i).getShip() != null && shipContainers.get(i).getShip().health <= 0) {
 					shipContainers.get(i).remove();
 					shipContainers.remove(i);
@@ -342,5 +356,10 @@ public class SidePanel extends BaseActor {
 		// remove old planet
 		this.setPlanet(this.planet);
 
+	}
+	
+	public static void setActiveTab(Tab t) {
+		activeTab = t;
+		t.BringUp();
 	}
 }

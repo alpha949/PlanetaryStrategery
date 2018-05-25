@@ -47,6 +47,7 @@ public class Ship extends BaseActor {
 		this.setTexture(faction.getShipTypeTexture(type));
 		this.type = type;
 		this.health = this.type.getStat(0) + faction.getMod(type, 0);
+		this.maxhp = health;
 		this.damage = this.type.getStat(1) + faction.getMod(type, 1);
 		this.cost = this.type.getStat(2) + faction.getMod(type, 2);
 

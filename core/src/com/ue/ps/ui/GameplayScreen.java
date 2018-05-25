@@ -254,14 +254,14 @@ public class GameplayScreen implements Screen {
 							for (Ship s : SidePanel.selectedShips) {
 								activePointer.ships.add(s);
 							}
-							// -----------------------------------------------------
-							// TODO unset packet actions
-							// -----------------------------------------------------
+
 							System.out.println("selectedPlanetID: " + p.id);
 							activePointer.location.pointers.add(activePointer.clone());
 							SidePanel.selectedShips.clear();
 							activePointer.delete();
 							activePointer = null;
+						} else {
+							System.out.println("Tried to set null activePointer");
 						}
 
 					} else {
@@ -403,7 +403,15 @@ public class GameplayScreen implements Screen {
 					}
 					// perform combat
 					p.onTurnUpdate();
+					
+					
 				}
+				//update ship containers
+				for (ShipContainer sc : SidePanel.shipContainers) {
+					sc.makeDisp();
+				}
+				
+			
 
 				//sidePanel.unset();
 			} else {

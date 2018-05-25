@@ -25,6 +25,9 @@ public class Tab extends BaseActor {
 	public boolean selected = false;
 	public float scrollOffset;
 	public double scrollVel;
+	
+	private int lastScrollAmount = 0;
+	
 	//Tab interior height, change with the screen. Static for now, change if more tab locations.
 	public static int maxHeight = PS.viewHeight - 162; //should be 130 - 32 extra pixels where?
 	//net size of all internal parts that take up space.
@@ -47,22 +50,13 @@ public class Tab extends BaseActor {
 	}
 
 	public void update(Vector2 mousePos) {
-		if (this.selected){
-			//this.scrollOffset = InputProcess.sidePanelScrollAmount;
-			Vector2 localMousePos = this.parentToLocalCoordinates(mousePos);
-			localMousePos = new Vector2(localMousePos.x, localMousePos.y+this.scrollOffset);
-			//Scroll check + scroll mod
-
-			//Update contents
-			for (Actor i : this.getChildren()){
-				((UIElement) i).update(localMousePos);
-			}
-		}
+	
 		
 		//time to select it
 		if (!this.selected && tabHitbox.contains(mousePos) && Gdx.input.justTouched()) { //Add other button stuff like controlled, visible...
 			System.out.println("Tab Selected");
-			this.BringUp();
+			SidePanel.setActiveTab(this);
+			
 		}
 		
 		if (this.scrollVel != 0){
@@ -71,9 +65,23 @@ public class Tab extends BaseActor {
 				this.scrollVel = (this.scrollVel > 0) ? this.scrollVel - .2 : this.scrollVel + .2;
 			}
 		}
+	
+		
 		
 	}
+	
+	public void updateChildren(Vector2 mousePos) {
+		
+		Vector2 localMousePos = this.parentToLocalCoordinates(mousePos);
+		localMousePos = new Vector2(localMousePos.x, localMousePos.y+this.scrollOffset);
+		//Scroll check + scroll mod
 
+		//Update contents
+		for (Actor i : this.getChildren()){
+			((UIElement) i).update(localMousePos);
+		}
+	}
+	//I want to git rid of this because is repeat code, but I'm lazy and don't want to fix the positions
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		// region.setRegion(anim.getKeyFrame(elapsedTime));
@@ -107,6 +115,7 @@ public class Tab extends BaseActor {
 		for (Actor b : this.getChildren()){
 			b.setVisible(true);
 		}
+		
 		
 		//Include offset, take scrolling weirdness into account
 		if (offset != 0){}
