@@ -206,7 +206,7 @@ public class GameplayScreen implements Screen {
 		mainStage.act(dt);
 		uiStage.act();
 
-		sidePanel.update(uiStage);
+	
 
 		resourcePanel.setPosition(0, PS.viewHeight - resourcePanel.getHeight());
 		resourcePanel.update(uiStage);
@@ -259,8 +259,6 @@ public class GameplayScreen implements Screen {
 							// -----------------------------------------------------
 							System.out.println("selectedPlanetID: " + p.id);
 							activePointer.location.pointers.add(activePointer.clone());
-							GameServerClient.packet.addAction(
-									Action.sendShips(Utils.getShipIds(SidePanel.selectedShips), SidePanel.selectedShips.get(0).location.id, p.id));
 							SidePanel.selectedShips.clear();
 							activePointer.delete();
 							activePointer = null;
@@ -320,7 +318,8 @@ public class GameplayScreen implements Screen {
 				targetPlanet = null;
 			}
 		}
-
+		
+		sidePanel.update(uiStage);
 		Gdx.gl.glClearColor(0.0F, 0.0F, 0, 1);
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -370,8 +369,19 @@ public class GameplayScreen implements Screen {
 	
 		
 		if (this.executeButton.getBoundingRectangle().contains(uiMousePos) && Gdx.input.justTouched()) {
+			for (Planet p : World.getWorld()) {
+				for (ShipPointer o : p.pointers) {
+					GameServerClient.packet.addAction(
+							Action.sendShips(Utils.getShipIds(o.ships), o.location.id, o.destination.id));
+				
+				}
+			}
+			
 			if (!PS.useServer) {
 				System.out.println("executing actions...");
+				
+				
+				
 				// temporary
 				for (Action a : GameServerClient.packet.getActions()) {
 					Action.execute(a, mainStage, GameServerClient.clientPlayer);

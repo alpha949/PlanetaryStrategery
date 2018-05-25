@@ -268,10 +268,16 @@ public class Planet extends BaseActor {
 			s.buildUpdate();
 		}
 		for (Building b : this.landBuildings) {
-			b.update(this);
+			if (b != null) {
+				b.update(this);
+			}
+			
 		}
 		for (Building b : this.spaceBuildings) {
-			b.update(this);
+			if (b != null) {
+				b.update(this);
+			}
+			
 		}
 	}
 

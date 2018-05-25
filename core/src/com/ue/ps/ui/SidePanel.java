@@ -279,42 +279,44 @@ public class SidePanel extends BaseActor {
 			 
 		}*/
 
-		// update selectedships
-		//TODO force deselect when tabbed off?
-		if (tabShips.selected){
-			for (int i = 0; i < shipContainers.size(); i++) {
-				shipContainers.get(i).update(uiMouseBlot.center);
-				if (shipContainers.get(i).done) {
-					if (shipContainers.get(i).isSelected()) {
-						if (!selectedShips.contains(shipContainers.get(i).getShip())) {
-							selectedShips.add(shipContainers.get(i).getShip());
-						}
-	
-					} else {
-						selectedShips.remove(shipContainers.get(i).getShip());
+		
+		for (int i = 0; i < shipContainers.size(); i++) {
+			shipContainers.get(i).update(uiMouseBlot.center);
+			if (shipContainers.get(i).done) {
+				if (shipContainers.get(i).isSelected()) {
+					if (!selectedShips.contains(shipContainers.get(i).getShip())) {
+						selectedShips.add(shipContainers.get(i).getShip());
+						System.out.println("adding SHIP");
 					}
-					ShipPointer deleteThisPointer = null;
-					if (shipContainers.get(i).isDestinationUnset) {
-						for (ShipPointer sp : this.planet.pointers) {
-							sp.ships.remove(shipContainers.get(i).getShip());
-	
-							if (sp.ships.isEmpty()) {
-								sp.delete();
-								deleteThisPointer = sp;
-							}
+
+				} else {
+					selectedShips.remove(shipContainers.get(i).getShip());
+					
+					
+					
+				}
+				ShipPointer deleteThisPointer = null;
+				if (shipContainers.get(i).isDestinationUnset) {
+					for (ShipPointer sp : this.planet.pointers) {
+						sp.ships.remove(shipContainers.get(i).getShip());
+
+						if (sp.ships.isEmpty()) {
+							sp.delete();
+							deleteThisPointer = sp;
 						}
-					}
-					this.planet.pointers.remove(deleteThisPointer);
-					if (shipContainers.get(i).getShip() != null && shipContainers.get(i).getShip().health <= 0) {
-						shipContainers.get(i).remove();
-						shipContainers.remove(i);
-						//i--;
-						
 					}
 				}
-				
+				this.planet.pointers.remove(deleteThisPointer);
+				if (shipContainers.get(i).getShip() != null && shipContainers.get(i).getShip().health <= 0) {
+					shipContainers.get(i).remove();
+					shipContainers.remove(i);
+					//i--;
+					
+				}
 			}
+			
 		}
+		
 			
 		// update text fields
 		this.planetCap.setText(Integer.toString(this.planet.resourceCapacity));

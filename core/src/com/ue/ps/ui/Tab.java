@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.ue.ps.BaseActor;
 import com.ue.ps.PS;
+import com.ue.ps.systems.InputProcess;
 
 //Valid contents require implementation of UIElement
 public class Tab extends BaseActor {
@@ -47,7 +48,7 @@ public class Tab extends BaseActor {
 
 	public void update(Vector2 mousePos) {
 		if (this.selected){
-			
+			//this.scrollOffset = InputProcess.sidePanelScrollAmount;
 			Vector2 localMousePos = this.parentToLocalCoordinates(mousePos);
 			localMousePos = new Vector2(localMousePos.x, localMousePos.y+this.scrollOffset);
 			//Scroll check + scroll mod

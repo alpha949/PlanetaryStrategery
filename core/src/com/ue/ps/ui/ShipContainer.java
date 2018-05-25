@@ -138,7 +138,7 @@ public class ShipContainer extends BaseActor implements UIElement{
 			this.shiptype = s.type;
 			shipImg.setTexture(s.getTexture());
 			this.nameShow = new Label(s.type.name(), PS.font);
-			//this.nameShow.setColor(GameServerClient.getPlayerByUserName(ship.getOwnerName()).faction.color); //no, the color will be on the ships.
+			this.nameShow.setColor(GameServerClient.getPlayerByUserName(ship.getOwnerName()).faction.color); //no, the color will be on the ships. BUT WHY?
 			
 			this.hoverPanel = new HoverPanel(HoverPanel.shipInfo, ship.type.name(), Integer.toString(ship.health), "N/A");
 			this.hoverPanel.setPosition(this.getWidth(), this.getHeight() / 2);

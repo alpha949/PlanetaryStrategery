@@ -10,9 +10,9 @@ public enum PlanetType {
 	asteroid, gas, rock, early, goldilocks;
 
 	public int landCap;
-	public Building.Types[] landBuildings;
+	public Building.Types[] landBuildings = new Building.Types[0];
 	public int spaceCap;
-	public Building.Types[] spaceBuildings;
+	public Building.Types[] spaceBuildings = new Building.Types[0];
 	public int coloniesCap;
 	public String name;
 	public Texture tex;
