@@ -29,6 +29,8 @@ public class Planet extends BaseActor {
 	public int FactoryQuant;
 	public ArrayList<ShipContainer> BuildQueue;
 	public ArrayList<Planet> lineLinkedPlanets;
+	
+	private ArrayList<Person> Personel = new ArrayList<Person>();
 
 	public int resourceCapacity;
 	public int priority;
@@ -200,6 +202,7 @@ public class Planet extends BaseActor {
 		for (ShipContainer s : this.BuildQueue) {
 			s.buildUpdate();
 		}
+		
 	}
 
 	public void addBuilding(Building b, int slot) {
