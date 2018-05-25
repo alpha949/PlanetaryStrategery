@@ -1,7 +1,8 @@
 package com.ue.ps;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.ue.ps.buildings.BuildingType;
+import com.ue.ps.buildings.Building;
+
 import com.ue.ps.ui.Images;
 
 public enum PlanetType {
@@ -9,51 +10,57 @@ public enum PlanetType {
 	asteroid, gas, rock, early, goldilocks;
 
 	public int landCap;
-	public BuildingType[] landBuildings;
+	public Building.Types[] landBuildings;
 	public int spaceCap;
-	public BuildingType[] spaceBuildings;
+	public Building.Types[] spaceBuildings;
 	public int coloniesCap;
 	public String name;
 	public Texture tex;
 
-
+	
+	private void setValidLandBuildings(Building.Types...types) {
+		landBuildings = types;
+	}
+	private void setValidSpaceBuildings(Building.Types...types) {
+		spaceBuildings = types;
+	}
 	static {
 		asteroid.landCap = 1;
-		asteroid.landBuildings = new BuildingType[]{BuildingType.mine, BuildingType.colony};
+		asteroid.setValidLandBuildings(Building.Types.mine, Building.Types.colony);
 		asteroid.spaceCap = 0;
-		asteroid.spaceBuildings = new BuildingType[0];
 		asteroid.coloniesCap = 1;
 		asteroid.name = "Asteroid Field";
 		asteroid.tex = Images.planetAsteroids;
 	
 		gas.landCap = 0;
-		gas.landBuildings = new BuildingType[0];
 		gas.spaceCap = 4;
-		gas.spaceBuildings = new BuildingType[]{BuildingType.spacefactory};
+
+		gas.setValidSpaceBuildings(Building.Types.spaceFactory);
 		gas.coloniesCap = 0;
 		gas.name = "Gas Planet";
 		gas.tex = Images.planetGas;
 	
 		rock.landCap = 3;
-		rock.landBuildings = new BuildingType[]{BuildingType.colony, BuildingType.factory, BuildingType.mine};
+		rock.setValidLandBuildings(Building.Types.colony, Building.Types.factory, Building.Types.mine);
 		rock.spaceCap = 2;
-		rock.spaceBuildings = new BuildingType[]{BuildingType.spacefactory};
+		
+		rock.setValidSpaceBuildings(Building.Types.spaceFactory);
 		rock.coloniesCap = 1;
 		rock.name = "Rocky Planet";
 		rock.tex = Images.planetBarren;
 	
 		early.landCap = 2;
-		early.landBuildings = new BuildingType[]{BuildingType.colony, BuildingType.factory, BuildingType.mine};
+		early.setValidLandBuildings(Building.Types.colony, Building.Types.factory, Building.Types.mine);
 		early.spaceCap = 2;
-		early.spaceBuildings = new BuildingType[]{BuildingType.spacefactory};
+		early.setValidSpaceBuildings(Building.Types.spaceFactory);
 		early.coloniesCap = 1;
 		early.name = "Early Planet";
 		early.tex = Images.planetEarly;
 	
 		goldilocks.landCap = 4;
-		goldilocks.landBuildings = new BuildingType[]{BuildingType.colony, BuildingType.factory, BuildingType.mine};
+		goldilocks.setValidLandBuildings(Building.Types.colony, Building.Types.factory, Building.Types.mine);
 		goldilocks.spaceCap = 2;
-		goldilocks.spaceBuildings = new BuildingType[]{BuildingType.spacefactory};
+		goldilocks.setValidSpaceBuildings(Building.Types.spaceFactory);
 		goldilocks.coloniesCap = 3;
 		goldilocks.name = "Goldilocks Planet";
 		goldilocks.tex = Images.planet;

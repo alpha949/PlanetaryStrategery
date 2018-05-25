@@ -2,6 +2,7 @@ package com.ue.ps.buildings;
 
 import com.ue.ps.Planet;
 import com.ue.ps.ships.ShipType;
+import com.ue.ps.ui.Images;
 
 public class Factory extends Building {
 
@@ -12,11 +13,12 @@ public class Factory extends Building {
 	public int buildProgress;
 
 	public Factory() {
-		super(BuildingType.factory);
-		this.health = 50;
-		this.resourceCost = 5;
+		super(Images.factory);
 		this.id = 'f';
-		// TODO Auto-generated constructor stub
+		this.health = 60;
+		this.resourceCost = 5;
+		this.type = Building.Types.factory;
+		
 	}
 
 	@Override

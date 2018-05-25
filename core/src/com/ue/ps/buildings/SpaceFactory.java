@@ -6,12 +6,13 @@ import com.ue.ps.ui.Images;
 public class SpaceFactory extends Building{
 
 	public SpaceFactory() {
-		super(BuildingType.spacefactory);
-		this.health = 50;
-		this.resourceCost = 5;
-		this.isSpace = true;
+		super(Images.spaceFactory);
 		this.id = 's';
-		// TODO Auto-generated constructor stub
+		this.health = 50;
+		this.resourceCost = 5; //should cost more but build ships cheaper/faster
+		
+		this.isSpace = true;
+		this.type = Building.Types.spaceFactory;
 	}
 
 	@Override

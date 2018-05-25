@@ -11,26 +11,28 @@ public abstract class Building extends BaseActor {
 	public int health = 10;
 
 	public int resourceCost;
+	public static ArrayList<Building> allLandBuildings = new ArrayList<Building>();
+	public static ArrayList<Building> allSpaceBuildings = new ArrayList<Building>();
 	public static ArrayList<Building> allBuildings = new ArrayList<Building>();
+
 	public char id;
-	public BuildingType type;
+	public Types type;
 	public Player owner;
 	protected boolean isSpace;
 	public float angle;
+	
+	public enum Types {
+		colony, factory, mine, spaceFactory, cannon;
+	}
 
-	public Building(BuildingType t) {
-		super(t.texture);
-		this.health = t.health;
-		this.id = t.id;
-		this.isSpace = t.isSpace;
-		this.resourceCost = t.resourceCost;
-		this.type = t;
+	public Building(Texture t) {
+		super(t);
+	
+		
 	}
 
 	public abstract void update(Planet p);
 
-	public void update(Player P, Planet p) {
-	}
 
 	public static Building getBuildingFromId(char id) {
 		for (Building b : allBuildings) {
@@ -40,7 +42,7 @@ public abstract class Building extends BaseActor {
 		}
 		return null;
 	}
-	public static Building getBuildingFromId(BuildingType id) {
+	public static Building getBuildingFromType(Types id) {
 		for (Building b : allBuildings) {
 			if (b.type == id) {
 				return b;
@@ -63,12 +65,21 @@ public abstract class Building extends BaseActor {
 	
 	// all buildings must be registered here, if some one can find a way to do
 	// this automagically, that would be awsome
+	private static void register(Building b) {
+		allBuildings.add(b);
+		if (b.isSpace) {
+			allSpaceBuildings.add(b);
+		} else {
+			allLandBuildings.add(b);
+		}
+	}
+	//register buildings here
 	static {
-		allBuildings.add(new Factory());
-		allBuildings.add(new Colony());
-		allBuildings.add(new Mine());
-		allBuildings.add(new SpaceFactory());
-
+		register(new Factory());
+		register(new Cannon());
+		register(new Mine());
+		register(new Colony());
+		register(new SpaceFactory());
 	}
 
 }

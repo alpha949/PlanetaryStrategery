@@ -267,7 +267,12 @@ public class Planet extends BaseActor {
 		for (ShipContainer s : this.BuildQueue) {
 			s.buildUpdate();
 		}
-		
+		for (Building b : this.landBuildings) {
+			b.update(this);
+		}
+		for (Building b : this.spaceBuildings) {
+			b.update(this);
+		}
 	}
 
 	public void addBuilding(Building b, int slot) {

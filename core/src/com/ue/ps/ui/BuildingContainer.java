@@ -48,12 +48,12 @@ public class BuildingContainer extends Button implements UIElement{
 			for (int i = 0; i < buildBoxes.length; i++) {
 				buildBoxes[i] = new Button(Images.DarkBuildBox, (i * 80), 0);
 				buildBoxes[i].setVisible(false);
-				BaseActor buildingImg = new BaseActor(this.planet.getPlanetType().spaceBuildings[i].texture);
+				BaseActor buildingImg = new BaseActor(Building.getBuildingFromType(this.planet.getPlanetType().spaceBuildings[i]).getTexture());
 		
 				buildingImg.setPosition(1, 1);
 				buildBoxes[i].addActor(buildingImg);
 	
-				Label l = new Label(Integer.toString(this.planet.getPlanetType().spaceBuildings[i].resourceCost), PS.font);
+				Label l = new Label(Integer.toString(Building.getBuildingFromType(this.planet.getPlanetType().spaceBuildings[i]).resourceCost), PS.font);
 				l.setPosition(23, 0);
 				buildBoxes[i].addActor(l);
 				this.addActor(buildBoxes[i]);
@@ -64,12 +64,12 @@ public class BuildingContainer extends Button implements UIElement{
 			for (int i = 0; i < buildBoxes.length; i++) {
 				buildBoxes[i] = new Button(Images.DarkBuildBox, (i * 80), 0);
 				buildBoxes[i].setVisible(false);
-				BaseActor buildingImg = new BaseActor(this.planet.getPlanetType().landBuildings[i].texture);
+				BaseActor buildingImg = new BaseActor(Building.getBuildingFromType(this.planet.getPlanetType().landBuildings[i]).getTexture());
 		
 				buildingImg.setPosition(1, 1);
 				buildBoxes[i].addActor(buildingImg);
 	
-				Label l = new Label(Integer.toString(this.planet.getPlanetType().landBuildings[i].resourceCost), PS.font);
+				Label l = new Label(Integer.toString(Building.getBuildingFromType(this.planet.getPlanetType().landBuildings[i]).resourceCost), PS.font);
 				l.setPosition(23, 0);
 				buildBoxes[i].addActor(l);
 				this.addActor(buildBoxes[i]);
@@ -136,10 +136,10 @@ public class BuildingContainer extends Button implements UIElement{
 							try {
 								Building newBuilding;
 								if (this.isSpace){
-									newBuilding = Building.getBuildingFromId(this.planet.getPlanetType().spaceBuildings[i]).getClass().newInstance();
+									newBuilding = Building.getBuildingFromType(this.planet.getPlanetType().spaceBuildings[i]).getClass().newInstance();
 									
 								} else {
-									newBuilding = Building.getBuildingFromId(this.planet.getPlanetType().landBuildings[i]).getClass().newInstance();
+									newBuilding = Building.getBuildingFromType(this.planet.getPlanetType().landBuildings[i]).getClass().newInstance();
 								}
 								
 								// add building to planet
