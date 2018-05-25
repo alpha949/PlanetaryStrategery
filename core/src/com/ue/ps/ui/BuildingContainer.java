@@ -24,46 +24,64 @@ public class BuildingContainer extends Button implements UIElement{
 	public int id;
 
 	public Planet planet;
+	public boolean isSpace; // if the building is a space building
 
 	public boolean done = false; // if there is a finished, built, building
 	public boolean constructing = false; // if you are building in it (have hit
 											// the +)
 	public boolean destroying = false; // if the destroy button is up
 
-	public BuildingContainer(int id, int x, int y) {
+	public BuildingContainer(int id, int x, int y, Planet p, boolean isSpace) {
 		super(Images.panelAdd, x, y);
+		this.planet = p;
+		this.isSpace = isSpace;
 		buildingImg.setPosition(1, 1);
 		this.addActor(buildingImg);
 		this.id = id;
 		this.destroyBuildingBox.setPosition(-100, -100);
 		this.addActor(destroyBuildingBox);
 
-		buildBoxes = new Button[Building.allBuildings.size()]; // PLZ is this
-																// the ammount
-																// of buildings
-																// you can put
-																// on a planet?
-
-		for (int i = 0; i < buildBoxes.length; i++) {
-			buildBoxes[i] = new Button(Images.BuildBox, (i * 80), 0);
-			buildBoxes[i].setVisible(false);
-			BaseActor buildingImg = new BaseActor(Building.allBuildings.get(i).getTexture());
+		if (isSpace) {
+			this.setTexture(Images.DarkBuildBox);
+			buildBoxes = new Button[this.planet.getPlanetType().spaceBuildings.length]; // Creates boxes for each type of building
 	
-			buildingImg.setPosition(1, 1);
-			buildBoxes[i].addActor(buildingImg);
-
-			Label l = new Label(Integer.toString(Building.allBuildings.get(i).resourceCost), PS.font);
-			l.setPosition(23, 0);
-			buildBoxes[i].addActor(l);
-			this.addActor(buildBoxes[i]);
+			for (int i = 0; i < buildBoxes.length; i++) {
+				buildBoxes[i] = new Button(Images.DarkBuildBox, (i * 80), 0);
+				buildBoxes[i].setVisible(false);
+				BaseActor buildingImg = new BaseActor(this.planet.getPlanetType().spaceBuildings[i].texture);
+		
+				buildingImg.setPosition(1, 1);
+				buildBoxes[i].addActor(buildingImg);
+	
+				Label l = new Label(Integer.toString(this.planet.getPlanetType().spaceBuildings[i].resourceCost), PS.font);
+				l.setPosition(23, 0);
+				buildBoxes[i].addActor(l);
+				this.addActor(buildBoxes[i]);
+			}
+		} else { //Land buildings. lots of overlap, there's probably a better way to do it
+			buildBoxes = new Button[this.planet.getPlanetType().landBuildings.length]; // Creates boxes for each type of building
+	
+			for (int i = 0; i < buildBoxes.length; i++) {
+				buildBoxes[i] = new Button(Images.DarkBuildBox, (i * 80), 0);
+				buildBoxes[i].setVisible(false);
+				BaseActor buildingImg = new BaseActor(this.planet.getPlanetType().landBuildings[i].texture);
+		
+				buildingImg.setPosition(1, 1);
+				buildBoxes[i].addActor(buildingImg);
+	
+				Label l = new Label(Integer.toString(this.planet.getPlanetType().landBuildings[i].resourceCost), PS.font);
+				l.setPosition(23, 0);
+				buildBoxes[i].addActor(l);
+				this.addActor(buildBoxes[i]);
+			}
 		}
 	}
-
+    
 	public void setBuilding(Building b) {
 		building = b;
 
 		if (b != null) {
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < buildBoxes.length; i++) {
 				buildBoxes[i].setVisible(false);
 			}
 			this.done = true;
@@ -94,14 +112,14 @@ public class BuildingContainer extends Button implements UIElement{
 				this.isSelected = true;
 				this.setColor(Color.LIGHT_GRAY);
 
-				if (hoverPanel != null) {
-					this.hoverPanel.setVisible(true);
-					if (this.building != null && this.building instanceof Factory && ((Factory) this.building).buildingShip != null) {
-						this.hoverPanel.getInfo().get(2).setText("Ship: " + ((Factory) this.building).buildingShip.name());
-						this.hoverPanel.getInfo().get(3).setText(
-								"Progress: " + ((Factory) this.building).buildProgress + "/" + ((Factory) this.building).buildingShip.getStat(2));
-					}
-				}
+				//if (hoverPanel != null) {
+				//	this.hoverPanel.setVisible(true);
+				//	if (this.building != null && this.building instanceof Factory && ((Factory) this.building).buildingShip != null) {
+				//		this.hoverPanel.getInfo().get(2).setText("Ship: " + ((Factory) this.building).buildingShip.name());
+				//		this.hoverPanel.getInfo().get(3).setText(
+				//				"Progress: " + ((Factory) this.building).buildProgress + "/" + ((Factory) this.building).buildingShip.getStat(2));
+				//	}
+				//}
 
 				if (!this.done && !this.constructing) { // if clicked on while a
 														// + button
@@ -116,7 +134,14 @@ public class BuildingContainer extends Button implements UIElement{
 					for (int i = 0; i < buildBoxes.length; i++) {
 						if (buildBoxes[i].Pressed(localMouseCoords)) {
 							try {
-								Building newBuilding = Building.allBuildings.get(i).getClass().newInstance();
+								Building newBuilding;
+								if (this.isSpace){
+									newBuilding = Building.getBuildingFromId(this.planet.getPlanetType().spaceBuildings[i]).getClass().newInstance();
+									
+								} else {
+									newBuilding = Building.getBuildingFromId(this.planet.getPlanetType().landBuildings[i]).getClass().newInstance();
+								}
+								
 								// add building to planet
 								this.planet.addBuilding(newBuilding, this.id);
 								// update building boxes
@@ -135,7 +160,7 @@ public class BuildingContainer extends Button implements UIElement{
 
 			} else {
 				this.isSelected = false;
-				for (int i = 0; i < 3; i++) {
+				for (int i = 0; i < buildBoxes.length; i++) {
 					buildBoxes[i].setVisible(false);
 				}
 				this.constructing = false;
@@ -153,13 +178,6 @@ public class BuildingContainer extends Button implements UIElement{
 		return isSelected;
 	}
 
-	/*
-	 * Unused but useful
-	 * 
-	 * 
-	 * 
-	 * 
-	 *
-	 */
+	
 
 }

@@ -33,6 +33,7 @@ public class Tab extends BaseActor {
 		super(Images.BuildBox); //temporary image
 		this.setPosition(0, 0);
 		
+		
 		//Selector hitbox
 		this.tabHitbox = new Rectangle(tabx, taby, this.getTexture().getWidth(), this.getTexture().getHeight());
 		
@@ -45,8 +46,8 @@ public class Tab extends BaseActor {
 	}
 
 	public void update(Vector2 mousePos) {
-		if (this.selected && Hitbox.contains(mousePos)){
-
+		if (this.selected){
+			
 			Vector2 localMousePos = this.parentToLocalCoordinates(mousePos);
 			localMousePos = new Vector2(localMousePos.x, localMousePos.y+this.scrollOffset);
 			//Scroll check + scroll mod
@@ -69,8 +70,9 @@ public class Tab extends BaseActor {
 				this.scrollVel = (this.scrollVel > 0) ? this.scrollVel - .2 : this.scrollVel + .2;
 			}
 		}
+		
 	}
-	
+
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		// region.setRegion(anim.getKeyFrame(elapsedTime));
@@ -83,8 +85,9 @@ public class Tab extends BaseActor {
 		
 		if (isVisible()) {
 			batch.draw(this.getTexture(), tabHitbox.x, tabHitbox.y-this.scrollOffset);
+			
 		}
-		super.draw(batch, parentAlpha);
+		super.draw(batch, parentAlpha); //commenting it out gets rid of the unwanted corner thing, but also makes all the build options go up a bit in visuals only because WHO KNOWS
 	}
 	
 	//Will be used to "select a ship, shows up on the side menu" (may change to take in object, may not be used at all)
@@ -94,11 +97,12 @@ public class Tab extends BaseActor {
 			if (Tab.tabs.get(t) != this){
 				Tab.tabs.get(t).selected = false;
 				for (Actor b : Tab.tabs.get(t).getChildren()){
-					b.setVisible(false);
+						b.setVisible(false);
 				}
 			}
 		}
 		this.selected = true;
+		
 		for (Actor b : this.getChildren()){
 			b.setVisible(true);
 		}

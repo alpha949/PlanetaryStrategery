@@ -17,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
 
 public class BaseActor extends Group {
-	public TextureRegion region;
+	private TextureRegion region;
 	public Rectangle boundary;
 	public Vector2 vel;
 	protected Polygon boundingPolygon;
@@ -77,6 +77,15 @@ public class BaseActor extends Group {
 		this.setOriginX(this.getWidth() / 2);
 		this.setOriginY(this.getHeight() / 2);
 
+	}
+	
+	public void setRegion(int x, int y, int w, int h) {
+		this.region.setRegion(x, y, w, h);
+	
+		setWidth(w);
+		setHeight(h);
+		this.setOriginX(this.getWidth() / 2);
+		this.setOriginY(this.getHeight() / 2);
 	}
 
 	public void genTexture(String path) {
@@ -139,7 +148,7 @@ public class BaseActor extends Group {
 		}
 		float significant = 0.5f;
 		return (polyOverlap && (mtv.depth > significant));
-
+ 
 	}
 
 	public void act(float dt) {

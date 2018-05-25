@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -24,7 +25,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.ue.ps.BaseActor;
 import com.ue.ps.Faction;
 import com.ue.ps.PS;
+import com.ue.ps.Particle;
 import com.ue.ps.Planet;
+import com.ue.ps.Player;
 import com.ue.ps.Utils;
 import com.ue.ps.World;
 import com.ue.ps.WorldGen;
@@ -60,6 +63,8 @@ public class GameplayScreen implements Screen {
 	private Camera uiCamera;
 	private Viewport viewport;
 	private Viewport uiViewport;
+	
+	private Player evilPerson = new Player("EVIL PERSON", Faction.Braecious);
 
 	public static int cameraOffsetX;
 	public static int cameraOffsetY;
@@ -160,6 +165,7 @@ public class GameplayScreen implements Screen {
 		} else {
 			 GameServerClient.setUpPlayer(Faction.Lelouk);
 			 GameServerClient.players.add(GameServerClient.clientPlayer);
+				GameServerClient.players.add(evilPerson);
 			World.setWorld(WorldGen.generate(GameServerClient.players, 0, 0));
 
 			for (Planet p : World.getWorld()) {
@@ -178,9 +184,18 @@ public class GameplayScreen implements Screen {
 		for (Planet p : World.getWorld()) {
 			if (p.isHomePlanet) {
 				Ship.spawnShip(GameServerClient.clientPlayer, p, ShipType.dread, 10);
-			} else {
-				Ship.spawnShip(GameServerClient.clientPlayer, p, ShipType.scout, 10);
+			
+				Ship.spawnShip(evilPerson, p, ShipType.dread, 100);
+				
 			}
+			BaseActor glow = new BaseActor(Images.planetGlow);
+			
+			glow.setSize(p.getWidth() * p.getSize(), p.getHeight() * p.getSize());
+			//position is off by a little when the planet is scaled
+			glow.setCenter(p.center.x, p.center.y);
+			mainStage.addActor(glow);
+			glow.setZIndex(0);
+			p.glow = glow;
 			
 		}
 
@@ -219,7 +234,7 @@ public class GameplayScreen implements Screen {
 		mouseBlot.setPosition(Gdx.input.getX(), PS.viewHeight - Gdx.input.getY());
 		uiMousePos = uiStage.screenToStageCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 		// these numbers (8 and 13) seem really arbitrary, there's probably some
-		// reason for them...
+		// reason for them... 
 		stageMouseBlot.setPosition(mousePos.x - 8 * zoomAmount, mousePos.y - 8 * zoomAmount);
 		// stageMouseBlot.setScale(zoomAmount, zoomAmount);
 		stageMouseBlot.setSize(16 * zoomAmount, 16 * zoomAmount);
@@ -262,8 +277,19 @@ public class GameplayScreen implements Screen {
 
 			}
 		}
-
+		
+		for (Planet p : World.getWorld()) {
+			if (p.glow.getColor() != Color.BLACK) {
+				p.glow.setColor(Color.BLACK);
+			}
+		}
+		
 		if (!SidePanel.selectedShips.isEmpty()) {
+			for (Planet p : World.getWorld()) {
+				if (SidePanel.selectedShips.get(0).location.distanceTo(p.center.x, p.center.y) < 15000) {
+					p.glow.setColor(GameServerClient.clientPlayer.faction.color);
+				}
+			}
 			if (activePointer == null) {
 				activePointer = new ShipPointer(SidePanel.selectedShips.get(0).location);
 			}
@@ -272,6 +298,7 @@ public class GameplayScreen implements Screen {
 			}
 		} else {
 			if (activePointer != null) {
+				
 				activePointer.delete();
 				activePointer = null;
 				SidePanel.selectedShips.clear();
@@ -338,7 +365,10 @@ public class GameplayScreen implements Screen {
 			// Gdx.graphics.setWindowedMode(PS.viewWidth, PS.viewHeight);
 		}
 		// this doesn't work
-
+		
+		
+	
+		
 		if (this.executeButton.getBoundingRectangle().contains(uiMousePos) && Gdx.input.justTouched()) {
 			if (!PS.useServer) {
 				System.out.println("executing actions...");
@@ -355,7 +385,7 @@ public class GameplayScreen implements Screen {
 					p.pointers.clear();
 
 					// update buildings
-					for (Building b : p.buildings) {
+					for (Building b : p.landBuildings) {
 						if (b != null) {
 							b.update(p);
 						}
@@ -365,7 +395,7 @@ public class GameplayScreen implements Screen {
 					p.onTurnUpdate();
 				}
 
-				sidePanel.unset();
+				//sidePanel.unset();
 			} else {
 				// send actions
 				PS.client.sendRequest(GameServerClient.packet.getCompressedData(), GameServer.ServerCommands.recieveActions);
@@ -390,7 +420,7 @@ public class GameplayScreen implements Screen {
 					Action.execute(a, mainStage, GameServerClient.clientPlayer);
 				}
 				for (Planet p : World.getWorld()) {
-					for (Building b : p.buildings) {
+					for (Building b : p.landBuildings) {
 						if (b != null) {
 							b.update(p);
 						}

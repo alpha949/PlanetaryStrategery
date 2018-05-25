@@ -65,14 +65,15 @@ public class Ship extends BaseActor {
 		}
 
 		// attack ships
+		int damage = (int) MathUtils.random(this.damage/2f, this.damage *1.5f);
 		if (targetType > 1) {
 			Ship target = spaceTargets.get(MathUtils.random(0, spaceTargets.size() - 1));
-			GameServerClient.packet.addAction(Action.attackShip(target.id, this.damage));
+			GameServerClient.packet.addAction(Action.attackShip(target.id, damage));
 		}
 		// attack buildings
 		else {
 			Building target = buildingTargets.get(MathUtils.random(0, buildingTargets.size() - 1));
-			GameServerClient.packet.addAction(Action.attackBuilding(orbitingPlanet.id, orbitingPlanet.getBuildingSlot(target), this.damage));
+			GameServerClient.packet.addAction(Action.attackBuilding(orbitingPlanet.id, orbitingPlanet.getBuildingSlot(target), damage));
 		}
 	}
 
@@ -96,7 +97,7 @@ public class Ship extends BaseActor {
 				warp.setZIndex(0);
 
 				// warp.addAction(Actions.scaleBy(-16, -16, 16));
-
+ 
 				warp.addAction(Actions.fadeOut(0));
 				warp.addAction(Actions.fadeIn((float) (0.0001 * i)));
 				warp.addAction(Actions.fadeOut((float) ((float) (0.0001 * i) + 0.0001)));

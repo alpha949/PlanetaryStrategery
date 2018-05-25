@@ -12,6 +12,7 @@ import com.ue.ps.PS;
 import com.ue.ps.Planet;
 import com.ue.ps.ships.Ship;
 import com.ue.ps.ships.ShipPointer;
+import com.ue.ps.systems.GameServerClient;
 
 public class SidePanel extends BaseActor {
 
@@ -93,12 +94,12 @@ public class SidePanel extends BaseActor {
 		deincrementPriorityButton.setPosition(70 + 21 + 21 + 21, this.getHeight() - 75 - 16 - 10 - 16 - 10);
 		this.addActor(deincrementPriorityButton);
 
-		tabBuildings = new Tab(65, 637);
-		tabShips = new Tab(65+100, 637);
 		this.addActor(tabBuildings);
 		this.addActor(tabShips);
+		tabShips.setName("tab Ships");
+		tabBuildings.setName("tab buildings");
 		
-		this.addActor(this.uiMouseBlot);
+		this.addActor(uiMouseBlot);
 
 	}
 
@@ -127,7 +128,7 @@ public class SidePanel extends BaseActor {
 			this.removeActor(bbox);
 		}
 
-		for (BaseActor sbox : this.shipContainers) {
+		for (BaseActor sbox : shipContainers) {
 			this.removeActor(sbox);
 		}
 
@@ -139,63 +140,86 @@ public class SidePanel extends BaseActor {
 
 		//Ship displaying (move)
 		int localrand = 0;
-		for (int i = 0; i < this.planet.getAlliedShips().size(); i++) {
-			ShipContainer sbox = new ShipContainer(this.planet.getAlliedShips().get(i));
-			//sbox.setPosition(100, PS.viewHeight - 150 - i * 20);
-			sbox.setPosition(100, PS.viewHeight - 150 - i * 20); //TODO change?
+		
+		int f = 0;
+		for (int i = 0; i < this.planet.getAllOrbitingShips().size(); i++) {
+			
+		
+				ShipContainer sbox = new ShipContainer(this.planet.getAllOrbitingShips().get(i));
+				sbox.setShip(this.planet.getAllOrbitingShips().get(i));
+				//sbox.setPosition(100, PS.viewHeight - 150 - i * 20);
+				sbox.setPosition(10, Tab.maxHeight - (f) * 50); //TODO change? YES
+				shipContainers.add(sbox);
+				tabShips.addActor(sbox);
+			if (this.planet.getAllOrbitingShips().get(i).getOwnerName().equals(GameServerClient.user)) {
+				for (ShipPointer pointer : this.planet.pointers) { // makes the
+																	// container
+																	// show where
+																	// the ship is
+																	// going
+					
+					for (Ship s : pointer.ships) {
+						System.out.println(s);
+						if (s != null && getShipContainer(s) != null) {
+							getShipContainer(s).setDestinationInfo(pointer.destination);
+						} else {
+							System.out.println("Missing ship container!");
+						}
 
-			shipContainers.add(sbox);
-			tabShips.addActor(sbox);
-
-			for (ShipPointer pointer : this.planet.pointers) { // makes the
-																// container
-																// show where
-																// the ship is
-																// going
-				System.out.println(pointer);
-				for (Ship s : pointer.ships) {
-					System.out.println(s);
-					if (s != null && getShipContainer(s) != null) {
-						getShipContainer(s).setDestinationInfo(pointer.destination);
-					} else {
-						System.out.println("Missing ship container!");
 					}
-
 				}
+				localrand = i;
+				f++;
 			}
-			localrand = i;
 		}
 
 		for (ShipContainer s : this.planet.BuildQueue) { // add ships being
 															// built
 			localrand++;
-			s.setPosition(100, Tab.maxHeight - 10 - localrand * 20);
+			s.setPosition(10, Tab.maxHeight - 10 - localrand * 20);
 			shipContainers.add(s);
 			tabShips.addActor(s);
 			tabShips.internalHeight += 20; //add the height of this object (and buffer beneath) to the net height of the tab
 		}
 
 		// add final "next build" box
-		ShipContainer sbox = new ShipContainer();
-		shipContainers.add(sbox);
-		this.addActor(sbox);
+		//ShipContainer sbox = new ShipContainer();
+		//shipContainers.add(sbox);
+		//tabShips.addActor(sbox); 
 
 		//BUILDINGS TAB
 		// setup building boxes
-		for (int i = 0; i < this.planet.buildings.length; i++) {
-			BuildingContainer bc = new BuildingContainer(i, 10, Tab.maxHeight - (i) * 50); //from bottom left
-			//BuildingContainer bc = new BuildingContainer(i, 10, -10 - (i+1) * 50); //from top left
-			bc.planet = p;
-			this.buildingContainers.add(bc);
-			tabBuildings.addActor(bc);
-			tabBuildings.internalHeight += 50; //add the height of this object (and buffer beneath) to the net height of the tab
-
-			if (this.planet.buildings[i] != null) {
-				bc.setBuilding(this.planet.buildings[i]);
-			} else {
-				bc.setBuilding(null);
+		for (int i = 0; i < this.planet.landBuildings.length + this.planet.spaceBuildings.length; i++) {
+			if (i < this.planet.landBuildings.length) {
+				BuildingContainer bc = new BuildingContainer(i, 10, Tab.maxHeight - (i) * 50, p, false); //from bottom left
+				//BuildingContainer bc = new BuildingContainer(i, 10, -10 - (i+1) * 50); //from top left
+				this.buildingContainers.add(bc);
+				tabBuildings.addActor(bc);
+				tabBuildings.internalHeight += 50; //add the height of this object (and buffer beneath) to the net height of the tab
+	
+				if (this.planet.landBuildings[i] != null) {
+					bc.setBuilding(this.planet.landBuildings[i]);
+				} else {
+					bc.setBuilding(null);
+				}
+			} else { //Space buildings
+				BuildingContainer bc = new BuildingContainer(i, 10, Tab.maxHeight - (i) * 50, p, true); //from bottom left
+				//BuildingContainer bc = new BuildingContainer(i, 10, -10 - (i+1) * 50); //from top left
+				this.buildingContainers.add(bc);
+				tabBuildings.addActor(bc);
+				tabBuildings.internalHeight += 50; //add the height of this object (and buffer beneath) to the net height of the tab
+	
+				if (this.planet.spaceBuildings[i-this.planet.landBuildings.length] != null) {
+					bc.setBuilding(this.planet.spaceBuildings[i-this.planet.landBuildings.length]);
+				} else {
+					bc.setBuilding(null);
+				}
+				
 			}
 		}
+		
+		//UI must be final thing here
+		tabBuildings.BringUp();
 	}
 
 	/**
@@ -222,15 +246,12 @@ public class SidePanel extends BaseActor {
 
 		this.tabBuildings.update(uiMouseBlot.center);
 		this.tabShips.update(uiMouseBlot.center);
-		
-		// update containers
-		//for (BuildingContainer bc : this.buildingContainers) {
-		//	bc.update(uiMouseBlot.center);
-		//}
 
 		// check for clicking on increment/deincrement priority/capacity and
 		// increment/deincrement them
-		if (Gdx.input.justTouched()) {
+		
+		//TODO put in an if for the tab they will be in
+		/*if (Gdx.input.justTouched()) {
 			Rectangle mouse = uiMouseBlot.getBoundingRectangle(); // make this
 																	// global
 																	// and the
@@ -249,44 +270,52 @@ public class SidePanel extends BaseActor {
 			}
 
 			// check for destroying building
-			/*
 			 * if (this.destroyBuildingBox.getBoundingRectangle().contains(
 			 * uiMouseBlot.center) && Gdx.input.justTouched()) { //destroy
 			 * building this.planet.destroyBuilding(selectedBuildingSlot);
 			 * //update building boxes
 			 * buildingContainers.get(selectedBuildingSlot).setBuilding(null);
 			 * hideDestroy(); }
-			 */
-		}
+			 
+		}*/
 
 		// update selectedships
-
-		for (ShipContainer sc : shipContainers) {
-			if (sc.done) {
-				if (sc.isSelected()) {
-					if (!selectedShips.contains(sc.getShip())) {
-						selectedShips.add(sc.getShip());
+		//TODO force deselect when tabbed off?
+		if (tabShips.selected){
+			for (int i = 0; i < shipContainers.size(); i++) {
+				shipContainers.get(i).update(uiMouseBlot.center);
+				if (shipContainers.get(i).done) {
+					if (shipContainers.get(i).isSelected()) {
+						if (!selectedShips.contains(shipContainers.get(i).getShip())) {
+							selectedShips.add(shipContainers.get(i).getShip());
+						}
+	
+					} else {
+						selectedShips.remove(shipContainers.get(i).getShip());
 					}
-
-				} else {
-					selectedShips.remove(sc.getShip());
-				}
-				ShipPointer deleteThisPointer = null;
-				if (sc.isDestinationUnset) {
-					for (ShipPointer sp : this.planet.pointers) {
-						sp.ships.remove(sc.getShip());
-
-						if (sp.ships.isEmpty()) {
-							sp.delete();
-							deleteThisPointer = sp;
+					ShipPointer deleteThisPointer = null;
+					if (shipContainers.get(i).isDestinationUnset) {
+						for (ShipPointer sp : this.planet.pointers) {
+							sp.ships.remove(shipContainers.get(i).getShip());
+	
+							if (sp.ships.isEmpty()) {
+								sp.delete();
+								deleteThisPointer = sp;
+							}
 						}
 					}
+					this.planet.pointers.remove(deleteThisPointer);
+					if (shipContainers.get(i).getShip() != null && shipContainers.get(i).getShip().health <= 0) {
+						shipContainers.get(i).remove();
+						shipContainers.remove(i);
+						//i--;
+						
+					}
 				}
-				this.planet.pointers.remove(deleteThisPointer);
+				
 			}
-			sc.update(uiMouseBlot.center);
 		}
-
+			
 		// update text fields
 		this.planetCap.setText(Integer.toString(this.planet.resourceCapacity));
 		this.planetPrioirity.setText(Integer.toString(this.planet.priority));

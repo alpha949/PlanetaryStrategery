@@ -2,6 +2,7 @@ package com.ue.ps.buildings;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.ue.ps.BaseActor;
 import com.ue.ps.Planet;
 import com.ue.ps.Player;
@@ -12,11 +13,18 @@ public abstract class Building extends BaseActor {
 	public int resourceCost;
 	public static ArrayList<Building> allBuildings = new ArrayList<Building>();
 	public char id;
+	public BuildingType type;
 	public Player owner;
+	protected boolean isSpace;
+	public float angle;
 
-	public Building(String path) {
-		super(path);
-
+	public Building(BuildingType t) {
+		super(t.texture);
+		this.health = t.health;
+		this.id = t.id;
+		this.isSpace = t.isSpace;
+		this.resourceCost = t.resourceCost;
+		this.type = t;
 	}
 
 	public abstract void update(Planet p);
@@ -32,6 +40,14 @@ public abstract class Building extends BaseActor {
 		}
 		return null;
 	}
+	public static Building getBuildingFromId(BuildingType id) {
+		for (Building b : allBuildings) {
+			if (b.type == id) {
+				return b;
+			}
+		}
+		return null;
+	}
 
 	public void act(float dt) {
 		super.act(dt);
@@ -40,13 +56,18 @@ public abstract class Building extends BaseActor {
 			// TODO remove building from planet
 		}
 	}
-
+	
+	public boolean isSpaceBuilding() {
+		return isSpace;
+	}
+	
 	// all buildings must be registered here, if some one can find a way to do
 	// this automagically, that would be awsome
 	static {
 		allBuildings.add(new Factory());
 		allBuildings.add(new Colony());
 		allBuildings.add(new Mine());
+		allBuildings.add(new SpaceFactory());
 
 	}
 

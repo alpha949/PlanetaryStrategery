@@ -5,14 +5,14 @@ import com.ue.ps.ships.ShipType;
 
 public class Factory extends Building {
 
-	private int resourceInput = 3, shipProgressOutput = 10;
+	
 
 	public ShipType buildingShip;
 
 	public int buildProgress;
 
 	public Factory() {
-		super("assets/factory.png");
+		super(BuildingType.factory);
 		this.health = 50;
 		this.resourceCost = 5;
 		this.id = 'f';
