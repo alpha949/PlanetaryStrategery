@@ -21,8 +21,8 @@ public class SidePanel extends BaseActor {
 	private Label planetName = new Label("", PS.font);
 	private Label planetType = new Label("", PS.font);
 
-	private Tab tabBuildings = new Tab(65, 637);
-	private Tab tabShips = new Tab(65+100, 637);
+	public Tab tabBuildings = new Tab(65, 637);
+	public Tab tabShips = new Tab(65+100, 637);
 	
 	private Label planetCap = new Label("5", PS.font);
 	private Label planetPrioirity = new Label("9", PS.font);
@@ -313,6 +313,7 @@ public class SidePanel extends BaseActor {
 					for (ShipPointer sp : this.planet.pointers) {
 						//remove it from it's pointer
 						sp.ships.remove(shipContainers.get(i).getShip());
+						
 						//if the pointer is empty, flag the pointer
 						if (sp.ships.isEmpty()) {
 							sp.delete();
@@ -366,5 +367,13 @@ public class SidePanel extends BaseActor {
 	public static void setActiveTab(Tab t) {
 		activeTab = t;
 		t.BringUp();
+	}
+	
+	public Tab getActiveTab() {
+		return this.activeTab;
+	}
+	
+	public Planet getSelectedPlanet() {
+		return this.planet;
 	}
 }

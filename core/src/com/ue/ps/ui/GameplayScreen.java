@@ -377,6 +377,9 @@ public class GameplayScreen implements Screen {
 				}
 			}
 			
+			this.sidePanel.setPlanet(this.sidePanel.getSelectedPlanet());
+			this.sidePanel.setActiveTab(sidePanel.getActiveTab());
+			
 			if (!PS.useServer) {
 				System.out.println("executing actions...");
 				

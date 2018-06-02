@@ -1,5 +1,7 @@
 package com.ue.ps.ships;
 
+import com.ue.ps.systems.GameServerClient;
+
 public enum ShipType {
 	drone, scout, colonizer, transport, cruiser, dread, flagship;
 
@@ -19,6 +21,7 @@ public enum ShipType {
 		for (int i = 0; i < stats.length; i++) {
 			this.baseStats[i] = stats[i];
 		}
+		
 	}
 
 	public static ShipType getShipType(char id) {
