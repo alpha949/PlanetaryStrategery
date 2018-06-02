@@ -2,7 +2,6 @@ package com.ue.ps;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.ue.ps.buildings.Building;
-
 import com.ue.ps.ui.Images;
 
 public enum PlanetType {

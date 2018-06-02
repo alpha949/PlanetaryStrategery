@@ -191,8 +191,8 @@ public class SidePanel extends BaseActor {
 
 		//BUILDINGS TAB
 		// setup building boxes
-		for (int i = 0; i < this.planet.landBuildings.length + this.planet.spaceBuildings.length; i++) {
-			if (i < this.planet.landBuildings.length) {
+		for (int i = 0; i < this.planet.landBuildings.length; i++) {
+		
 				BuildingContainer bc = new BuildingContainer(i, 10, Tab.maxHeight - (i) * 50, p, false); //from bottom left
 				//BuildingContainer bc = new BuildingContainer(i, 10, -10 - (i+1) * 50); //from top left
 				this.buildingContainers.add(bc);
@@ -204,21 +204,26 @@ public class SidePanel extends BaseActor {
 				} else {
 					bc.setBuilding(null);
 				}
-			} else { //Space buildings
-				BuildingContainer bc = new BuildingContainer(i, 10, Tab.maxHeight - (i) * 50, p, true); //from bottom left
+		}
+		
+		for (int i = 0; i < this.planet.spaceBuildings.length; i++) {
+			
+		
+				BuildingContainer bc = new BuildingContainer(i, 10, Tab.maxHeight - (i + this.planet.landBuildings.length) * 50, p, true); //from bottom left
 				//BuildingContainer bc = new BuildingContainer(i, 10, -10 - (i+1) * 50); //from top left
 				this.buildingContainers.add(bc);
 				tabBuildings.addActor(bc);
 				tabBuildings.internalHeight += 50; //add the height of this object (and buffer beneath) to the net height of the tab
 	
-				if (this.planet.spaceBuildings[i-this.planet.landBuildings.length] != null) {
-					bc.setBuilding(this.planet.spaceBuildings[i-this.planet.landBuildings.length]);
+				if (this.planet.spaceBuildings[i] != null) {
+					bc.setBuilding(this.planet.spaceBuildings[i]);
 				} else {
 					bc.setBuilding(null);
 				}
 				
-			}
 		}
+		
+	
 		
 		//UI must be final thing here
 		setActiveTab(tabBuildings);
