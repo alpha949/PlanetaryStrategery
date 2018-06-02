@@ -168,4 +168,8 @@ public class Ship extends BaseActor {
 	public String getOwnerName() {
 		return this.ownerName;
 	}
+	
+	public int getCost(){
+		return cost;
+	}
 }

@@ -6,6 +6,11 @@ import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Destroyable;
 
 import com.ue.ps.Planet;
+import com.ue.ps.buildings.Building;
+import com.ue.ps.buildings.Building.Types;
+import com.ue.ps.buildings.Factory;
+import com.ue.ps.buildings.Mine;
+import com.ue.ps.buildings.SpaceFactory;
 
 /**
  * PlanetNetwork objects store planets in groups based on if they are connected by "Lines". These networks are intended to be used to ease the process
@@ -182,4 +187,71 @@ public class PlanetNetwork implements Destroyable {
 		}
 	}
 
+	public void updateStats() {
+		for (Planet p : linkedPlanets) {
+			sumRes += p.resource;
+			for (Building b : p.landBuildings) {
+				if (b.type == Types.factory) {
+					sumResUse += ((Factory) b).getConsumption(p);
+				} else if (b.type == Types.mine) {
+					sumResGain += ((Mine) b).production;
+				}
+			}
+			for (Building b : p.spaceBuildings) {
+				if (b.type == Types.spaceFactory) {
+					sumResUse += ((SpaceFactory) b).getConsumption(p);
+				}
+			}
+		}
+	}
+
+	public ArrayList<Planet> getAbundantPlanets() {
+		ArrayList<Planet> out = new ArrayList<Planet>();
+		for (Planet p : linkedPlanets) {
+
+			if (p.getExcess() > 0) {
+				out.add(p);
+			}
+		}
+		return out;
+	}
+
+	public void update() {
+		ArrayList<Planet> excess = getAbundantPlanets();
+
+		int remaining = 0;
+		for (Planet p : linkedPlanets) {
+			if (p.getExcess() <= 0) {
+				remaining += 1;
+			}
+		}
+
+		while (!(excess.isEmpty() || remaining <= 0)) {
+			for (Planet p : excess) {
+				for (Planet pl : p.lineLinkedPlanets) {
+					if (p.getExcess() > 0 && pl.getExcess() < 0) {
+						pl.resource += 1;
+						p.resource -= 1;
+					}
+				}
+				for (Planet pl : p.lineLinkedPlanets) {
+					if (p.getExcess() > 0 && pl.getExcess() == 0) {
+						pl.resource += 1;
+						p.resource -= 1;
+					}
+				}
+			}
+
+			excess = getAbundantPlanets();
+
+			remaining = 0;
+			for (Planet p : linkedPlanets) {
+				if (p.getExcess() <= 0) {
+					remaining += 1;
+				}
+			}
+
+		}
+
+	}
 }

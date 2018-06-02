@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.ue.ps.buildings.Building;
 import com.ue.ps.buildings.Colony;
 import com.ue.ps.buildings.Factory;
+import com.ue.ps.buildings.SpaceFactory;
+import com.ue.ps.buildings.Building.Types;
 import com.ue.ps.ships.Line;
 import com.ue.ps.ships.Ship;
 import com.ue.ps.ships.ShipPointer;
@@ -438,6 +440,22 @@ public class Planet extends BaseActor {
 		}
 		return allShips;
 
+	}
+	
+	public int getExcess(){
+		int temp = 0;
+		for (Building b : this.landBuildings) {
+			if (b.type == Types.factory) {
+				temp += ((Factory) b).getConsumption(this);
+			}
+		}
+		for (Building b : this.spaceBuildings) {
+			if (b.type == Types.spaceFactory) {
+				temp += ((SpaceFactory) b).getConsumption(this);
+			}
+		}
+		
+		return this.resource - temp;
 	}
 
 }
